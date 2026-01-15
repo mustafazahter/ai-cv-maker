@@ -115,7 +115,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                         {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                     </button>
 
-                    <img src="/favicon.png" alt="Logo" className="w-9 h-9 object-contain" />
+                    <img src={`${import.meta.env.BASE_URL}favicon.png`} alt="Logo" className="w-9 h-9 object-contain" />
                     <span className="text-xl font-bold text-slate-800 tracking-tight hidden sm:inline">CV Maker AI</span>
                     <span className="text-xl font-bold text-slate-800 tracking-tight sm:hidden">CV AI</span>
                 </div>
