@@ -117,11 +117,12 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
 
                     <img src={`${import.meta.env.BASE_URL}favicon.png`} alt="Logo" className="w-9 h-9 object-contain" />
                     <span className="text-xl font-bold text-slate-800 tracking-tight hidden sm:inline">CV Maker AI</span>
-                    <span className="text-xl font-bold text-slate-800 tracking-tight sm:hidden">CV AI</span>
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <LanguageSwitcher />
+                    <div className="hidden md:flex">
+                        <LanguageSwitcher />
+                    </div>
 
                     <button
                         onClick={() => onNavigateToEditor()}
@@ -131,7 +132,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                         <span className="sm:hidden">{t('dashboard.editorShort')}</span>
                     </button>
 
-                    <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                    <div className="hidden md:flex w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 items-center justify-center text-white font-bold text-sm shadow-md">
                         U
                     </div>
                 </div>
@@ -197,6 +198,17 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
 
                     {/* Spacer */}
                     <div className="flex-1" />
+
+                    {/* Mobile Only: Language & User Footer */}
+                    <div className="p-4 border-t border-slate-100 md:hidden flex items-center justify-between bg-slate-50/50">
+                        <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                                U
+                            </div>
+                            <span className="text-sm font-semibold text-slate-700">User</span>
+                        </div>
+                        <LanguageSwitcher />
+                    </div>
                 </aside>
 
                 {/* Main Content Area */}
