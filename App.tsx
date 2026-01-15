@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Download, Edit3, Key, Layout, Printer, Share2, Sparkles, PanelLeftClose, PanelLeftOpen, FileText } from 'lucide-react';
+import React, { useState } from 'react';
+import { Edit3, Key, Printer, Sparkles, PanelLeftClose, PanelLeftOpen, FileText, Home } from 'lucide-react';
 import { ResumeData } from './types';
 import { INITIAL_RESUME_DATA } from './constants';
 import ChatAssistant from './components/ChatAssistant';
 import CVPreview from './components/CVPreview';
 import ManualEditor from './components/ManualEditor';
 import ApiKeyModal from './components/ApiKeyModal';
+import { DashboardPage } from './pages';
+
+type AppView = 'dashboard' | 'editor';
 
 const App: React.FC = () => {
+  const [currentView, setCurrentView] = useState<AppView>('dashboard');
   const [resumeData, setResumeData] = useState<ResumeData>(INITIAL_RESUME_DATA);
   const [apiKey, setApiKey] = useState<string | null>(localStorage.getItem('gemini_api_key'));
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
@@ -26,6 +30,34 @@ const App: React.FC = () => {
     window.print();
   };
 
+  const navigateToEditor = () => {
+    setCurrentView('editor');
+  };
+
+  const navigateToDashboard = () => {
+    setCurrentView('dashboard');
+  };
+
+  // Dashboard Page View
+  if (currentView === 'dashboard') {
+    return (
+      <>
+        <ApiKeyModal
+          isOpen={isApiKeyModalOpen}
+          onSave={handleSaveApiKey}
+          savedKey={apiKey}
+        />
+        <DashboardPage
+          apiKey={apiKey}
+          onSaveApiKey={handleSaveApiKey}
+          onNavigateToEditor={navigateToEditor}
+          onRequestApiKey={() => setIsApiKeyModalOpen(true)}
+        />
+      </>
+    );
+  }
+
+  // Editor View
   return (
     <div className="flex h-screen overflow-hidden bg-slate-100 font-sans print:bg-white print:overflow-visible print:h-auto">
       <ApiKeyModal
@@ -49,8 +81,8 @@ const App: React.FC = () => {
               <button
                 onClick={() => setSidebarMode('chat')}
                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all ${sidebarMode === 'chat'
-                    ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200'
-                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
+                  ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200'
+                  : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
                   }`}
               >
                 <Sparkles className="w-4 h-4" />
@@ -59,8 +91,8 @@ const App: React.FC = () => {
               <button
                 onClick={() => setSidebarMode('editor')}
                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all ${sidebarMode === 'editor'
-                    ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200'
-                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
+                  ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200'
+                  : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
                   }`}
               >
                 <Edit3 className="w-4 h-4" />
@@ -109,6 +141,14 @@ const App: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Back to Dashboard */}
+            <button
+              onClick={navigateToDashboard}
+              className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+              title="Dashboard'a Dön"
+            >
+              <Home className="w-5 h-5" />
+            </button>
             <button
               onClick={() => setIsApiKeyModalOpen(true)}
               className={`p-2 rounded-full transition-colors ${apiKey ? 'text-green-600 bg-green-50 hover:bg-green-100' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}

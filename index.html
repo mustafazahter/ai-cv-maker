@@ -20,6 +20,21 @@
           colors: {
             primary: '#2563eb', // blue-600
             secondary: '#475569', // slate-600
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out',
+            'slide-up': 'slideUp 0.5s ease-out',
+            'bounce': 'bounce 2s infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
           }
         }
       }
@@ -118,7 +133,7 @@
   <link rel="stylesheet" href="/index.css">
 </head>
 
-<body class="bg-slate-50 text-slate-900 overflow-hidden">
+<body class="bg-slate-50 text-slate-900 overflow-x-hidden">
   <div id="root" class="h-full"></div>
   <script type="module" src="/index.tsx"></script>
 </body>
