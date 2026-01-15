@@ -31,13 +31,12 @@ const CVAnalysisResultView: React.FC<CVAnalysisResultProps> = ({ result, onClose
     };
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-            <div className="bg-gradient-to-br from-slate-50 to-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-0 md:p-4 overflow-hidden">
+            <div className="bg-gradient-to-br from-slate-50 to-white md:rounded-3xl shadow-2xl w-full max-w-5xl h-full md:h-auto md:max-h-[90vh] flex flex-col overflow-hidden">
                 {/* Header */}
-                <div className="sticky top-0 bg-white/90 backdrop-blur-md border-b border-slate-100 p-6 flex items-center justify-between z-10">
+                <div className="bg-white/90 backdrop-blur-md border-b border-slate-100 p-4 md:p-6 flex items-center justify-between shrink-0 z-10">
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-800">CV Analiz Sonuçları</h2>
-                        <p className="text-slate-500 mt-1">{summary}</p>
+                        <h2 className="text-xl md:text-2xl font-bold text-slate-800">CV Analiz Sonuçları</h2>
                     </div>
                     <button
                         onClick={onClose}
@@ -47,7 +46,13 @@ const CVAnalysisResultView: React.FC<CVAnalysisResultProps> = ({ result, onClose
                     </button>
                 </div>
 
-                <div className="p-6 space-y-8">
+                <div className="p-4 md:p-6 space-y-6 md:space-y-8 flex-1 overflow-y-auto custom-scrollbar">
+                    {/* Summary Section - Moved from Header */}
+                    <div className="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100">
+                        <p className="text-slate-600 text-sm md:text-base leading-relaxed">
+                            {summary}
+                        </p>
+                    </div>
                     {/* Score Overview */}
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                         <div className="col-span-2 md:col-span-1 lg:col-span-2 flex justify-center">

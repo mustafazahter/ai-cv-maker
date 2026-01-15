@@ -8,7 +8,9 @@ import {
     Sparkles,
     ChevronRight,
     Palette,
-    Search as SearchIcon
+    Search as SearchIcon,
+    Menu,
+    X
 } from 'lucide-react';
 import {
     ATSGuideSection,
@@ -70,6 +72,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
     currentTheme
 }) => {
     const [activeTab, setActiveTab] = useState<TabId>('api-settings');
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const renderContent = () => {
         switch (activeTab) {
@@ -99,41 +102,75 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
     return (
         <div className="min-h-screen bg-slate-50 flex flex-col">
             {/* Top Header */}
-            <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-50">
+            <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-40">
                 <div className="flex items-center gap-3">
+                    {/* Mobile Menu Button */}
+                    <button
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        className="p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg md:hidden"
+                    >
+                        {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                    </button>
+
                     <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
                         <Sparkles className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-xl font-bold text-slate-800 tracking-tight">CV Maker AI</span>
+                    <span className="text-xl font-bold text-slate-800 tracking-tight hidden sm:inline">CV Maker AI</span>
+                    <span className="text-xl font-bold text-slate-800 tracking-tight sm:hidden">CV AI</span>
                 </div>
 
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => onNavigateToEditor()}
-                        className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-indigo-500/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                        className="px-4 md:px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-indigo-500/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
                     >
-                        CV Editor'ü Aç
+                        <span className="hidden sm:inline">CV Editor'ü Aç</span>
+                        <span className="sm:hidden">Editör</span>
                     </button>
 
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                    <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
                         U
                     </div>
                 </div>
             </header>
 
-            <div className="flex flex-1">
-                {/* Left Sidebar */}
-                <aside className="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0">
+            <div className="flex flex-1 relative">
+
+                {/* Mobile Backdrop */}
+                {isMobileMenuOpen && (
+                    <div
+                        className="fixed inset-0 bg-slate-900/50 z-40 md:hidden backdrop-blur-sm animate-in fade-in duration-200"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                    />
+                )}
+
+                {/* Left Sidebar (Responsive) */}
+                <aside className={`
+                    fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 transition-transform duration-300 ease-out
+                    md:static md:translate-x-0
+                    ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}
+                `}>
                     {/* Menu Section */}
-                    <div className="p-4">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3 px-3">
+                    {/* Only show "Ayarlar" title on desktop to save space on mobile drawer top */}
+                    <div className="p-4 pt-6 md:pt-4">
+                        <div className="flex items-center justify-between mb-6 px-3 md:hidden">
+                            <span className="font-bold text-lg text-slate-800">Menu</span>
+                            <button onClick={() => setIsMobileMenuOpen(false)} className="p-1 text-slate-400">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3 px-3 hidden md:block">
                             Ayarlar
                         </p>
                         <nav className="space-y-1">
                             {menuItems.map((item) => (
                                 <button
                                     key={item.id}
-                                    onClick={() => setActiveTab(item.id)}
+                                    onClick={() => {
+                                        setActiveTab(item.id);
+                                        setIsMobileMenuOpen(false); // Close menu on selection
+                                    }}
                                     className={`
                     w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all duration-200
                     ${activeTab === item.id

@@ -7,10 +7,10 @@ interface ChatAssistantProps {
   apiKey: string | null;
   currentResumeData: ResumeData;
   onUpdateResume: (data: ResumeData) => void;
-  onRequestApiKey: () => void;
+  onResetCV?: () => void;
 }
 
-const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData, onUpdateResume, onRequestApiKey }) => {
+const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData, onUpdateResume, onRequestApiKey, onResetCV }) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState<GeminiModel>('gemini-3-pro-preview');
@@ -45,14 +45,19 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
   }, [input]);
 
   const handleResetChat = () => {
-    if (window.confirm("Start a new chat session?")) {
+    const isFullReset = window.confirm("Tamamen sıfırlamak istiyor musunuz? Hem sohbet geçmişi hem de CV verileri silinecek ve başlangıç ayarlarına dönecek.");
+
+    if (isFullReset) {
       setMessages([{
         id: 'welcome',
         role: 'system',
-        content: 'Ready for a fresh start. Upload a CV or tell me about your experience.',
+        content: 'Hazır! Sohbet ve CV sıfırlandı. Yeni bir başlangıç yapabiliriz.',
         timestamp: Date.now()
       }]);
       setAttachment(null);
+      if (onResetCV) {
+        onResetCV();
+      }
     }
   };
 
@@ -259,7 +264,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
           <div className="max-w-3xl mx-auto pl-12">
             <div className="flex items-center gap-2 text-slate-400">
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span className="text-xs font-medium animate-pulse">Analyzing CV structure ({selectedModel.replace('gemini-', '')})...</span>
+              <span className="text-xs font-medium animate-pulse">Analyzing ({selectedModel.replace('gemini-', '')})...</span>
             </div>
           </div>
         )}

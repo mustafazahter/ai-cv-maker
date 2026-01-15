@@ -150,18 +150,19 @@ const App: React.FC = () => {
 
           {/* Content Area */}
           <div className="flex-1 overflow-hidden relative">
-            {sidebarMode === 'chat' ? (
+            <div className={`h-full flex flex-col ${sidebarMode === 'chat' ? 'block' : 'hidden'}`}>
               <ChatAssistant
                 apiKey={apiKey}
                 currentResumeData={resumeData}
                 onUpdateResume={setResumeData}
                 onRequestApiKey={() => setIsApiKeyModalOpen(true)}
+                onResetCV={() => setResumeData(INITIAL_RESUME_DATA)}
               />
-            ) : (
-              <div className="h-full overflow-y-auto custom-scrollbar">
-                <ManualEditor data={resumeData} onChange={setResumeData} />
-              </div>
-            )}
+            </div>
+
+            <div className={`h-full overflow-y-auto custom-scrollbar ${sidebarMode === 'editor' ? 'block' : 'hidden'}`}>
+              <ManualEditor data={resumeData} onChange={setResumeData} />
+            </div>
           </div>
         </div>
       </aside>
