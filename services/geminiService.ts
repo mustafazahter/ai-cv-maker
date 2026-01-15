@@ -298,7 +298,12 @@ export const chatWithCVAgent = async (
   }
 
   const fullPrompt = `
-    USER REQUEST:
+    PREVIOUS CHAT HISTORY:
+    ${historyContext || "No previous history."}
+
+    ---
+
+    CURRENT USER REQUEST:
     ${userMessage}
 
     IMPORTANT: If the request contains CV data, perform a FULL information replacement.
@@ -310,23 +315,11 @@ export const chatWithCVAgent = async (
   try {
     console.log(">>> [LOG] About to call generateContent...");
     console.log(">>> [LOG] Model:", modelName);
-    console.log(">>> [LOG] Contents Format Fix Applied.");
 
-    // Gemini 3/2.5 thinking modelleri için schema kullanma - JSON talimatı ver
-    const isAdvancedModel = modelName.includes('thinking') || modelName.includes('pro-preview') || modelName.includes('2.5-pro');
+    // --- MODEL SPECIFIC CONFIGURATION STRATEGY ---
 
-    // Timeout with Promise.race for advanced models
-    const timeoutMs = isAdvancedModel ? 120000 : 60000; // 120s for advanced, 60s for others
-
-    const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error(`Model timeout after ${timeoutMs / 1000}s - Try a different model`)), timeoutMs);
-    });
-
-    const apiPromise = ai.models.generateContent({
-      model: modelName,
-      contents: [{ role: 'user', parts: parts }],
-      config: {
-        systemInstruction: systemInstruction + (isAdvancedModel ? `
+    // Common JSON Instruction for models effectively using "Prompt Mode"
+    const PROMPT_JSON_INSTRUCTION = `
         
         **CRITICAL JSON FORMAT - YOU MUST FOLLOW THIS EXACTLY:**
         {
@@ -358,12 +351,55 @@ export const chatWithCVAgent = async (
         
         **IMPORTANT**: The "fullName" field is REQUIRED and must contain the person's name from the CV text.
         DO NOT include any text outside the JSON object. Respond ONLY with valid JSON.
-        ` : ''),
-        ...(isAdvancedModel ? {} : {
-          responseMimeType: "application/json",
-          responseSchema: agentSchema,
-        }),
-        temperature: isAdvancedModel ? 0.7 : 0.9,
+    `;
+
+    let generationConfig: any = {};
+    let finalSystemInstruction = systemInstruction;
+    let timeoutMs = 60000; // Default
+
+    // 1. GEMINI 3 / THINKING (Advanced)
+    if (modelName.includes('gemini-3') || modelName.includes('thinking')) {
+      console.log(">>> [CONFIG] Using Advanced/Thinking Config (Prompt-based JSON, Low Temp)");
+      timeoutMs = 120000; // 120s
+      generationConfig = {
+        temperature: 0.7,
+      };
+      finalSystemInstruction += PROMPT_JSON_INSTRUCTION;
+    }
+    // 2. FLASH LITE (Lightweight)
+    else if (modelName.includes('lite')) {
+      console.log(">>> [CONFIG] Using Flash Lite Config (Prompt-based JSON, Med Temp)");
+      // NOTE: We use Prompt-based JSON for Lite too, because strict Schema enforcement 
+      // on complex nested objects can sometimes timeout or confuse smaller models.
+      timeoutMs = 90000; // 90s
+      generationConfig = {
+        temperature: 0.8, // Slightly higher creative freedom
+      };
+      finalSystemInstruction += PROMPT_JSON_INSTRUCTION;
+    }
+    // 3. FLASH 2.5 / STANDARD (Standard)
+    else {
+      console.log(">>> [CONFIG] Using Standard Flash Config (PROMPT-BASED JSON, Med Temp)");
+      // CHANGED: User reported Native Schema timeouts for 2.5 Flash. 
+      // Switching to Prompt-based JSON for consistency and speed.
+      timeoutMs = 90000; // 90s
+      generationConfig = {
+        temperature: 0.8,
+        // Removed responseSchema to prevent validation timeouts
+      };
+      finalSystemInstruction += PROMPT_JSON_INSTRUCTION;
+    }
+
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error(`Model timeout after ${timeoutMs / 1000}s - Try a different model`)), timeoutMs);
+    });
+
+    const apiPromise = ai.models.generateContent({
+      model: modelName,
+      contents: [{ role: 'user', parts: parts }],
+      config: {
+        systemInstruction: finalSystemInstruction,
+        ...generationConfig
       },
     });
 
