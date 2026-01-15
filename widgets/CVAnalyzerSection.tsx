@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { Upload, FileText, Image as ImageIcon, Loader2, Sparkles, X, CheckCircle } from 'lucide-react';
-import { GradientButton } from '../shared/ui';
+import { GradientButton } from '@/shared/ui';
 import { analyzeCV, CVAnalysisResult, CVAnalysisResultView } from '../features/cv-analyzer';
 import { useTranslation } from 'react-i18next';
 

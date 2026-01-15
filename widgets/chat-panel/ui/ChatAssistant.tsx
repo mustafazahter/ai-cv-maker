@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Send, Plus, Sparkles, Loader2, Trash2, BrainCircuit, ChevronDown, ChevronRight, FileText, X, Image as ImageIcon, ArrowUp } from 'lucide-react';
-import { ChatMessage, ResumeData, GeminiModel } from '../types';
-import { chatWithCVAgent, FileAttachment } from '../services/geminiService';
+import { ChatMessage, ResumeData, GeminiModel } from '@/shared/types';
+import { chatWithCVAgent, FileAttachment } from '@/shared/api/gemini';
 
 interface ChatAssistantProps {
   apiKey: string | null;

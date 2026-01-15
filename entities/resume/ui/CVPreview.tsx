@@ -1,6 +1,6 @@
 import React, { useState, useRef, useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ResumeData, CVThemeId } from '../types';
+import { ResumeData, CVThemeId } from '@/shared/types';
 import { renderClassicTheme, renderExecutiveTheme, renderModernTheme, renderSidebarTheme } from './themes/CVThemes';
 
 interface CVPreviewProps {

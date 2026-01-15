@@ -1,4 +1,4 @@
-import { ResumeData } from "./types";
+import { ResumeData } from "@/shared/types";
 
 export const INITIAL_RESUME_DATA_EN: ResumeData = {
   fullName: "John Doe",

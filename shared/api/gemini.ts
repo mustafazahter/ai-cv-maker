@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
-import { ResumeData, AgentResponse, ChatMessage, GeminiModel } from "../types";
+import { ResumeData, AgentResponse, ChatMessage, GeminiModel } from "@/shared/types";
 
 // Inner Schema for the Resume Data
 const resumeSchemaProps = {

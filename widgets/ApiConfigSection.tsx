@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Key, Shield, CheckCircle, AlertTriangle, ExternalLink, RefreshCw, Eye, EyeOff, Sparkles, ChevronUp, ChevronDown, Target } from 'lucide-react';
-import { GradientButton } from '../shared/ui';
+import { GradientButton } from '@/shared/ui';
 import { useTranslation, Trans } from 'react-i18next';
 
 interface ApiConfigSectionProps {

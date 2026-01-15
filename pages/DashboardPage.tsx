@@ -18,7 +18,7 @@ import {
     AIThemesSection,
     CVAnalyzerSection
 } from '../widgets';
-import { CVThemeId } from '../types';
+import { CVThemeId } from '@/shared/types';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../features/language-switcher';
 

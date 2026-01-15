@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ResumeData, ExperienceItem, EducationItem, SkillCategory, ProjectItem, CertificationItem, LanguageItem, VolunteeringItem, AwardItem, CustomSection, CustomSectionItem } from '../types';
+import { ResumeData, ExperienceItem, EducationItem, SkillCategory, ProjectItem, CertificationItem, LanguageItem, VolunteeringItem, AwardItem, CustomSection, CustomSectionItem } from '@/shared/types';
 import {
     Plus, Trash2, MapPin, Calendar, Briefcase, User, Mail, Globe, Linkedin, Phone,
     ChevronDown, ChevronUp, GripVertical, Star, Book, Award, Heart, Layout, Type,
