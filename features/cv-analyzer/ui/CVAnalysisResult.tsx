@@ -2,6 +2,7 @@ import React from 'react';
 import { CheckCircle, AlertTriangle, TrendingUp, Target, FileText, Zap, X } from 'lucide-react';
 import { CVAnalysisResult } from '../model/types';
 import { CircularProgress, GlassCard } from '../../../shared/ui';
+import { useTranslation } from 'react-i18next';
 
 interface CVAnalysisResultProps {
     result: CVAnalysisResult;
@@ -9,6 +10,7 @@ interface CVAnalysisResultProps {
 }
 
 const CVAnalysisResultView: React.FC<CVAnalysisResultProps> = ({ result, onClose }) => {
+    const { t } = useTranslation();
     const { scores, strengths, improvements, summary, keywordsFound, keywordsMissing, atsWarnings } = result;
 
     const getScoreColor = (score: number): 'emerald' | 'amber' | 'rose' => {
@@ -36,7 +38,7 @@ const CVAnalysisResultView: React.FC<CVAnalysisResultProps> = ({ result, onClose
                 {/* Header */}
                 <div className="bg-white/90 backdrop-blur-md border-b border-slate-100 p-4 md:p-6 flex items-center justify-between shrink-0 z-10">
                     <div>
-                        <h2 className="text-xl md:text-2xl font-bold text-slate-800">CV Analiz Sonuçları</h2>
+                        <h2 className="text-xl md:text-2xl font-bold text-slate-800">{t('cvAnalyzer.resultTitle')}</h2>
                     </div>
                     <button
                         onClick={onClose}
@@ -61,17 +63,17 @@ const CVAnalysisResultView: React.FC<CVAnalysisResultProps> = ({ result, onClose
                                     value={scores.overall}
                                     size={140}
                                     strokeWidth={10}
-                                    label="Genel"
-                                    sublabel="Puan"
+                                    label={t('cvAnalyzer.scoreGeneral')}
+                                    sublabel={t('cvAnalyzer.scoreLabel')}
                                     color={getScoreColor(scores.overall)}
                                 />
                             </div>
                         </div>
 
-                        <ScoreItem label="Format" value={scores.format} />
-                        <ScoreItem label="İçerik" value={scores.content} />
-                        <ScoreItem label="ATS Uyumu" value={scores.atsCompatibility} />
-                        <ScoreItem label="Anahtar K." value={scores.keywords} />
+                        <ScoreItem label={t('cvAnalyzer.scoreFormat')} value={scores.format} />
+                        <ScoreItem label={t('cvAnalyzer.scoreContent')} value={scores.content} />
+                        <ScoreItem label={t('cvAnalyzer.scoreAtsCompatibility')} value={scores.atsCompatibility} />
+                        <ScoreItem label={t('cvAnalyzer.scoreKeywords')} value={scores.keywords} />
                     </div>
 
                     {/* Main Content Grid */}
@@ -82,7 +84,7 @@ const CVAnalysisResultView: React.FC<CVAnalysisResultProps> = ({ result, onClose
                                 <div className="p-2 bg-emerald-100 rounded-xl">
                                     <CheckCircle className="w-5 h-5 text-emerald-600" />
                                 </div>
-                                <h3 className="text-lg font-semibold text-slate-800">Güçlü Yönler</h3>
+                                <h3 className="text-lg font-semibold text-slate-800">{t('cvAnalyzer.strengthsTitle')}</h3>
                             </div>
                             <div className="space-y-3">
                                 {strengths.map((strength) => (
@@ -106,7 +108,7 @@ const CVAnalysisResultView: React.FC<CVAnalysisResultProps> = ({ result, onClose
                                 <div className="p-2 bg-amber-100 rounded-xl">
                                     <AlertTriangle className="w-5 h-5 text-amber-600" />
                                 </div>
-                                <h3 className="text-lg font-semibold text-slate-800">İyileştirme Önerileri</h3>
+                                <h3 className="text-lg font-semibold text-slate-800">{t('cvAnalyzer.improvementsTitle')}</h3>
                             </div>
                             <div className="space-y-3">
                                 {improvements.map((improvement) => (
@@ -120,7 +122,7 @@ const CVAnalysisResultView: React.FC<CVAnalysisResultProps> = ({ result, onClose
                                                 <h4 className="font-medium text-slate-800">{improvement.title}</h4>
                                             </div>
                                             <span className={`text-xs px-2 py-1 rounded-full border ${priorityColors[improvement.priority]}`}>
-                                                {improvement.priority === 'high' ? 'Yüksek' : improvement.priority === 'medium' ? 'Orta' : 'Düşük'}
+                                                {improvement.priority === 'high' ? t('cvAnalyzer.priorityHigh') : improvement.priority === 'medium' ? t('cvAnalyzer.priorityMedium') : t('cvAnalyzer.priorityLow')}
                                             </span>
                                         </div>
                                         <p className="text-sm text-slate-600">{improvement.description}</p>
@@ -133,7 +135,7 @@ const CVAnalysisResultView: React.FC<CVAnalysisResultProps> = ({ result, onClose
                     {/* Keywords Section */}
                     <div className="grid md:grid-cols-2 gap-6">
                         <GlassCard hover={false}>
-                            <h3 className="text-lg font-semibold text-slate-800 mb-3">Bulunan Anahtar Kelimeler</h3>
+                            <h3 className="text-lg font-semibold text-slate-800 mb-3">{t('cvAnalyzer.keywordsFoundTitle')}</h3>
                             <div className="flex flex-wrap gap-2">
                                 {keywordsFound.map((keyword, idx) => (
                                     <span
@@ -147,7 +149,7 @@ const CVAnalysisResultView: React.FC<CVAnalysisResultProps> = ({ result, onClose
                         </GlassCard>
 
                         <GlassCard hover={false}>
-                            <h3 className="text-lg font-semibold text-slate-800 mb-3">Önerilen Anahtar Kelimeler</h3>
+                            <h3 className="text-lg font-semibold text-slate-800 mb-3">{t('cvAnalyzer.keywordsMissingTitle')}</h3>
                             <div className="flex flex-wrap gap-2">
                                 {keywordsMissing.map((keyword, idx) => (
                                     <span
@@ -164,7 +166,7 @@ const CVAnalysisResultView: React.FC<CVAnalysisResultProps> = ({ result, onClose
                     {/* ATS Warnings */}
                     {atsWarnings.length > 0 && (
                         <GlassCard hover={false} className="bg-rose-50/50">
-                            <h3 className="text-lg font-semibold text-slate-800 mb-3">ATS Uyarıları</h3>
+                            <h3 className="text-lg font-semibold text-slate-800 mb-3">{t('cvAnalyzer.atsWarningsTitle')}</h3>
                             <ul className="space-y-2">
                                 {atsWarnings.map((warning, idx) => (
                                     <li key={idx} className="flex items-start gap-2 text-sm text-rose-700">

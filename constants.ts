@@ -1,6 +1,6 @@
 import { ResumeData } from "./types";
 
-export const INITIAL_RESUME_DATA: ResumeData = {
+export const INITIAL_RESUME_DATA_EN: ResumeData = {
   fullName: "John Doe",
   title: "Software Engineer",
   email: "john.doe@example.com",
@@ -63,3 +63,74 @@ export const INITIAL_RESUME_DATA: ResumeData = {
     "references"
   ]
 };
+
+export const INITIAL_RESUME_DATA_TR: ResumeData = {
+  fullName: "Ahmet Yılmaz",
+  title: "Yazılım Mühendisi",
+  email: "ahmet.yilmaz@ornek.com",
+  phone: "(555) 123-4567",
+  location: "İstanbul, Türkiye",
+  website: "ahmetyilmaz.dev",
+  linkedin: "linkedin.com/in/ahmetyilmaz",
+  summary: "Ölçeklenebilir web uygulamaları geliştirme konusunda güçlü bir geçmişe sahip, sonuç odaklı Yazılım Mühendisi. Etkileşimli ve kullanıcı odaklı çözümler oluşturmak için full-stack teknolojilerden yararlanma konusunda kanıtlanmış yetenek. Yüksek kaliteli kod ve sürekli öğrenmeye adanmış.",
+  experience: [
+    {
+      id: "exp-1",
+      company: "Teknoloji Çözümleri A.Ş.",
+      title: "Kıdemli Geliştirici",
+      location: "İstanbul",
+      startDate: "Oca 2020",
+      endDate: "Devam Ediyor",
+      current: true,
+      description: [
+        "Çekirdek ürün mimarisini yeniden tasarlayan 5 kişilik bir ekibe liderlik ederek performansı %40 artırdı.",
+        "GitHub Actions kullanarak CI/CD süreçlerini uyguladı, dağıtım süresini %60 azalttı.",
+        "Kod kalitesi standartlarını sağlamak için genç geliştiricilere mentorluk yaptı ve kod incelemeleri gerçekleştirdi."
+      ]
+    }
+  ],
+  education: [
+    {
+      id: "edu-1",
+      institution: "İstanbul Teknik Üniversitesi",
+      degree: "Bilgisayar Mühendisliği Lisans",
+      location: "İstanbul",
+      startDate: "Eyl 2015",
+      endDate: "May 2019",
+      current: false
+    }
+  ],
+  skills: [
+    {
+      name: "Teknik Yetkinlikler",
+      items: ["JavaScript", "TypeScript", "React", "Node.js", "Python", "AWS"]
+    }
+  ],
+  projects: [],
+  certifications: [],
+  languages: [],
+  volunteering: [],
+  awards: [],
+  interests: [],
+  customSections: [],
+  references: "İstek üzerine sağlanabilir.",
+
+  // Default Order
+  sectionOrder: [
+    "summary",
+    "experience",
+    "education",
+    "skills",
+    "projects",
+    "certifications",
+    "languages",
+    "references"
+  ]
+};
+
+export const getInitialResumeData = (lang: string): ResumeData => {
+  return lang === 'tr' ? INITIAL_RESUME_DATA_TR : INITIAL_RESUME_DATA_EN;
+};
+
+// Backwards compatibility for now, default to English if used directly, but App.tsx should use getInitialResumeData
+export const INITIAL_RESUME_DATA = INITIAL_RESUME_DATA_EN;

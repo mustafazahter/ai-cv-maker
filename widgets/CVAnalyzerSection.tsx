@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback } from 'react';
 import { Upload, FileText, Image as ImageIcon, Loader2, Sparkles, X, CheckCircle } from 'lucide-react';
 import { GradientButton } from '../shared/ui';
 import { analyzeCV, CVAnalysisResult, CVAnalysisResultView } from '../features/cv-analyzer';
+import { useTranslation } from 'react-i18next';
 
 interface CVAnalyzerSectionProps {
     apiKey: string | null;
@@ -9,6 +10,7 @@ interface CVAnalyzerSectionProps {
 }
 
 const CVAnalyzerSection: React.FC<CVAnalyzerSectionProps> = ({ apiKey, onRequestApiKey }) => {
+    const { t } = useTranslation();
     const [file, setFile] = useState<File | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -17,6 +19,27 @@ const CVAnalyzerSection: React.FC<CVAnalyzerSectionProps> = ({ apiKey, onRequest
     const [error, setError] = useState<string | null>(null);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const features = [
+        {
+            icon: <CheckCircle className="w-6 h-6 text-emerald-600" />,
+            title: t('cvAnalyzer.features.detailedScoring'),
+            description: t('cvAnalyzer.features.detailedScoringDesc'),
+            color: 'bg-emerald-100'
+        },
+        {
+            icon: <Sparkles className="w-6 h-6 text-amber-600" />,
+            title: t('cvAnalyzer.features.aiSuggestions'),
+            description: t('cvAnalyzer.features.aiSuggestionsDesc'),
+            color: 'bg-amber-100'
+        },
+        {
+            icon: <FileText className="w-6 h-6 text-indigo-600" />,
+            title: t('cvAnalyzer.features.keywordAnalysis'),
+            description: t('cvAnalyzer.features.keywordAnalysisDesc'),
+            color: 'bg-indigo-100'
+        }
+    ];
 
     const handleDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -37,9 +60,9 @@ const CVAnalyzerSection: React.FC<CVAnalyzerSectionProps> = ({ apiKey, onRequest
             setFile(droppedFile);
             setError(null);
         } else {
-            setError('Lütfen PDF veya görsel dosyası yükleyin.');
+            setError(t('cvAnalyzer.errorType'));
         }
-    }, []);
+    }, [t]);
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -48,7 +71,7 @@ const CVAnalyzerSection: React.FC<CVAnalyzerSectionProps> = ({ apiKey, onRequest
                 setFile(selectedFile);
                 setError(null);
             } else {
-                setError('Lütfen PDF veya görsel dosyası yükleyin.');
+                setError(t('cvAnalyzer.errorType'));
             }
         }
     };
@@ -88,7 +111,7 @@ const CVAnalyzerSection: React.FC<CVAnalyzerSectionProps> = ({ apiKey, onRequest
             const analysisResult = await analyzeCV(apiKey, {
                 base64: base64Data,
                 mimeType: file.type
-            });
+            }, t('common.languageCode') === 'en' ? 'en' : 'tr');
 
             setProgress(100);
             setTimeout(() => {
@@ -97,7 +120,7 @@ const CVAnalyzerSection: React.FC<CVAnalyzerSectionProps> = ({ apiKey, onRequest
             }, 500);
 
         } catch (err: any) {
-            setError(err.message || 'Analiz sırasında bir hata oluştu.');
+            setError(err.message || t('common.error'));
             setIsAnalyzing(false);
         } finally {
             clearInterval(progressInterval);
@@ -108,9 +131,9 @@ const CVAnalyzerSection: React.FC<CVAnalyzerSectionProps> = ({ apiKey, onRequest
         <div className="p-8 max-w-4xl mx-auto">
             {/* Page Header */}
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-slate-900 mb-2">CV Analiz</h1>
+                <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('cvAnalyzer.title')}</h1>
                 <p className="text-slate-600">
-                    CV'nizi yükleyin, AI bir İK uzmanı gibi detaylı analiz yapsın.
+                    {t('cvAnalyzer.subtitle')}
                 </p>
             </div>
 
@@ -146,10 +169,10 @@ const CVAnalyzerSection: React.FC<CVAnalyzerSectionProps> = ({ apiKey, onRequest
                         </div>
 
                         <h3 className="text-xl font-bold text-slate-800 mb-2">
-                            CV'nizi Sürükleyip Bırakın
+                            {t('cvAnalyzer.dragDropTitle')}
                         </h3>
                         <p className="text-slate-500 mb-4">
-                            veya dosya seçmek için tıklayın
+                            {t('cvAnalyzer.orClick')}
                         </p>
 
                         <div className="flex items-center justify-center gap-4 text-sm text-slate-400">
@@ -194,7 +217,7 @@ const CVAnalyzerSection: React.FC<CVAnalyzerSectionProps> = ({ apiKey, onRequest
                         {isAnalyzing && (
                             <div className="space-y-2">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-slate-600">Analiz ediliyor...</span>
+                                    <span className="text-slate-600">{t('cvAnalyzer.analyzing')}</span>
                                     <span className="font-semibold text-indigo-600">{Math.round(progress)}%</span>
                                 </div>
                                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
@@ -204,7 +227,7 @@ const CVAnalyzerSection: React.FC<CVAnalyzerSectionProps> = ({ apiKey, onRequest
                                     />
                                 </div>
                                 <p className="text-xs text-slate-500 text-center">
-                                    AI CV'nizi IK perspektifinden değerlendiriyor...
+                                    {t('cvAnalyzer.analyzingDesc')}
                                 </p>
                             </div>
                         )}
@@ -224,7 +247,7 @@ const CVAnalyzerSection: React.FC<CVAnalyzerSectionProps> = ({ apiKey, onRequest
                                     size="lg"
                                     icon={<Sparkles className="w-5 h-5" />}
                                 >
-                                    AI ile Analiz Et
+                                    {t('cvAnalyzer.analyzeBtn')}
                                 </GradientButton>
                             </div>
                         )}
@@ -255,26 +278,5 @@ const CVAnalyzerSection: React.FC<CVAnalyzerSectionProps> = ({ apiKey, onRequest
         </div>
     );
 };
-
-const features = [
-    {
-        icon: <CheckCircle className="w-6 h-6 text-emerald-600" />,
-        title: 'Detaylı Puanlama',
-        description: 'Format, içerik ve ATS uyumu için puanlar.',
-        color: 'bg-emerald-100'
-    },
-    {
-        icon: <Sparkles className="w-6 h-6 text-amber-600" />,
-        title: 'AI Önerileri',
-        description: 'Kişiselleştirilmiş iyileştirme önerileri.',
-        color: 'bg-amber-100'
-    },
-    {
-        icon: <FileText className="w-6 h-6 text-indigo-600" />,
-        title: 'Anahtar Kelime Analizi',
-        description: 'Eksik kelimelerin tespiti.',
-        color: 'bg-indigo-100'
-    }
-];
 
 export default CVAnalyzerSection;

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useLayoutEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ResumeData, CVThemeId } from '../types';
 import { renderClassicTheme, renderExecutiveTheme, renderModernTheme, renderSidebarTheme } from './themes/CVThemes';
 
@@ -16,6 +17,7 @@ const CONTENT_HEIGHT = PAGE_HEIGHT_PX - (PADDING_PX * 2) - FOOTER_HEIGHT;
 const SAFE_HEIGHT = CONTENT_HEIGHT - 80; // Large safety buffer to ensure early cut
 
 const CVPreview: React.FC<CVPreviewProps> = ({ data, theme = 'classic' }) => {
+  const { t } = useTranslation();
   const [pages, setPages] = useState<React.ReactNode[][]>([]);
   const hiddenContainerRef = useRef<HTMLDivElement>(null);
 
@@ -29,16 +31,16 @@ const CVPreview: React.FC<CVPreviewProps> = ({ data, theme = 'classic' }) => {
     // Render based on theme
     switch (theme) {
       case 'executive':
-        renderExecutiveTheme({ data, addBlock });
+        renderExecutiveTheme({ data, addBlock, t });
         break;
       case 'modern':
-        renderModernTheme({ data, addBlock });
+        renderModernTheme({ data, addBlock, t });
         break;
       case 'sidebar':
-        renderSidebarTheme({ data, addBlock });
+        renderSidebarTheme({ data, addBlock, t });
         break;
       default:
-        renderClassicTheme({ data, addBlock });
+        renderClassicTheme({ data, addBlock, t });
     }
 
     return blocks;

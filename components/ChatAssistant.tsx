@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Send, Plus, Sparkles, Loader2, Trash2, BrainCircuit, ChevronDown, ChevronRight, FileText, X, Image as ImageIcon, ArrowUp } from 'lucide-react';
 import { ChatMessage, ResumeData, GeminiModel } from '../types';
 import { chatWithCVAgent, FileAttachment } from '../services/geminiService';
@@ -11,6 +12,7 @@ interface ChatAssistantProps {
 }
 
 const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData, onUpdateResume, onRequestApiKey, onResetCV }) => {
+  const { t } = useTranslation();
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState<GeminiModel>('gemini-3-pro-preview');
@@ -18,7 +20,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
     {
       id: 'welcome',
       role: 'system',
-      content: 'Hello! I am your **ATS CV Agent**. \n\nI can analyze your existing resume from a **PDF** or **Image**, or we can build one together from scratch. \n\nHow can I help you today?',
+      content: t('chat.welcomeMessage'),
       timestamp: Date.now()
     }
   ]);
@@ -39,19 +41,27 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
   // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
+      // First reset height to auto to correctly calculate scrollHeight for shrinkage
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 200) + 'px';
+
+      // If there is content, set height to scrollHeight (capped at 200px)
+      // If empty, remove inline height so CSS takes over (min-height)
+      if (input.length > 0) {
+        textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 200) + 'px';
+      } else {
+        textareaRef.current.style.height = '';
+      }
     }
   }, [input]);
 
   const handleResetChat = () => {
-    const isFullReset = window.confirm("Tamamen sıfırlamak istiyor musunuz? Hem sohbet geçmişi hem de CV verileri silinecek ve başlangıç ayarlarına dönecek.");
+    const isFullReset = window.confirm(t('chat.resetConfirm'));
 
     if (isFullReset) {
       setMessages([{
         id: 'welcome',
         role: 'system',
-        content: 'Hazır! Sohbet ve CV sıfırlandı. Yeni bir başlangıç yapabiliriz.',
+        content: t('chat.resetDone'),
         timestamp: Date.now()
       }]);
       setAttachment(null);
@@ -68,7 +78,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
       const isImage = file.type.startsWith('image/');
 
       if (!isPdf && !isImage) {
-        alert('Please upload a PDF or an Image file.');
+        alert(t('chat.uploadError'));
         return;
       }
 
@@ -101,7 +111,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
     // Prepare User Message
     let userDisplayContent = input;
     if (currentAttachment) {
-      userDisplayContent = input ? input : `Analyzed ${currentAttachment.file.name}`;
+      userDisplayContent = input ? input : `${t('chat.analyzed')} ${currentAttachment.file.name}`;
     }
 
     const newMessage: ChatMessage = {
@@ -161,7 +171,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'system',
-        content: "Sorry, I encountered an error. Please check your API Key and try again.",
+        content: t('chat.error'),
         timestamp: Date.now()
       }]);
     } finally {
@@ -205,7 +215,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
         <button
           onClick={handleResetChat}
           className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-full transition-all"
-          title="New Chat"
+          title={t('chat.newChat')}
         >
           <Trash2 className="w-4 h-4" />
         </button>
@@ -232,7 +242,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
                 : 'bg-gradient-to-tr from-blue-500 to-indigo-500'
                 }`}>
                 {msg.role === 'user' ? (
-                  <span className="text-xs font-bold text-slate-600">You</span>
+                  <span className="text-xs font-bold text-slate-600">{t('chat.you')}</span>
                 ) : (
                   <Sparkles className="w-4 h-4 text-white" />
                 )}
@@ -242,7 +252,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
               <div className={`max-w-[85%] ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
                 {/* Name */}
                 <div className="text-xs font-medium text-slate-400 mb-1 px-1">
-                  {msg.role === 'user' ? 'You' : 'Gemini'} • {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  {msg.role === 'user' ? t('chat.you') : 'Gemini'} • {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </div>
 
                 {/* Bubble */}
@@ -264,7 +274,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
           <div className="max-w-3xl mx-auto pl-12">
             <div className="flex items-center gap-2 text-slate-400">
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span className="text-xs font-medium animate-pulse">Analyzing ({selectedModel.replace('gemini-', '')})...</span>
+              <span className="text-xs font-medium animate-pulse">{t('chat.analyzing', { model: selectedModel.replace('gemini-', '') })}</span>
             </div>
           </div>
         )}
@@ -327,8 +337,8 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder="Ask Gemini to update your CV..."
-              className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-base py-2 md:py-3 px-1 text-slate-700 placeholder-slate-400 min-h-[40px] md:min-h-[48px] max-h-[200px] resize-none overflow-y-auto custom-scrollbar leading-normal"
+              placeholder={t('chat.placeholder')}
+              className={`w-full bg-transparent border-none focus:ring-0 focus:outline-none text-base py-2 md:py-3 px-1 text-slate-700 placeholder-slate-400 min-h-[40px] md:min-h-[48px] max-h-[200px] resize-none custom-scrollbar leading-normal ${input ? 'overflow-y-auto' : 'overflow-hidden'}`}
               rows={1}
             />
 
@@ -349,7 +359,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
           </div>
 
           <div className="text-[10px] text-center text-slate-400 font-medium hidden md:block">
-            Gemini 3 Pro may display inaccurate info, including about people, so double-check its responses.
+            {t('chat.disclaimer')}
           </div>
         </div>
       </div>
@@ -358,6 +368,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
 };
 
 const ThoughtBlock: React.FC<{ thoughts: string }> = ({ thoughts }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -367,7 +378,7 @@ const ThoughtBlock: React.FC<{ thoughts: string }> = ({ thoughts }) => {
         className="inline-flex items-center gap-1.5 text-[10px] font-bold text-slate-400 hover:text-indigo-500 transition-colors uppercase tracking-wider bg-slate-50 px-2 py-1 rounded-md border border-slate-100"
       >
         <BrainCircuit className="w-3 h-3" />
-        <span>Thinking Process</span>
+        <span>{t('chat.thinking', 'Thinking Process')}</span>
         {isOpen ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
       </button>
 

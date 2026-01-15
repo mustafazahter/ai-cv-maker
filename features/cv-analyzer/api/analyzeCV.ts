@@ -8,7 +8,8 @@ export interface FileAttachment {
 
 export const analyzeCV = async (
   apiKey: string,
-  attachment: FileAttachment
+  attachment: FileAttachment,
+  language: string = 'tr'
 ): Promise<CVAnalysisResult> => {
   if (!apiKey) throw new Error("API Key gerekli");
 
@@ -16,7 +17,8 @@ export const analyzeCV = async (
 
   const systemInstruction = `
     Sen bir profesyonel İK uzmanı ve ATS (Applicant Tracking System) analistisin.
-    Yüklenen CV'yi detaylı analiz et ve aşağıdaki JSON formatında yanıt ver:
+    Yüklenen CV'yi detaylı analiz et ve aşağıdaki JSON formatında yanıt ver.
+    YANIT DİLİ: ${language === 'tr' ? 'TÜRKÇE' : 'İNGİLİZCE (ENGLISH)'}
 
     {
       "scores": {
@@ -30,27 +32,27 @@ export const analyzeCV = async (
       "strengths": [
         {
           "id": "str-1",
-          "title": "Güçlü yön başlığı",
-          "description": "Detaylı açıklama",
+          "title": "Güçlü yön başlığı (${language === 'tr' ? 'Türkçe' : 'English'})",
+          "description": "Detaylı açıklama (${language === 'tr' ? 'Türkçe' : 'English'})",
           "category": "format|content|keywords|structure"
         }
       ],
       "improvements": [
         {
           "id": "imp-1",
-          "title": "İyileştirme önerisi başlığı",
-          "description": "Detaylı açıklama ve nasıl düzeltileceği",
+          "title": "İyileştirme önerisi başlığı (${language === 'tr' ? 'Türkçe' : 'English'})",
+          "description": "Detaylı açıklama ve nasıl düzeltileceği (${language === 'tr' ? 'Türkçe' : 'English'})",
           "priority": "high|medium|low",
           "category": "format|content|keywords|structure"
         }
       ],
-      "summary": "CV'nin genel değerlendirmesi (2-3 cümle)",
+      "summary": "CV'nin genel değerlendirmesi (2-3 cümle) (${language === 'tr' ? 'Türkçe' : 'English'})",
       "keywordsFound": ["bulunan", "anahtar", "kelimeler"],
       "keywordsMissing": ["eksik", "önerilen", "kelimeler"],
-      "atsWarnings": ["ATS uyumluluk uyarıları"]
+      "atsWarnings": ["ATS uyumluluk uyarıları (${language === 'tr' ? 'Türkçe' : 'English'})"]
     }
 
-    DEĞERLENDİRME KRİTERLERİ:
+    DEĞERLENDİRME KRİTERLERİ (${language === 'tr' ? 'Türkçe olarak değerlendir' : 'Evaluated in English'}):
     
     1. FORMAT (format):
        - Tutarlı font kullanımı

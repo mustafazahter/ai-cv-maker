@@ -1,14 +1,56 @@
 import React from 'react';
 import { CheckCircle, FileText, Target, Scan, AlertTriangle, Lightbulb } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const ATSGuideSection: React.FC = () => {
+    const { t } = useTranslation();
+
+    const atsRules = [
+        {
+            icon: <FileText className="w-5 h-5 text-indigo-600" />,
+            title: t('atsGuide.rules.simpleFormat'),
+            description: t('atsGuide.rules.simpleFormatDesc'),
+            color: 'bg-indigo-50'
+        },
+        {
+            icon: <CheckCircle className="w-5 h-5 text-emerald-600" />,
+            title: t('atsGuide.rules.standardTitles'),
+            description: t('atsGuide.rules.standardTitlesDesc'),
+            color: 'bg-emerald-50'
+        },
+        {
+            icon: <Target className="w-5 h-5 text-amber-600" />,
+            title: t('atsGuide.rules.keywords'),
+            description: t('atsGuide.rules.keywordsDesc'),
+            color: 'bg-amber-50'
+        },
+        {
+            icon: <Scan className="w-5 h-5 text-cyan-600" />,
+            title: t('atsGuide.rules.fileFormat'),
+            description: t('atsGuide.rules.fileFormatDesc'),
+            color: 'bg-cyan-50'
+        },
+        {
+            icon: <AlertTriangle className="w-5 h-5 text-violet-600" />,
+            title: t('atsGuide.rules.actionVerbs'),
+            description: t('atsGuide.rules.actionVerbsDesc'),
+            color: 'bg-violet-50'
+        },
+        {
+            icon: <AlertTriangle className="w-5 h-5 text-rose-600" />,
+            title: t('atsGuide.rules.noHeaderFooter'),
+            description: t('atsGuide.rules.noHeaderFooterDesc'),
+            color: 'bg-rose-50'
+        }
+    ];
+
     return (
         <div className="p-8 max-w-6xl mx-auto">
             {/* Page Header */}
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-slate-900 mb-2">CV Nasıl Olmalı?</h1>
+                <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('atsGuide.title')}</h1>
                 <p className="text-slate-600">
-                    ATS (Applicant Tracking System) nedir ve CV'niz nasıl olmalı öğrenin.
+                    {t('atsGuide.subtitle')}
                 </p>
             </div>
 
@@ -16,19 +58,16 @@ const ATSGuideSection: React.FC = () => {
             <div className="grid lg:grid-cols-2 gap-8 mb-8">
                 <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                     <h3 className="text-xl font-bold text-slate-800 mb-4">
-                        ATS (Applicant Tracking System) Nedir?
+                        {t('atsGuide.whatIsAtsTitle')}
                     </h3>
                     <p className="text-slate-600 leading-relaxed mb-6">
-                        ATS, şirketlerin iş başvurularını yönetmek için kullandığı yazılımlardır.
-                        Bu sistemler CV'leri otomatik olarak tarar, anahtar kelimeleri analiz eder
-                        ve adayları puanlar. Eğer CV'niz ATS uyumlu değilse, insan gözüne hiç ulaşmadan
-                        elenebilir.
+                        {t('atsGuide.whatIsAtsDesc')}
                     </p>
                     <div className="space-y-3">
                         {[
-                            'CV\'lerin %75\'i ATS tarafından elenir',
-                            'Robot yazılımlar anahtar kelimeleri tarar',
-                            'Format hataları otomatik elemeye neden olur'
+                            t('atsGuide.stat1'),
+                            t('atsGuide.stat2'),
+                            t('atsGuide.stat3')
                         ].map((item, idx) => (
                             <div key={idx} className="flex items-center gap-3">
                                 <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
@@ -44,8 +83,8 @@ const ATSGuideSection: React.FC = () => {
                             <Target className="w-6 h-6 text-rose-600" />
                         </div>
                         <div>
-                            <h4 className="font-bold text-slate-800">ATS Tarama Simülasyonu</h4>
-                            <p className="text-sm text-slate-500">Örnek CV analizi</p>
+                            <h4 className="font-bold text-slate-800">{t('atsGuide.simulationTitle')}</h4>
+                            <p className="text-sm text-slate-500">{t('atsGuide.simulationSubtitle')}</p>
                         </div>
                     </div>
                     <div className="space-y-2 text-sm font-mono bg-slate-900 rounded-xl p-4 text-emerald-400">
@@ -63,7 +102,7 @@ const ATSGuideSection: React.FC = () => {
             {/* Best Practices */}
             <div className="mb-8">
                 <h3 className="text-xl font-bold text-slate-800 mb-6">
-                    ATS Uyumlu CV için Altın Kurallar
+                    {t('atsGuide.rulesTitle')}
                 </h3>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {atsRules.map((rule, idx) => (
@@ -88,11 +127,9 @@ const ATSGuideSection: React.FC = () => {
                         <Lightbulb className="w-6 h-6 text-indigo-600" />
                     </div>
                     <div>
-                        <h4 className="font-bold text-slate-800 mb-2">Pro İpucu</h4>
+                        <h4 className="font-bold text-slate-800 mb-2">{t('atsGuide.proTipTitle')}</h4>
                         <p className="text-slate-600 leading-relaxed">
-                            İş ilanındaki anahtar kelimeleri CV'nize ekleyin. Örneğin ilan "React" ve
-                            "TypeScript" gerektiriyorsa, bu kelimelerin CV'nizde geçtiğinden emin olun.
-                            Ancak keyword stuffing yapmaktan kaçının - içerik doğal olmalı.
+                            {t('atsGuide.proTipDesc')}
                         </p>
                     </div>
                 </div>
@@ -100,44 +137,5 @@ const ATSGuideSection: React.FC = () => {
         </div>
     );
 };
-
-const atsRules = [
-    {
-        icon: <FileText className="w-5 h-5 text-indigo-600" />,
-        title: 'Basit Format Kullanın',
-        description: 'Tablolar, grafikler ve görsellerden kaçının. ATS bunları okuyamaz.',
-        color: 'bg-indigo-50'
-    },
-    {
-        icon: <CheckCircle className="w-5 h-5 text-emerald-600" />,
-        title: 'Standart Başlıklar',
-        description: '"Deneyim", "Eğitim", "Beceriler" gibi standart başlıklar kullanın.',
-        color: 'bg-emerald-50'
-    },
-    {
-        icon: <Target className="w-5 h-5 text-amber-600" />,
-        title: 'Anahtar Kelimeler',
-        description: 'İş ilanındaki anahtar kelimeleri CV\'nize stratejik olarak ekleyin.',
-        color: 'bg-amber-50'
-    },
-    {
-        icon: <Scan className="w-5 h-5 text-cyan-600" />,
-        title: 'PDF veya DOCX',
-        description: 'CV\'nizi PDF veya Word formatında kaydedin.',
-        color: 'bg-cyan-50'
-    },
-    {
-        icon: <AlertTriangle className="w-5 h-5 text-violet-600" />,
-        title: 'Action Verb\'ler',
-        description: '"Geliştirdim", "Yönettim" gibi aksiyon fiilleri kullanın.',
-        color: 'bg-violet-50'
-    },
-    {
-        icon: <AlertTriangle className="w-5 h-5 text-rose-600" />,
-        title: 'Header/Footer Yok',
-        description: 'İletişim bilgilerinizi header/footer\'a koymayın.',
-        color: 'bg-rose-50'
-    }
-];
 
 export default ATSGuideSection;

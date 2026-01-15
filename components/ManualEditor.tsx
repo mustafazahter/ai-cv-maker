@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ResumeData, ExperienceItem, EducationItem, SkillCategory, ProjectItem, CertificationItem, LanguageItem, VolunteeringItem, AwardItem, CustomSection, CustomSectionItem } from '../types';
 import {
     Plus, Trash2, MapPin, Calendar, Briefcase, User, Mail, Globe, Linkedin, Phone,
@@ -12,6 +13,7 @@ interface ManualEditorProps {
 }
 
 const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
+    const { t } = useTranslation();
     const [expandedSection, setExpandedSection] = useState<string | null>('personal');
     const [activeSectionMenu, setActiveSectionMenu] = useState(false);
     const [draggedItemIndex, setDraggedItemIndex] = useState<number | null>(null);
@@ -78,10 +80,10 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
         let title = key.charAt(0).toUpperCase() + key.slice(1);
         if (key.startsWith('custom-')) {
             const s = data.customSections.find(c => c.id === key);
-            title = s ? s.title : 'Custom Section';
+            title = s ? s.title : t('editor.customSection');
         }
 
-        if (window.confirm(`Are you sure you want to remove the "${title}" section?`)) {
+        if (window.confirm(t('editor.removeSectionConfirm', { section: title }))) {
             // 1. Remove from Order
             const newOrder = data.sectionOrder.filter(k => k !== key);
 
@@ -113,7 +115,7 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
         // Initialize with a default item so it's not empty
         const newCustomSection: CustomSection = {
             id,
-            title: 'Custom Section',
+            title: t('editor.customSection'),
             items: [
                 {
                     id: `item-${Date.now()}`,
@@ -182,8 +184,8 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                             <Camera className="w-4 h-4 text-indigo-600" />
                         </div>
                         <div>
-                            <span className="text-sm font-semibold text-slate-700">Profil Fotoğrafı</span>
-                            <p className="text-xs text-slate-400">CV'nize fotoğraf ekleyin (isteğe bağlı)</p>
+                            <span className="text-sm font-semibold text-slate-700">{t('editor.profilePhoto')}</span>
+                            <p className="text-xs text-slate-400">{t('editor.profilePhotoDesc')}</p>
                         </div>
                     </div>
                     <button
@@ -227,7 +229,7 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                         ) : (
                             <label className="flex flex-col items-center justify-center w-24 h-24 mx-auto border-2 border-dashed border-indigo-300 rounded-full cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 transition-all">
                                 <ImageIcon className="w-6 h-6 text-indigo-400" />
-                                <span className="text-[10px] text-indigo-400 mt-1 font-medium">Yükle</span>
+                                <span className="text-[10px] text-indigo-400 mt-1 font-medium">{t('editor.upload')}</span>
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -236,18 +238,18 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                                 />
                             </label>
                         )}
-                        <p className="text-center text-[10px] text-slate-400 mt-2">Önerilen: Kare format, 200x200px+</p>
+                        <p className="text-center text-[10px] text-slate-400 mt-2">{t('editor.recommended')}</p>
                     </div>
                 )}
             </div>
 
-            <Input label="Full Name" value={data.fullName} onChange={(v) => handleChange('fullName', v)} placeholder="e.g. John Doe" />
-            <Input label="Job Title" value={data.title} onChange={(v) => handleChange('title', v)} placeholder="e.g. Software Engineer" />
-            <Input label="Email" value={data.email} onChange={(v) => handleChange('email', v)} icon={<Mail className="w-3 h-3" />} />
-            <Input label="Phone" value={data.phone} onChange={(v) => handleChange('phone', v)} icon={<Phone className="w-3 h-3" />} />
-            <Input label="Location" value={data.location} onChange={(v) => handleChange('location', v)} icon={<MapPin className="w-3 h-3" />} />
-            <Input label="LinkedIn" value={data.linkedin} onChange={(v) => handleChange('linkedin', v)} icon={<Linkedin className="w-3 h-3" />} />
-            <Input label="Website" value={data.website} onChange={(v) => handleChange('website', v)} icon={<Globe className="w-3 h-3" />} />
+            <Input label={t('editor.fullName')} value={data.fullName} onChange={(v) => handleChange('fullName', v)} placeholder="e.g. John Doe" />
+            <Input label={t('editor.jobTitle')} value={data.title} onChange={(v) => handleChange('title', v)} placeholder="e.g. Software Engineer" />
+            <Input label={t('editor.email')} value={data.email} onChange={(v) => handleChange('email', v)} icon={<Mail className="w-3 h-3" />} />
+            <Input label={t('editor.phone')} value={data.phone} onChange={(v) => handleChange('phone', v)} icon={<Phone className="w-3 h-3" />} />
+            <Input label={t('editor.location')} value={data.location} onChange={(v) => handleChange('location', v)} icon={<MapPin className="w-3 h-3" />} />
+            <Input label={t('editor.linkedin')} value={data.linkedin} onChange={(v) => handleChange('linkedin', v)} icon={<Linkedin className="w-3 h-3" />} />
+            <Input label={t('editor.website')} value={data.website} onChange={(v) => handleChange('website', v)} icon={<Globe className="w-3 h-3" />} />
         </div>
     );
 
@@ -256,7 +258,7 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
             value={data.summary}
             onChange={(e) => handleChange('summary', e.target.value)}
             className="w-full p-3 border border-slate-200 rounded-lg focus:border-slate-600 focus:ring-0 outline-none h-32 text-sm transition-all placeholder-slate-400 bg-white"
-            placeholder="Brief professional summary..."
+            placeholder={t('editor.summaryPlaceholder')}
         />
     );
 
@@ -266,21 +268,21 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                 <div key={exp.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative group">
                     <button onClick={() => removeItem('experience', exp.id)} className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
                     <div className="grid gap-3">
-                        <Input label="Company" value={exp.company} onChange={(v) => handleArrayChange('experience', exp.id, 'company', v)} />
-                        <Input label="Title" value={exp.title} onChange={(v) => handleArrayChange('experience', exp.id, 'title', v)} />
+                        <Input label={t('editor.company')} value={exp.company} onChange={(v) => handleArrayChange('experience', exp.id, 'company', v)} />
+                        <Input label={t('editor.jobTitle')} value={exp.title} onChange={(v) => handleArrayChange('experience', exp.id, 'title', v)} />
                         <div className="grid grid-cols-2 gap-2">
-                            <Input label="Start" value={exp.startDate} onChange={(v) => handleArrayChange('experience', exp.id, 'startDate', v)} />
-                            <Input label="End" value={exp.endDate} onChange={(v) => handleArrayChange('experience', exp.id, 'endDate', v)} disabled={exp.current} />
+                            <Input label={t('editor.startDate')} value={exp.startDate} onChange={(v) => handleArrayChange('experience', exp.id, 'startDate', v)} />
+                            <Input label={t('editor.endDate')} value={exp.endDate} onChange={(v) => handleArrayChange('experience', exp.id, 'endDate', v)} disabled={exp.current} />
                         </div>
                         <label className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer w-fit select-none">
                             <input type="checkbox" checked={exp.current} onChange={(e) => handleArrayChange('experience', exp.id, 'current', e.target.checked)} className="rounded text-indigo-600 focus:ring-0 focus:border-slate-600 cursor-pointer" />
-                            I currently work here
+                            {t('editor.currentWork')}
                         </label>
-                        <Textarea label="Description (Bullets)" value={(exp.description || []).join('\n')} onChange={(v) => handleArrayChange('experience', exp.id, 'description', v.split('\n'))} rows={4} />
+                        <Textarea label={t('editor.description')} value={(exp.description || []).join('\n')} onChange={(v) => handleArrayChange('experience', exp.id, 'description', v.split('\n'))} rows={4} />
                     </div>
                 </div>
             ))}
-            <ButtonAdd onClick={() => addItem('experience', { id: Date.now().toString(), company: 'New Company', title: 'Role', location: '', startDate: '', endDate: '', current: false, description: [] } as ExperienceItem)} label="Add Experience" />
+            <ButtonAdd onClick={() => addItem('experience', { id: Date.now().toString(), company: 'New Company', title: 'Role', location: '', startDate: '', endDate: '', current: false, description: [] } as ExperienceItem)} label={t('editor.addExperience')} />
         </div>
     );
 
@@ -290,16 +292,16 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                 <div key={edu.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative group">
                     <button onClick={() => removeItem('education', edu.id)} className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
                     <div className="grid gap-3">
-                        <Input label="Institution" value={edu.institution} onChange={(v) => handleArrayChange('education', edu.id, 'institution', v)} />
-                        <Input label="Degree" value={edu.degree} onChange={(v) => handleArrayChange('education', edu.id, 'degree', v)} />
+                        <Input label={t('editor.institution')} value={edu.institution} onChange={(v) => handleArrayChange('education', edu.id, 'institution', v)} />
+                        <Input label={t('editor.degree')} value={edu.degree} onChange={(v) => handleArrayChange('education', edu.id, 'degree', v)} />
                         <div className="grid grid-cols-2 gap-2">
-                            <Input label="Start" value={edu.startDate} onChange={(v) => handleArrayChange('education', edu.id, 'startDate', v)} />
-                            <Input label="End" value={edu.endDate} onChange={(v) => handleArrayChange('education', edu.id, 'endDate', v)} />
+                            <Input label={t('editor.startDate')} value={edu.startDate} onChange={(v) => handleArrayChange('education', edu.id, 'startDate', v)} />
+                            <Input label={t('editor.endDate')} value={edu.endDate} onChange={(v) => handleArrayChange('education', edu.id, 'endDate', v)} />
                         </div>
                     </div>
                 </div>
             ))}
-            <ButtonAdd onClick={() => addItem('education', { id: Date.now().toString(), institution: 'University', degree: 'Degree', location: '', startDate: '', endDate: '', current: false } as EducationItem)} label="Add Education" />
+            <ButtonAdd onClick={() => addItem('education', { id: Date.now().toString(), institution: 'University', degree: 'Degree', location: '', startDate: '', endDate: '', current: false } as EducationItem)} label={t('editor.addEducation')} />
         </div>
     );
 
@@ -312,19 +314,19 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                         handleChange('skills', newSkills);
                     }} className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
 
-                    <Input label="Category Name" value={cat.name} onChange={(v) => {
+                    <Input label={t('editor.categoryName')} value={cat.name} onChange={(v) => {
                         const newSkills = [...data.skills];
                         newSkills[idx].name = v;
                         handleChange('skills', newSkills);
                     }} />
-                    <Textarea label="Skills (Comma separated)" value={cat.items.join(', ')} onChange={(v) => {
+                    <Textarea label={t('editor.skillsPlaceholder')} value={cat.items.join(', ')} onChange={(v) => {
                         const newSkills = [...data.skills];
                         newSkills[idx].items = v.split(',').map(s => s.trim()).filter(Boolean);
                         handleChange('skills', newSkills);
                     }} rows={2} />
                 </div>
             ))}
-            <ButtonAdd onClick={() => handleChange('skills', [...data.skills, { name: 'New Category', items: [] }])} label="Add Skill Category" />
+            <ButtonAdd onClick={() => handleChange('skills', [...data.skills, { name: 'New Category', items: [] }])} label={t('editor.addSkillCategory')} />
         </div>
     );
 
@@ -334,13 +336,13 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                 <div key={proj.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative group">
                     <button onClick={() => removeItem('projects', proj.id)} className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
                     <div className="grid gap-3">
-                        <Input label="Project Name" value={proj.name} onChange={(v) => handleArrayChange('projects', proj.id, 'name', v)} />
-                        <Input label="Link (URL)" value={proj.url || ''} onChange={(v) => handleArrayChange('projects', proj.id, 'url', v)} />
-                        <Textarea label="Description (Bullets)" value={(proj.description || []).join('\n')} onChange={(v) => handleArrayChange('projects', proj.id, 'description', v.split('\n'))} rows={3} />
+                        <Input label={t('editor.projectName')} value={proj.name} onChange={(v) => handleArrayChange('projects', proj.id, 'name', v)} />
+                        <Input label={t('editor.link')} value={proj.url || ''} onChange={(v) => handleArrayChange('projects', proj.id, 'url', v)} />
+                        <Textarea label={t('editor.description')} value={(proj.description || []).join('\n')} onChange={(v) => handleArrayChange('projects', proj.id, 'description', v.split('\n'))} rows={3} />
                     </div>
                 </div>
             ))}
-            <ButtonAdd onClick={() => addItem('projects', { id: Date.now().toString(), name: 'Project Name', description: [] } as ProjectItem)} label="Add Project" />
+            <ButtonAdd onClick={() => addItem('projects', { id: Date.now().toString(), name: 'Project Name', description: [] } as ProjectItem)} label={t('editor.addProject')} />
         </div>
     );
 
@@ -349,12 +351,12 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
             {data.certifications.map((cert) => (
                 <div key={cert.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative">
                     <button onClick={() => removeItem('certifications', cert.id)} className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
-                    <Input label="Certification Name" value={cert.name} onChange={(v) => handleArrayChange('certifications', cert.id, 'name', v)} />
-                    <Input label="Issuer" value={cert.issuer} onChange={(v) => handleArrayChange('certifications', cert.id, 'issuer', v)} />
-                    <Input label="Date" value={cert.date} onChange={(v) => handleArrayChange('certifications', cert.id, 'date', v)} />
+                    <Input label={t('editor.certificationName')} value={cert.name} onChange={(v) => handleArrayChange('certifications', cert.id, 'name', v)} />
+                    <Input label={t('editor.issuer')} value={cert.issuer} onChange={(v) => handleArrayChange('certifications', cert.id, 'issuer', v)} />
+                    <Input label={t('editor.date')} value={cert.date} onChange={(v) => handleArrayChange('certifications', cert.id, 'date', v)} />
                 </div>
             ))}
-            <ButtonAdd onClick={() => addItem('certifications', { id: Date.now().toString(), name: 'Certificate', issuer: 'Issuer', date: '2023' } as CertificationItem)} label="Add Certification" />
+            <ButtonAdd onClick={() => addItem('certifications', { id: Date.now().toString(), name: 'Certificate', issuer: 'Issuer', date: '2023' } as CertificationItem)} label={t('editor.addCertification')} />
         </div>
     );
 
@@ -363,15 +365,15 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
             {data.languages.map((lang) => (
                 <div key={lang.id} className="bg-slate-50 p-3 rounded-xl border border-slate-200 relative flex gap-3 items-end">
                     <div className="flex-1">
-                        <Input label="Language" value={lang.language} onChange={(v) => handleArrayChange('languages', lang.id, 'language', v)} />
+                        <Input label={t('editor.language')} value={lang.language} onChange={(v) => handleArrayChange('languages', lang.id, 'language', v)} />
                     </div>
                     <div className="flex-1">
-                        <Input label="Proficiency" value={lang.proficiency} onChange={(v) => handleArrayChange('languages', lang.id, 'proficiency', v)} />
+                        <Input label={t('editor.proficiency')} value={lang.proficiency} onChange={(v) => handleArrayChange('languages', lang.id, 'proficiency', v)} />
                     </div>
                     <button onClick={() => removeItem('languages', lang.id)} className="p-2.5 text-slate-300 hover:text-red-500 rounded hover:bg-red-50 mb-[1px]"><Trash2 className="w-4 h-4" /></button>
                 </div>
             ))}
-            <ButtonAdd onClick={() => addItem('languages', { id: Date.now().toString(), language: 'English', proficiency: 'Native' } as LanguageItem)} label="Add Language" />
+            <ButtonAdd onClick={() => addItem('languages', { id: Date.now().toString(), language: 'English', proficiency: 'Native' } as LanguageItem)} label={t('editor.addLanguage')} />
         </div>
     );
 
@@ -380,12 +382,12 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
             {data.awards.map((award) => (
                 <div key={award.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative">
                     <button onClick={() => removeItem('awards', award.id)} className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
-                    <Input label="Award Title" value={award.title} onChange={(v) => handleArrayChange('awards', award.id, 'title', v)} />
-                    <Input label="Issuer" value={award.issuer} onChange={(v) => handleArrayChange('awards', award.id, 'issuer', v)} />
-                    <Input label="Date" value={award.date} onChange={(v) => handleArrayChange('awards', award.id, 'date', v)} />
+                    <Input label={t('editor.awardTitle')} value={award.title} onChange={(v) => handleArrayChange('awards', award.id, 'title', v)} />
+                    <Input label={t('editor.issuer')} value={award.issuer} onChange={(v) => handleArrayChange('awards', award.id, 'issuer', v)} />
+                    <Input label={t('editor.date')} value={award.date} onChange={(v) => handleArrayChange('awards', award.id, 'date', v)} />
                 </div>
             ))}
-            <ButtonAdd onClick={() => addItem('awards', { id: Date.now().toString(), title: 'Award', issuer: 'Issuer', date: '2023' } as AwardItem)} label="Add Award" />
+            <ButtonAdd onClick={() => addItem('awards', { id: Date.now().toString(), title: 'Award', issuer: 'Issuer', date: '2023' } as AwardItem)} label={t('editor.addAward')} />
         </div>
     );
 
@@ -395,23 +397,23 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                 <div key={vol.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative group">
                     <button onClick={() => removeItem('volunteering', vol.id)} className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
                     <div className="grid gap-3">
-                        <Input label="Organization" value={vol.organization} onChange={(v) => handleArrayChange('volunteering', vol.id, 'organization', v)} />
-                        <Input label="Role" value={vol.role} onChange={(v) => handleArrayChange('volunteering', vol.id, 'role', v)} />
+                        <Input label={t('editor.organization')} value={vol.organization} onChange={(v) => handleArrayChange('volunteering', vol.id, 'organization', v)} />
+                        <Input label={t('editor.role')} value={vol.role} onChange={(v) => handleArrayChange('volunteering', vol.id, 'role', v)} />
                         <div className="grid grid-cols-2 gap-2">
-                            <Input label="Start" value={vol.startDate} onChange={(v) => handleArrayChange('volunteering', vol.id, 'startDate', v)} />
-                            <Input label="End" value={vol.endDate} onChange={(v) => handleArrayChange('volunteering', vol.id, 'endDate', v)} />
+                            <Input label={t('editor.startDate')} value={vol.startDate} onChange={(v) => handleArrayChange('volunteering', vol.id, 'startDate', v)} />
+                            <Input label={t('editor.endDate')} value={vol.endDate} onChange={(v) => handleArrayChange('volunteering', vol.id, 'endDate', v)} />
                         </div>
-                        <Textarea label="Description" value={(vol.description || []).join('\n')} onChange={(v) => handleArrayChange('volunteering', vol.id, 'description', v.split('\n'))} rows={3} />
+                        <Textarea label={t('editor.description')} value={(vol.description || []).join('\n')} onChange={(v) => handleArrayChange('volunteering', vol.id, 'description', v.split('\n'))} rows={3} />
                     </div>
                 </div>
             ))}
-            <ButtonAdd onClick={() => addItem('volunteering', { id: Date.now().toString(), organization: 'Org', role: 'Volunteer', description: [] } as VolunteeringItem)} label="Add Volunteering" />
+            <ButtonAdd onClick={() => addItem('volunteering', { id: Date.now().toString(), organization: 'Org', role: 'Volunteer', description: [] } as VolunteeringItem)} label={t('editor.addVolunteering')} />
         </div>
     );
 
     const renderInterests = () => (
         <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-            <Textarea label="Interests (Comma separated)" value={data.interests.join(', ')} onChange={(v) => handleChange('interests', v.split(',').map(s => s.trim()).filter(Boolean))} rows={3} />
+            <Textarea label={t('editor.interestsPlaceholder')} value={data.interests.join(', ')} onChange={(v) => handleChange('interests', v.split(',').map(s => s.trim()).filter(Boolean))} rows={3} />
         </div>
     );
 
@@ -447,27 +449,27 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
         return (
             <div className="space-y-4">
                 <div className="flex gap-2">
-                    <Input label="Section Title" value={customSection.title} onChange={(v) => updateCustomSection('title', v)} />
+                    <Input label={t('editor.sectionTitle')} value={customSection.title} onChange={(v) => updateCustomSection('title', v)} />
                 </div>
 
                 <div className="space-y-4">
                     {customSection.items.length === 0 && (
                         <div className="text-center p-6 text-sm text-slate-400 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/50">
-                            This section is empty.
-                            <button onClick={addCustomItem} className="text-indigo-600 font-bold hover:underline ml-1 block w-full mt-2">Add your first item</button>
+                            {t('editor.sectionEmpty')}
+                            <button onClick={addCustomItem} className="text-indigo-600 font-bold hover:underline ml-1 block w-full mt-2">{t('editor.addFirstItem')}</button>
                         </div>
                     )}
 
                     {customSection.items.map(item => (
                         <div key={item.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative">
                             <button onClick={() => removeCustomItem(item.id)} className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
-                            <Input label="Title" value={item.title} onChange={(v) => updateCustomItem(item.id, 'title', v)} />
-                            <Input label="Subtitle (Optional)" value={item.subtitle || ''} onChange={(v) => updateCustomItem(item.id, 'subtitle', v)} />
-                            <Input label="Date (Optional)" value={item.date || ''} onChange={(v) => updateCustomItem(item.id, 'date', v)} />
-                            <Textarea label="Description" value={(item.description || []).join('\n')} onChange={(v) => updateCustomItem(item.id, 'description', v.split('\n'))} rows={2} />
+                            <Input label={t('editor.sectionTitle')} value={item.title} onChange={(v) => updateCustomItem(item.id, 'title', v)} />
+                            <Input label={t('editor.subtitle')} value={item.subtitle || ''} onChange={(v) => updateCustomItem(item.id, 'subtitle', v)} />
+                            <Input label={t('editor.dateOptional')} value={item.date || ''} onChange={(v) => updateCustomItem(item.id, 'date', v)} />
+                            <Textarea label={t('editor.description')} value={(item.description || []).join('\n')} onChange={(v) => updateCustomItem(item.id, 'description', v.split('\n'))} rows={2} />
                         </div>
                     ))}
-                    {customSection.items.length > 0 && <ButtonAdd onClick={addCustomItem} label="Add Item" />}
+                    {customSection.items.length > 0 && <ButtonAdd onClick={addCustomItem} label={t('editor.addItem')} />}
                 </div>
             </div>
         );
@@ -516,9 +518,11 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
     const getSectionTitle = (key: string) => {
         if (key.startsWith('custom-')) {
             const s = data.customSections.find(c => c.id === key);
-            return s ? s.title : 'Custom Section';
+            return s ? s.title : t('editor.customSection');
         }
-        return key.charAt(0).toUpperCase() + key.slice(1);
+        // Use exact keys from translation.json "cv" section
+        // Note: Check for existence or fallback
+        return t(`cv.${key}`, { defaultValue: key.charAt(0).toUpperCase() + key.slice(1) });
     };
 
 
@@ -533,7 +537,7 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                 >
                     <div className="flex items-center gap-3">
                         <User className="w-5 h-5 text-blue-600" />
-                        <span className="font-bold text-slate-800">Personal Details</span>
+                        <span className="font-bold text-slate-800">{t('editor.personalDetails')}</span>
                     </div>
                     {expandedSection === 'personal' ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
                 </button>
@@ -562,7 +566,7 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                         {/* DRAG HANDLE */}
                         <div
                             className="p-3 text-slate-300 hover:text-slate-500 cursor-grab active:cursor-grabbing flex items-center justify-center self-stretch touch-none"
-                            title="Drag to reorder"
+                            title={t('editor.dragToReorder')}
                             onMouseEnter={() => setDraggableRow(key)}
                             onMouseLeave={() => setDraggableRow(null)}
                             onTouchStart={() => setDraggableRow(key)}
@@ -596,7 +600,7 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                                     removeSection(key);
                                 }}
                                 className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                                title="Remove Section"
+                                title={t('editor.removeSection')}
                             >
                                 <Trash2 className="w-4 h-4" />
                             </button>
@@ -617,7 +621,7 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                     onClick={() => setActiveSectionMenu(!activeSectionMenu)}
                     className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-semibold hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex items-center justify-center gap-2"
                 >
-                    <Plus className="w-5 h-5" /> Add Section
+                    <Plus className="w-5 h-5" /> {t('editor.addSection')}
                 </button>
 
                 {activeSectionMenu && (
@@ -636,11 +640,11 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                             { id: 'references', label: 'References', icon: User },
                         ].filter(i => !data.sectionOrder.includes(i.id)).map(item => (
                             <button key={item.id} onClick={() => addSection(item.id)} className="flex items-center gap-2 p-3 hover:bg-slate-50 rounded-lg text-left text-sm font-medium text-slate-700">
-                                <item.icon className="w-4 h-4 text-indigo-500" /> {item.label}
+                                <item.icon className="w-4 h-4 text-indigo-500" /> {t(`cv.${item.id}`)}
                             </button>
                         ))}
                         <button onClick={addCustomSection} className="flex items-center gap-2 p-3 hover:bg-slate-50 rounded-lg text-left text-sm font-medium text-purple-600 col-span-2 border-t border-slate-100">
-                            <Plus className="w-4 h-4" /> Custom Section
+                            <Plus className="w-4 h-4" /> {t('editor.customSection')}
                         </button>
                     </div>
                 )}

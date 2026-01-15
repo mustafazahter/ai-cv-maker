@@ -1,6 +1,7 @@
 import React from 'react';
 import { Sparkles, FileText, Zap, ArrowRight } from 'lucide-react';
 import { GradientButton } from '../shared/ui';
+import { useTranslation } from 'react-i18next';
 
 interface HeroSectionProps {
     onStartEditor: () => void;
@@ -8,6 +9,8 @@ interface HeroSectionProps {
 }
 
 const HeroSection: React.FC<HeroSectionProps> = ({ onStartEditor, onStartAnalyzer }) => {
+    const { t } = useTranslation();
+
     return (
         <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
             {/* Animated Background */}
@@ -35,21 +38,20 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onStartEditor, onStartAnalyze
                 {/* Badge */}
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-8 animate-fade-in">
                     <Sparkles className="w-4 h-4 text-amber-400" />
-                    <span className="text-sm font-medium text-white/90">AI Destekli CV Oluşturucu</span>
+                    <span className="text-sm font-medium text-white/90">{t('hero.badge')}</span>
                 </div>
 
                 {/* Main Title */}
                 <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-                    <span className="block">Profesyonel CV'nizi</span>
+                    <span className="block">{t('hero.titlePrefix')}</span>
                     <span className="block bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
-                        AI ile Oluşturun
+                        {t('hero.titleSuffix')}
                     </span>
                 </h1>
 
                 {/* Subtitle */}
                 <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-10 leading-relaxed">
-                    ATS uyumlu, profesyonel CV'ler oluşturun. Gemini AI ile CV'nizi analiz edin,
-                    güçlü yönlerinizi öne çıkarın ve hayalinizdeki işe bir adım daha yaklaşın.
+                    {t('hero.subtitle')}
                 </p>
 
                 {/* CTA Buttons */}
@@ -59,7 +61,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onStartEditor, onStartAnalyze
                         size="lg"
                         icon={<FileText className="w-5 h-5" />}
                     >
-                        CV Oluşturmaya Başla
+                        {t('hero.startCreating')}
                     </GradientButton>
 
                     <GradientButton
@@ -69,21 +71,21 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onStartEditor, onStartAnalyze
                         icon={<Zap className="w-5 h-5" />}
                         className="!border-white/30 !text-white hover:!bg-white/10"
                     >
-                        CV'ni Analiz Et
+                        {t('hero.analyzeCv')}
                     </GradientButton>
                 </div>
 
                 {/* Stats */}
                 <div className="mt-16 grid grid-cols-3 gap-8 max-w-xl mx-auto">
-                    <StatItem value="100%" label="ATS Uyumlu" />
-                    <StatItem value="AI" label="Destekli" />
-                    <StatItem value="∞" label="Ücretsiz" />
+                    <StatItem value="100%" label={t('hero.statAts')} />
+                    <StatItem value="AI" label={t('hero.statAi')} />
+                    <StatItem value="∞" label={t('hero.statFree')} />
                 </div>
             </div>
 
             {/* Scroll Indicator */}
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
-                <span className="text-xs text-white/50 uppercase tracking-widest">Keşfet</span>
+                <span className="text-xs text-white/50 uppercase tracking-widest">{t('hero.scrollDiscover')}</span>
                 <ArrowRight className="w-4 h-4 text-white/50 rotate-90" />
             </div>
         </section>

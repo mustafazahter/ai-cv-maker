@@ -19,6 +19,8 @@ import {
     CVAnalyzerSection
 } from '../widgets';
 import { CVThemeId } from '../types';
+import { useTranslation } from 'react-i18next';
+import { LanguageSwitcher } from '../features/language-switcher';
 
 type TabId = 'ats-guide' | 'api-settings' | 'ai-themes' | 'cv-analyzer';
 
@@ -37,33 +39,6 @@ interface DashboardPageProps {
     currentTheme: CVThemeId;
 }
 
-const menuItems: MenuItem[] = [
-    {
-        id: 'ats-guide',
-        label: 'CV Nasıl Olmalı',
-        icon: <BookOpen className="w-5 h-5" />,
-        description: 'ATS rehberi ve CV ipuçları'
-    },
-    {
-        id: 'api-settings',
-        label: 'API Ayarları',
-        icon: <Settings className="w-5 h-5" />,
-        description: 'Gemini API yapılandırması'
-    },
-    {
-        id: 'ai-themes',
-        label: 'AI Temaları',
-        icon: <Palette className="w-5 h-5" />,
-        description: 'CV tema şablonları'
-    },
-    {
-        id: 'cv-analyzer',
-        label: 'CV Analiz',
-        icon: <SearchIcon className="w-5 h-5" />,
-        description: 'CV değerlendirme ve puanlama'
-    }
-];
-
 const DashboardPage: React.FC<DashboardPageProps> = ({
     apiKey,
     onSaveApiKey,
@@ -71,8 +46,36 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
     onRequestApiKey,
     currentTheme
 }) => {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<TabId>('api-settings');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const menuItems: MenuItem[] = [
+        {
+            id: 'ats-guide',
+            label: t('dashboard.items.atsGuide'),
+            icon: <BookOpen className="w-5 h-5" />,
+            description: t('dashboard.items.atsGuideDesc')
+        },
+        {
+            id: 'api-settings',
+            label: t('dashboard.items.apiSettings'),
+            icon: <Settings className="w-5 h-5" />,
+            description: t('dashboard.items.apiSettingsDesc')
+        },
+        {
+            id: 'ai-themes',
+            label: t('dashboard.items.aiThemes'),
+            icon: <Palette className="w-5 h-5" />,
+            description: t('dashboard.items.aiThemesDesc')
+        },
+        {
+            id: 'cv-analyzer',
+            label: t('dashboard.items.cvAnalyzer'),
+            icon: <SearchIcon className="w-5 h-5" />,
+            description: t('dashboard.items.cvAnalyzerDesc')
+        }
+    ];
 
     const renderContent = () => {
         switch (activeTab) {
@@ -112,20 +115,20 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                         {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                     </button>
 
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                        <Sparkles className="w-5 h-5 text-white" />
-                    </div>
+                    <img src="/favicon.png" alt="Logo" className="w-9 h-9 object-contain" />
                     <span className="text-xl font-bold text-slate-800 tracking-tight hidden sm:inline">CV Maker AI</span>
                     <span className="text-xl font-bold text-slate-800 tracking-tight sm:hidden">CV AI</span>
                 </div>
 
                 <div className="flex items-center gap-4">
+                    <LanguageSwitcher />
+
                     <button
                         onClick={() => onNavigateToEditor()}
                         className="px-4 md:px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-indigo-500/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
                     >
-                        <span className="hidden sm:inline">CV Editor'ü Aç</span>
-                        <span className="sm:hidden">Editör</span>
+                        <span className="hidden sm:inline">{t('dashboard.openEditor')}</span>
+                        <span className="sm:hidden">{t('dashboard.editorShort')}</span>
                     </button>
 
                     <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
@@ -154,14 +157,14 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                     {/* Only show "Ayarlar" title on desktop to save space on mobile drawer top */}
                     <div className="p-4 pt-6 md:pt-4">
                         <div className="flex items-center justify-between mb-6 px-3 md:hidden">
-                            <span className="font-bold text-lg text-slate-800">Menu</span>
+                            <span className="font-bold text-lg text-slate-800">{t('dashboard.menuTitle')}</span>
                             <button onClick={() => setIsMobileMenuOpen(false)} className="p-1 text-slate-400">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
 
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3 px-3 hidden md:block">
-                            Ayarlar
+                            {t('dashboard.settingsTitle')}
                         </p>
                         <nav className="space-y-1">
                             {menuItems.map((item) => (

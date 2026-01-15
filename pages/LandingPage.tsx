@@ -1,11 +1,12 @@
 import React, { useRef } from 'react';
 import {
-    HeroSection,
     ATSGuideSection,
     ApiConfigSection,
     AIThemesSection,
     CVAnalyzerSection
 } from '../widgets';
+import { useTranslation } from 'react-i18next';
+import { LanguageSwitcher } from '../features/language-switcher';
 
 interface LandingPageProps {
     apiKey: string | null;
@@ -20,6 +21,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
     onNavigateToEditor,
     onRequestApiKey
 }) => {
+    const { t } = useTranslation();
     const analyzerRef = useRef<HTMLDivElement>(null);
 
     const scrollToAnalyzer = () => {
@@ -39,18 +41,23 @@ const LandingPage: React.FC<LandingPageProps> = ({
                     </div>
 
                     <div className="hidden md:flex items-center gap-8">
-                        <a href="#ats-guide" className="text-sm text-slate-300 hover:text-white transition-colors">ATS Rehberi</a>
-                        <a href="#api-config" className="text-sm text-slate-300 hover:text-white transition-colors">API Ayarları</a>
-                        <a href="#themes" className="text-sm text-slate-300 hover:text-white transition-colors">Temalar</a>
-                        <a href="#analyzer" className="text-sm text-slate-300 hover:text-white transition-colors">CV Analiz</a>
+                        <a href="#ats-guide" className="text-sm text-slate-300 hover:text-white transition-colors">{t('nav.atsGuide')}</a>
+                        <a href="#api-config" className="text-sm text-slate-300 hover:text-white transition-colors">{t('nav.apiConfig')}</a>
+                        <a href="#themes" className="text-sm text-slate-300 hover:text-white transition-colors">{t('nav.themes')}</a>
+                        <a href="#analyzer" className="text-sm text-slate-300 hover:text-white transition-colors">{t('nav.cvAnalyzer')}</a>
                     </div>
 
-                    <button
-                        onClick={onNavigateToEditor}
-                        className="px-4 py-2 bg-white text-slate-900 rounded-lg text-sm font-semibold hover:bg-slate-100 transition-colors"
-                    >
-                        Editor'a Git
-                    </button>
+                    <div className="flex items-center gap-4">
+                        <div className="hidden md:block">
+                            <LanguageSwitcher />
+                        </div>
+                        <button
+                            onClick={onNavigateToEditor}
+                            className="px-4 py-2 bg-white text-slate-900 rounded-lg text-sm font-semibold hover:bg-slate-100 transition-colors"
+                        >
+                            {t('nav.goToEditor')}
+                        </button>
+                    </div>
                 </div>
             </nav>
 
@@ -100,18 +107,18 @@ const LandingPage: React.FC<LandingPageProps> = ({
                         </div>
 
                         <p className="text-slate-400 text-sm text-center">
-                            AI destekli CV oluşturma ve analiz platformu. ATS uyumlu, profesyonel CV'ler.
+                            {t('footer.description')}
                         </p>
 
                         <div className="flex items-center gap-4">
                             <a href="https://aistudio.google.com" target="_blank" rel="noopener noreferrer" className="text-sm text-slate-400 hover:text-white transition-colors">
-                                Powered by Gemini
+                                {t('footer.poweredBy')}
                             </a>
                         </div>
                     </div>
 
                     <div className="border-t border-slate-800 mt-8 pt-8 text-center text-sm text-slate-500">
-                        © 2026 CV Maker AI. Tüm hakları saklıdır.
+                        © 2026 {t('nav.cvMakerAi')}. {t('footer.rights')}
                     </div>
                 </div>
             </footer>

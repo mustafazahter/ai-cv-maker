@@ -1,13 +1,15 @@
 import React from 'react';
 import { ResumeData } from '../../types';
+import { TFunction } from 'i18next';
 
 interface ThemeRenderProps {
     data: ResumeData;
     addBlock: (node: React.ReactNode, key: string) => void;
+    t: TFunction;
 }
 
 // Classic Theme - Centered header, underline sections
-export const renderClassicTheme = ({ data, addBlock }: ThemeRenderProps) => {
+export const renderClassicTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
     addBlock(
         <header className="border-b-2 border-slate-800 pb-4 mb-6">
             <div className={`flex ${data.profileImage ? 'items-start gap-5' : 'flex-col items-center text-center'}`}>
@@ -31,11 +33,11 @@ export const renderClassicTheme = ({ data, addBlock }: ThemeRenderProps) => {
         </header>,
         'main-header'
     );
-    renderSections(data, addBlock, 'classic');
+    renderSections(data, addBlock, 'classic', t);
 };
 
 // Executive Theme - Professional with centered gray headers
-export const renderExecutiveTheme = ({ data, addBlock }: ThemeRenderProps) => {
+export const renderExecutiveTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
     addBlock(
         <header className="text-center mb-6">
             {data.profileImage && (
@@ -53,11 +55,11 @@ export const renderExecutiveTheme = ({ data, addBlock }: ThemeRenderProps) => {
         </header>,
         'main-header'
     );
-    renderSections(data, addBlock, 'executive');
+    renderSections(data, addBlock, 'executive', t);
 };
 
 // Modern Theme - Left dates, clean layout
-export const renderModernTheme = ({ data, addBlock }: ThemeRenderProps) => {
+export const renderModernTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
     addBlock(
         <header className="border-b border-slate-300 pb-4 mb-6">
             <div className={`flex ${data.profileImage ? 'items-start gap-4' : 'flex-col items-center text-center'}`}>
@@ -76,11 +78,11 @@ export const renderModernTheme = ({ data, addBlock }: ThemeRenderProps) => {
         </header>,
         'main-header'
     );
-    renderSections(data, addBlock, 'modern');
+    renderSections(data, addBlock, 'modern', t);
 };
 
 // Sidebar Theme - Two column inspired, amber accent
-export const renderSidebarTheme = ({ data, addBlock }: ThemeRenderProps) => {
+export const renderSidebarTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
     addBlock(
         <header className="flex items-start gap-6 mb-6 pb-4 border-b border-amber-200">
             {data.profileImage && (
@@ -100,7 +102,7 @@ export const renderSidebarTheme = ({ data, addBlock }: ThemeRenderProps) => {
         </header>,
         'main-header'
     );
-    renderSections(data, addBlock, 'sidebar');
+    renderSections(data, addBlock, 'sidebar', t);
 };
 
 // Section Header
@@ -123,11 +125,11 @@ const SectionHeader: React.FC<{ title: string; theme: string }> = ({ title, them
 };
 
 // Shared section rendering
-const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key: string) => void, theme: string) => {
+const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key: string) => void, theme: string, t: TFunction) => {
     data.sectionOrder.forEach(key => {
         // SUMMARY
         if (key === 'summary' && data.summary) {
-            addBlock(<SectionHeader title={theme === 'executive' ? 'PROFILE' : 'Professional Summary'} theme={theme} />, 'summary-header');
+            addBlock(<SectionHeader title={theme === 'executive' ? t('cv.profile') : t('cv.summary')} theme={theme} />, 'summary-header');
             const summaryClass = theme === 'executive' ? 'text-sm leading-relaxed text-slate-700 text-center italic mb-4' :
                 theme === 'sidebar' ? 'text-sm leading-relaxed text-slate-700 mb-4' :
                     'text-sm leading-relaxed text-slate-800 text-justify mb-4';
@@ -136,13 +138,13 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
 
         // EXPERIENCE
         else if (key === 'experience' && data.experience.length > 0) {
-            addBlock(<SectionHeader title={theme === 'executive' ? 'EMPLOYMENT HISTORY' : 'Professional Experience'} theme={theme} />, 'exp-header');
+            addBlock(<SectionHeader title={theme === 'executive' ? t('cv.employmentHistory') : t('cv.experience')} theme={theme} />, 'exp-header');
 
             data.experience.forEach((exp) => {
                 if (theme === 'modern') {
                     addBlock(
                         <div className="mb-4 grid grid-cols-[100px_1fr] gap-3">
-                            <div className="text-xs text-slate-500 pt-0.5">{exp.startDate} — {exp.current ? 'Present' : exp.endDate}</div>
+                            <div className="text-xs text-slate-500 pt-0.5">{exp.startDate} — {exp.current ? t('cv.present') : exp.endDate}</div>
                             <div>
                                 <div className="flex justify-between items-baseline mb-1">
                                     <h3 className="font-bold text-slate-900 text-sm">{exp.title}, {exp.company}</h3>
@@ -163,7 +165,7 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
                                     <span className="text-amber-600 text-xs">◆</span>
                                     <h3 className="font-bold text-slate-900 text-sm">{exp.title}, {exp.company}</h3>
                                 </div>
-                                <span className="text-xs text-slate-600">{exp.startDate} — {exp.current ? 'Present' : exp.endDate}</span>
+                                <span className="text-xs text-slate-600">{exp.startDate} — {exp.current ? t('cv.present') : exp.endDate}</span>
                             </div>
                             <div className="text-xs text-slate-500 mb-1 ml-4">{exp.location}</div>
                             <ul className="list-none ml-4 space-y-0.5">
@@ -177,7 +179,7 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
                         <div className="mb-4">
                             <h3 className="font-bold text-slate-900 text-sm">{exp.title}, {exp.company}</h3>
                             <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
-                                <span>{exp.startDate} — {exp.current ? 'Present' : exp.endDate}</span>
+                                <span>{exp.startDate} — {exp.current ? t('cv.present') : exp.endDate}</span>
                                 <span>•</span>
                                 <span>{exp.location}</span>
                             </div>
@@ -192,7 +194,7 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
                         <div className="mb-4">
                             <div className="flex justify-between items-baseline mb-0.5">
                                 <h3 className="font-bold text-slate-900 text-sm">{exp.title}</h3>
-                                <span className="text-xs font-medium text-slate-700">{exp.startDate} – {exp.current ? 'Present' : exp.endDate}</span>
+                                <span className="text-xs font-medium text-slate-700">{exp.startDate} – {exp.current ? t('cv.present') : exp.endDate}</span>
                             </div>
                             <div className="flex justify-between items-baseline mb-1">
                                 <span className="text-sm text-slate-800">{exp.company}</span>
@@ -210,7 +212,7 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
 
         // EDUCATION
         else if (key === 'education' && data.education.length > 0) {
-            addBlock(<SectionHeader title="Education" theme={theme} />, 'edu-header');
+            addBlock(<SectionHeader title={t('cv.education')} theme={theme} />, 'edu-header');
 
             data.education.forEach((edu) => {
                 if (theme === 'modern') {
@@ -269,7 +271,7 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
 
         // SKILLS
         else if (key === 'skills' && data.skills.length > 0) {
-            addBlock(<SectionHeader title={theme === 'executive' ? 'SKILLS' : 'Technical Proficiencies'} theme={theme} />, 'skills-header');
+            addBlock(<SectionHeader title={theme === 'executive' ? t('cv.skills') : t('cv.technicalProficiencies')} theme={theme} />, 'skills-header');
 
             if (theme === 'modern' || theme === 'executive') {
                 addBlock(
@@ -277,7 +279,7 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
                         {data.skills.flatMap(group => group.items).map((skill, idx) => (
                             <div key={idx} className="flex justify-between text-xs border-b border-dotted border-slate-200 pb-0.5">
                                 <span className="text-slate-800">{skill}</span>
-                                <span className="text-slate-500 text-[10px]">Expert</span>
+                                <span className="text-slate-500 text-[10px]">{t('cv.expert', 'Expert')}</span>
                             </div>
                         ))}
                     </div>,
@@ -316,7 +318,7 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
 
         // PROJECTS
         else if (key === 'projects' && data.projects.length > 0) {
-            addBlock(<SectionHeader title="Projects" theme={theme} />, 'proj-header');
+            addBlock(<SectionHeader title={t('cv.projects')} theme={theme} />, 'proj-header');
 
             data.projects.forEach((proj) => {
                 if (theme === 'modern') {
@@ -365,7 +367,7 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
 
         // CERTIFICATIONS
         else if (key === 'certifications' && data.certifications.length > 0) {
-            addBlock(<SectionHeader title="Certifications" theme={theme} />, 'cert-header');
+            addBlock(<SectionHeader title={t('cv.certifications')} theme={theme} />, 'cert-header');
 
             if (theme === 'executive') {
                 addBlock(
@@ -399,7 +401,7 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
 
         // LANGUAGES
         else if (key === 'languages' && data.languages.length > 0) {
-            addBlock(<SectionHeader title="Languages" theme={theme} />, 'lang-header');
+            addBlock(<SectionHeader title={t('cv.languages')} theme={theme} />, 'lang-header');
 
             if (theme === 'sidebar') {
                 addBlock(
@@ -427,7 +429,7 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
 
         // VOLUNTEERING
         else if (key === 'volunteering' && data.volunteering.length > 0) {
-            addBlock(<SectionHeader title="Volunteering" theme={theme} />, 'vol-header');
+            addBlock(<SectionHeader title={t('cv.volunteering')} theme={theme} />, 'vol-header');
 
             data.volunteering.forEach(vol => {
                 if (theme === 'executive') {
@@ -466,7 +468,7 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
 
         // AWARDS
         else if (key === 'awards' && data.awards.length > 0) {
-            addBlock(<SectionHeader title="Awards & Achievements" theme={theme} />, 'awards-header');
+            addBlock(<SectionHeader title={t('cv.awards')} theme={theme} />, 'awards-header');
 
             if (theme === 'executive') {
                 addBlock(
@@ -500,13 +502,13 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
 
         // INTERESTS
         else if (key === 'interests' && data.interests.length > 0) {
-            addBlock(<SectionHeader title="Interests" theme={theme} />, 'int-header');
+            addBlock(<SectionHeader title={t('cv.interests')} theme={theme} />, 'int-header');
             addBlock(<p className="text-xs text-slate-800 mb-4">{data.interests.join(', ')}</p>, 'int-body');
         }
 
         // REFERENCES
         else if (key === 'references' && data.references) {
-            addBlock(<SectionHeader title="References" theme={theme} />, 'ref-header');
+            addBlock(<SectionHeader title={t('cv.references')} theme={theme} />, 'ref-header');
             addBlock(<p className="text-xs text-slate-800 mb-4">{data.references}</p>, 'ref-body');
         }
 

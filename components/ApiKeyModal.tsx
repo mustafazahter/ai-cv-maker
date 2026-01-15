@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Key, Lock, CheckCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface ApiKeyModalProps {
   isOpen: boolean;
@@ -8,6 +9,7 @@ interface ApiKeyModalProps {
 }
 
 const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onSave, savedKey }) => {
+  const { t } = useTranslation();
   const [inputKey, setInputKey] = useState(savedKey || '');
 
   if (!isOpen) return null;
@@ -19,12 +21,11 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onSave, savedKey }) =
           <div className="p-3 bg-blue-50 rounded-full">
             <Key className="w-6 h-6" />
           </div>
-          <h2 className="text-xl font-bold text-slate-800">Gemini API Key</h2>
+          <h2 className="text-xl font-bold text-slate-800">{t('apiKeyModal.title')}</h2>
         </div>
-        
+
         <p className="text-slate-600 text-sm mb-6 leading-relaxed">
-          To use the AI features (Chat & Image Analysis), you need a Google Gemini API Key. 
-          Your key is stored locally in your browser and is never sent to our servers.
+          {t('apiKeyModal.description')}
         </p>
 
         <div className="space-y-4">
@@ -36,7 +37,7 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onSave, savedKey }) =
               type="password"
               value={inputKey}
               onChange={(e) => setInputKey(e.target.value)}
-              placeholder="Enter your API Key here..."
+              placeholder={t('apiKeyModal.placeholder')}
               className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
             />
           </div>
@@ -46,18 +47,18 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onSave, savedKey }) =
             disabled={!inputKey.trim()}
             className="w-full bg-primary hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {savedKey ? 'Update Key' : 'Save Key'}
+            {savedKey ? t('apiKeyModal.update') : t('apiKeyModal.save')}
             <CheckCircle className="w-4 h-4" />
           </button>
-          
+
           <div className="text-center">
-             <a 
-              href="https://aistudio.google.com/app/apikey" 
-              target="_blank" 
+            <a
+              href="https://aistudio.google.com/app/apikey"
+              target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-blue-500 hover:underline"
             >
-              Get a free API Key from Google AI Studio
+              {t('apiKeyModal.getFreeKey')}
             </a>
           </div>
         </div>

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Edit3, Key, Printer, Sparkles, PanelLeftClose, PanelLeftOpen, FileText, Home, Palette, Eye, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { ResumeData, CVThemeId } from './types';
-import { INITIAL_RESUME_DATA } from './constants';
+import { INITIAL_RESUME_DATA, getInitialResumeData, INITIAL_RESUME_DATA_EN, INITIAL_RESUME_DATA_TR } from './constants';
 import ChatAssistant from './components/ChatAssistant';
 import CVPreview from './components/CVPreview';
 import ManualEditor from './components/ManualEditor';
 import ApiKeyModal from './components/ApiKeyModal';
 import { DashboardPage } from './pages';
+import { useTranslation } from 'react-i18next';
+import { LanguageSwitcher } from './features/language-switcher';
 
 type AppView = 'dashboard' | 'editor';
 
@@ -25,8 +27,14 @@ const getViewFromHash = (): AppView => {
 };
 
 const App: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const [currentView, setCurrentView] = useState<AppView>(getViewFromHash());
-  const [resumeData, setResumeData] = useState<ResumeData>(INITIAL_RESUME_DATA);
+
+  // Apply correct initial data based on current language
+  // We use lazy initialization to only run this once on mount
+  const [resumeData, setResumeData] = useState<ResumeData>(() => {
+    return getInitialResumeData(i18n.language);
+  });
   const [apiKey, setApiKey] = useState<string | null>(localStorage.getItem('gemini_api_key'));
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [currentTheme, setCurrentTheme] = useState<CVThemeId>('classic');
@@ -38,6 +46,25 @@ const App: React.FC = () => {
 
   // Zoom State
   const [zoom, setZoom] = useState(1);
+
+  // Switch Resume Content when Language Changes (ONLY IF using default template)
+  useEffect(() => {
+    // If current data is English template AND we switched to TR -> Switch to TR Template
+    // Equality check is shallow (reference) or deep?
+    // Constants are objects, so reference check works if we set state directly from constants.
+
+    // Check if we are currently holding the Default English Data
+    const isDefaultEnglish = JSON.stringify(resumeData) === JSON.stringify(INITIAL_RESUME_DATA_EN);
+
+    // Check if we are currently holding the Default Turkish Data
+    const isDefaultTurkish = JSON.stringify(resumeData) === JSON.stringify(INITIAL_RESUME_DATA_TR);
+
+    if (i18n.language === 'tr' && isDefaultEnglish) {
+      setResumeData(INITIAL_RESUME_DATA_TR);
+    } else if (i18n.language === 'en' && isDefaultTurkish) {
+      setResumeData(INITIAL_RESUME_DATA_EN);
+    }
+  }, [i18n.language]);
 
   // Listen to hash changes
   useEffect(() => {
@@ -156,7 +183,7 @@ const App: React.FC = () => {
                 currentResumeData={resumeData}
                 onUpdateResume={setResumeData}
                 onRequestApiKey={() => setIsApiKeyModalOpen(true)}
-                onResetCV={() => setResumeData(INITIAL_RESUME_DATA)}
+                onResetCV={() => setResumeData(getInitialResumeData(i18n.language))}
               />
             </div>
 
@@ -194,7 +221,7 @@ const App: React.FC = () => {
               <button
                 onClick={() => setIsThemePickerOpen(!isThemePickerOpen)}
                 className="flex items-center gap-2 px-2 md:px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
-                title="Tema Seç"
+                title={t('app.themeSelect')}
               >
                 <Palette className="w-4 h-4 text-slate-600" />
                 <span className="text-sm font-medium text-slate-700 hidden md:inline">
@@ -225,18 +252,22 @@ const App: React.FC = () => {
               )}
             </div>
 
+            <div className="hidden md:block">
+              <LanguageSwitcher />
+            </div>
+
             {/* Back to Dashboard */}
             <button
               onClick={navigateToDashboard}
               className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
-              title="Dashboard'a Dön"
+              title={t('app.backToDashboard')}
             >
               <Home className="w-5 h-5" />
             </button>
             <button
               onClick={() => setIsApiKeyModalOpen(true)}
               className={`p-2 rounded-full transition-colors ${apiKey ? 'text-green-600 bg-green-50 hover:bg-green-100' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
-              title="API Key Settings"
+              title={t('app.apiKeySettings')}
             >
               <Key className="w-5 h-5" />
             </button>
@@ -246,7 +277,7 @@ const App: React.FC = () => {
               className="flex items-center gap-2 bg-slate-900 hover:bg-black text-white px-3 md:px-5 py-2.5 rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transition-all active:scale-95"
             >
               <Printer className="w-4 h-4" />
-              <span className="hidden md:inline">Export PDF</span>
+              <span className="hidden md:inline">{t('app.exportPdf')}</span>
             </button>
           </div>
         </header>

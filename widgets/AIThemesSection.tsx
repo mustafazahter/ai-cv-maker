@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowRight, Check, Sparkles } from 'lucide-react';
 import { CVThemeId } from '../types';
 import { GradientButton } from '../shared/ui';
+import { useTranslation } from 'react-i18next';
 
 interface AIThemesSectionProps {
     onSelectTheme: (themeId: CVThemeId) => void;
@@ -9,13 +10,46 @@ interface AIThemesSectionProps {
 }
 
 const AIThemesSection: React.FC<AIThemesSectionProps> = ({ onSelectTheme, currentTheme }) => {
+    const { t } = useTranslation();
+
+    const themes: { id: CVThemeId; name: string; description: string; accentColor: string; tags: string[] }[] = [
+        {
+            id: 'classic',
+            name: t('aiThemes.themes.classic'),
+            description: t('aiThemes.themes.classicDesc'),
+            accentColor: 'bg-indigo-500',
+            tags: [t('aiThemes.tags.atsFriendly'), t('aiThemes.tags.minimal')]
+        },
+        {
+            id: 'executive',
+            name: t('aiThemes.themes.executive'),
+            description: t('aiThemes.themes.executiveDesc'),
+            accentColor: 'bg-slate-700',
+            tags: [t('aiThemes.tags.professional'), t('aiThemes.tags.corporate')]
+        },
+        {
+            id: 'modern',
+            name: t('aiThemes.themes.modern'),
+            description: t('aiThemes.themes.modernDesc'),
+            accentColor: 'bg-cyan-500',
+            tags: [t('aiThemes.tags.modern'), t('aiThemes.tags.tech')]
+        },
+        {
+            id: 'sidebar',
+            name: t('aiThemes.themes.sidebar'),
+            description: t('aiThemes.themes.sidebarDesc'),
+            accentColor: 'bg-amber-500',
+            tags: [t('aiThemes.tags.twoColumn'), t('aiThemes.tags.detailed')]
+        }
+    ];
+
     return (
         <div className="p-8 max-w-6xl mx-auto">
             {/* Page Header */}
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-slate-900 mb-2">AI CV Temaları</h1>
+                <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('aiThemes.title')}</h1>
                 <p className="text-slate-600">
-                    Profesyonel ve ATS uyumlu CV şablonlarından birini seçin.
+                    {t('aiThemes.subtitle')}
                 </p>
             </div>
 
@@ -27,6 +61,7 @@ const AIThemesSection: React.FC<AIThemesSectionProps> = ({ onSelectTheme, curren
                         theme={theme}
                         isActive={currentTheme === theme.id}
                         onSelect={() => onSelectTheme(theme.id)}
+                        t={t}
                     />
                 ))}
             </div>
@@ -38,7 +73,7 @@ const AIThemesSection: React.FC<AIThemesSectionProps> = ({ onSelectTheme, curren
                     size="lg"
                     icon={<Sparkles className="w-5 h-5" />}
                 >
-                    Editor'da Düzenle
+                    {t('aiThemes.editInEditor')}
                 </GradientButton>
             </div>
         </div>
@@ -46,12 +81,13 @@ const AIThemesSection: React.FC<AIThemesSectionProps> = ({ onSelectTheme, curren
 };
 
 interface ThemeCardProps {
-    theme: typeof themes[0];
+    theme: { id: CVThemeId; name: string; description: string; accentColor: string; tags: string[] };
     isActive: boolean;
     onSelect: () => void;
+    t: any;
 }
 
-const ThemeCard: React.FC<ThemeCardProps> = ({ theme, isActive, onSelect }) => {
+const ThemeCard: React.FC<ThemeCardProps> = ({ theme, isActive, onSelect, t }) => {
     return (
         <div
             onClick={onSelect}
@@ -144,7 +180,7 @@ const ThemeCard: React.FC<ThemeCardProps> = ({ theme, isActive, onSelect }) => {
                 {isActive && (
                     <div className="absolute top-2 right-2 bg-indigo-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
                         <Check className="w-3 h-3" />
-                        Aktif
+                        {t('aiThemes.active')}
                     </div>
                 )}
             </div>
@@ -169,43 +205,12 @@ const ThemeCard: React.FC<ThemeCardProps> = ({ theme, isActive, onSelect }) => {
             {/* Hover Overlay */}
             <div className="absolute inset-0 bg-indigo-600/0 group-hover:bg-indigo-600/5 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
                 <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                    <span className="text-sm font-semibold text-slate-700">Kullan</span>
+                    <span className="text-sm font-semibold text-slate-700">{t('aiThemes.use')}</span>
                     <ArrowRight className="w-4 h-4 text-indigo-600" />
                 </div>
             </div>
         </div>
     );
 };
-
-const themes: { id: CVThemeId; name: string; description: string; accentColor: string; tags: string[] }[] = [
-    {
-        id: 'classic',
-        name: 'Classic',
-        description: 'Temiz ve profesyonel, ATS için optimize.',
-        accentColor: 'bg-indigo-500',
-        tags: ['ATS Uyumlu', 'Minimal']
-    },
-    {
-        id: 'executive',
-        name: 'Executive',
-        description: 'Üst düzey pozisyonlar için ideal.',
-        accentColor: 'bg-slate-700',
-        tags: ['Profesyonel', 'Kurumsal']
-    },
-    {
-        id: 'modern',
-        name: 'Modern',
-        description: 'Sol tarihli, temiz ve modern.',
-        accentColor: 'bg-cyan-500',
-        tags: ['Modern', 'Teknoloji']
-    },
-    {
-        id: 'sidebar',
-        name: 'Sidebar',
-        description: 'İki kolonlu, detaylı görünüm.',
-        accentColor: 'bg-amber-500',
-        tags: ['İki Kolon', 'Detaylı']
-    }
-];
 
 export default AIThemesSection;
