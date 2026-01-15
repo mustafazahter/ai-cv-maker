@@ -267,7 +267,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
       </div>
 
       {/* Modern Input Area */}
-      <div className="p-4 md:p-6 bg-white sticky bottom-0 z-20">
+      <div className="p-3 md:p-6 bg-white sticky bottom-0 z-20">
         <div className="max-w-3xl mx-auto flex flex-col gap-2">
 
           {/* Attachment Badge (Stacked above input) */}
@@ -296,7 +296,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
 
           {/* The Capsule Input */}
           <div className={`
-                flex items-end gap-2 bg-slate-100/80 backdrop-blur-sm p-2 rounded-[2rem] border border-slate-200 transition-all duration-200
+                flex items-end gap-2 bg-slate-100/80 backdrop-blur-sm p-1.5 md:p-2 rounded-[2rem] border border-slate-200 transition-all duration-200
                 focus-within:bg-white focus-within:border-slate-500 focus-within:ring-0 focus-within:shadow-md
             `}>
             <input
@@ -310,7 +310,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
             {/* Plus Button */}
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="p-3 mb-[2px] text-slate-500 hover:bg-slate-200 rounded-full transition-colors shrink-0 focus:outline-none"
+              className="p-2 md:p-3 mb-[2px] text-slate-500 hover:bg-slate-200 rounded-full transition-colors shrink-0 focus:outline-none"
               title="Upload CV (PDF/Image)"
             >
               <Plus className="w-5 h-5" />
@@ -323,7 +323,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyPress}
               placeholder="Ask Gemini to update your CV..."
-              className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-base py-3 px-1 text-slate-700 placeholder-slate-400 min-h-[48px] max-h-[200px] resize-none overflow-y-auto custom-scrollbar leading-normal"
+              className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-base py-2 md:py-3 px-1 text-slate-700 placeholder-slate-400 min-h-[40px] md:min-h-[48px] max-h-[200px] resize-none overflow-y-auto custom-scrollbar leading-normal"
               rows={1}
             />
 
@@ -332,7 +332,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
               onClick={handleSendMessage}
               disabled={isLoading || (!input.trim() && !attachment)}
               className={`
-                        p-3 mb-[2px] rounded-full transition-all duration-200 shrink-0 flex items-center justify-center focus:outline-none
+                        p-2 md:p-3 mb-[2px] rounded-full transition-all duration-200 shrink-0 flex items-center justify-center focus:outline-none
                         ${(!input.trim() && !attachment) || isLoading
                   ? 'bg-transparent text-slate-300 cursor-not-allowed'
                   : 'bg-slate-900 text-white hover:bg-black shadow-md hover:scale-105 active:scale-95'
@@ -343,7 +343,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
             </button>
           </div>
 
-          <div className="text-[10px] text-center text-slate-400 font-medium">
+          <div className="text-[10px] text-center text-slate-400 font-medium hidden md:block">
             Gemini 3 Pro may display inaccurate info, including about people, so double-check its responses.
           </div>
         </div>

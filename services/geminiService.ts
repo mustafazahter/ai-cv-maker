@@ -232,7 +232,7 @@ export const chatWithCVAgent = async (
 
   // SYSTEM INSTRUCTION: CRITICAL - DATA EXTRACTION FOCUSED
   const systemInstruction = `
-    You are an expert Resume Data Extractor.
+    You are an expert Resume Data Extractor and ATS Optimization Specialist.
     
     **MODE DETECTION:**
     - If the user is just chatting (greeting, question) -> Return ONLY 'thoughts' and 'chatResponse'.
@@ -245,6 +245,18 @@ export const chatWithCVAgent = async (
     4. **CREATE URLS**: If user mentions "LinkedIn" or "GitHub" without URLs, create plausible ones based on the user's name.
     5. **LANGUAGE**: Match the user's language.
     6. **IDs**: Generate unique IDs for each entry (e.g., "exp-1", "edu-1", "custom-1").
+
+    **ATS KEYWORD OPTIMIZATION (VERY IMPORTANT):**
+    When creating or updating a CV, you MUST optimize content for ATS (Applicant Tracking Systems):
+    1. **Industry Keywords**: Add relevant technical skills, tools, and industry-standard terminology.
+    2. **Action Verbs**: Use strong action verbs (Led, Developed, Implemented, Optimized, Managed, Designed, Achieved, etc.)
+    3. **Quantifiable Achievements**: Include metrics and numbers where possible (e.g., "Increased sales by 25%", "Managed team of 10").
+    4. **Job-Specific Terms**: If the user mentions a target role/industry, include relevant keywords for that field.
+    5. **Skills Section**: Ensure the skills section includes both hard skills (technical) and soft skills that ATS systems scan for.
+    6. **Standard Section Headers**: Use standard headers like "Experience", "Education", "Skills" for better ATS parsing.
+    7. **Avoid**: Graphics, tables, special characters that ATS cannot parse (you're generating text data, so this is handled).
+    
+    Always inform the user in your 'chatResponse' about the ATS keywords you've added or optimized.
 
     **CUSTOM SECTIONS:**
     For non-standard sections (e.g., "Publications", "Hobbies", "Awards", "Achievements"), use the 'customSections' array:
@@ -300,16 +312,62 @@ export const chatWithCVAgent = async (
     console.log(">>> [LOG] Model:", modelName);
     console.log(">>> [LOG] Contents Format Fix Applied.");
 
-    const response = await ai.models.generateContent({
+    // Gemini 3/2.5 thinking modelleri için schema kullanma - JSON talimatı ver
+    const isAdvancedModel = modelName.includes('thinking') || modelName.includes('pro-preview') || modelName.includes('2.5-pro');
+
+    // Timeout with Promise.race for advanced models
+    const timeoutMs = isAdvancedModel ? 120000 : 60000; // 120s for advanced, 60s for others
+
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error(`Model timeout after ${timeoutMs / 1000}s - Try a different model`)), timeoutMs);
+    });
+
+    const apiPromise = ai.models.generateContent({
       model: modelName,
       contents: [{ role: 'user', parts: parts }],
       config: {
-        systemInstruction: systemInstruction,
-        responseMimeType: "application/json",
-        responseSchema: agentSchema,
-        temperature: 0.9,
+        systemInstruction: systemInstruction + (isAdvancedModel ? `
+        
+        **CRITICAL JSON FORMAT - YOU MUST FOLLOW THIS EXACTLY:**
+        {
+          "thoughts": "your internal reasoning about the request",
+          "chatResponse": "your friendly response to the user",
+          "updatedResume": {
+            "fullName": "EXACT name from user input - REQUIRED",
+            "title": "Professional title",
+            "email": "email from user input",
+            "phone": "phone from user input",
+            "location": "location from user input",
+            "website": "website if provided",
+            "linkedin": "linkedin URL",
+            "summary": "professional summary text",
+            "sectionOrder": ["summary", "experience", "education", "skills", ...],
+            "experience": [{ "id": "exp-1", "company": "...", "title": "...", "location": "...", "startDate": "...", "endDate": "...", "current": true/false, "description": ["bullet 1", "bullet 2"] }],
+            "education": [{ "id": "edu-1", "institution": "...", "degree": "...", "location": "...", "startDate": "...", "endDate": "..." }],
+            "skills": [{ "name": "Category Name", "items": ["skill1", "skill2"] }],
+            "languages": [{ "id": "lang-1", "language": "...", "proficiency": "..." }],
+            "awards": [{ "id": "award-1", "title": "...", "issuer": "...", "date": "...", "description": "..." }],
+            "certifications": [],
+            "projects": [],
+            "volunteering": [],
+            "interests": [],
+            "customSections": [],
+            "references": ""
+          }
+        }
+        
+        **IMPORTANT**: The "fullName" field is REQUIRED and must contain the person's name from the CV text.
+        DO NOT include any text outside the JSON object. Respond ONLY with valid JSON.
+        ` : ''),
+        ...(isAdvancedModel ? {} : {
+          responseMimeType: "application/json",
+          responseSchema: agentSchema,
+        }),
+        temperature: isAdvancedModel ? 0.7 : 0.9,
       },
     });
+
+    const response = await Promise.race([apiPromise, timeoutPromise]);
 
     console.log(">>> [LOG] generateContent call returned.");
 
@@ -330,6 +388,11 @@ export const chatWithCVAgent = async (
     try {
       parsed = JSON.parse(cleanText);
       console.log(">>> Parsed JSON Success. Fields:", Object.keys(parsed));
+      console.log(">>> updatedResume exists:", !!parsed.updatedResume);
+      if (parsed.updatedResume) {
+        console.log(">>> updatedResume fullName:", parsed.updatedResume.fullName);
+        console.log(">>> updatedResume keys:", Object.keys(parsed.updatedResume));
+      }
     } catch (parseError) {
       console.error("JSON Parse Error:", parseError);
       console.log(">>> Failed to parse text:", cleanText.substring(0, 500) + "...");
@@ -340,27 +403,46 @@ export const chatWithCVAgent = async (
     let finalResumeData = currentResume;
 
     if (parsed.updatedResume && Object.keys(parsed.updatedResume).length > 2) { // length > 2 usually means more than just fullName/title
-      console.log(">>> [LOG] Full Update Detected. Merging...");
+      console.log(">>> [LOG] Full Update Detected. Replacing CV data...");
       console.log(">>> [LOG] AI Provided Experience count:", parsed.updatedResume.experience?.length || 0);
+      console.log(">>> [LOG] AI Provided fullName:", parsed.updatedResume.fullName);
 
-      // Merge logic
-      const mergedResume = {
-        ...currentResume,
-        ...parsed.updatedResume,
-        // Explicitly overwrite arrays to prevent accidental merging of old/new lists
-        experience: parsed.updatedResume.experience || currentResume.experience,
-        education: parsed.updatedResume.education || currentResume.education,
-        skills: parsed.updatedResume.skills || currentResume.skills,
-        sectionOrder: parsed.updatedResume.sectionOrder || currentResume.sectionOrder,
+      // FULL REPLACE - AI data takes priority, only use currentResume for missing fields
+      const aiData = parsed.updatedResume;
+      const mergedResume: ResumeData = {
+        fullName: aiData.fullName || currentResume.fullName,
+        title: aiData.title || currentResume.title,
+        email: aiData.email || currentResume.email,
+        phone: aiData.phone || currentResume.phone,
+        location: aiData.location || currentResume.location,
+        website: aiData.website || currentResume.website,
+        linkedin: aiData.linkedin || currentResume.linkedin,
+        summary: aiData.summary || currentResume.summary,
+        profileImage: aiData.profileImage || currentResume.profileImage,
+        sectionOrder: aiData.sectionOrder || currentResume.sectionOrder,
+        experience: aiData.experience || [],
+        education: aiData.education || [],
+        skills: aiData.skills || [],
+        projects: aiData.projects || [],
+        certifications: aiData.certifications || [],
+        languages: aiData.languages || [],
+        volunteering: aiData.volunteering || [],
+        awards: aiData.awards || [],
+        interests: aiData.interests || [],
+        customSections: aiData.customSections || [],
+        references: aiData.references || currentResume.references,
       };
       finalResumeData = sanitizeResumeData(mergedResume);
     } else if (parsed.updatedResume && Object.keys(parsed.updatedResume).length > 0) {
-      console.log(">>> [LOG] Partial Update (likely name only). Fields:", Object.keys(parsed.updatedResume));
+      console.log(">>> [LOG] Partial Update. Fields:", Object.keys(parsed.updatedResume));
       const mergedResume = { ...currentResume, ...parsed.updatedResume };
       finalResumeData = sanitizeResumeData(mergedResume);
     } else {
       console.log(">>> [LOG] Performance Mode: Chat only response.");
     }
+
+    console.log(">>> [LOG] Final Resume fullName:", finalResumeData.fullName);
+    console.log(">>> [LOG] Final Resume experience count:", finalResumeData.experience?.length || 0);
 
     return {
       thoughts: parsed.thoughts || "",

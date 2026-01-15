@@ -16,6 +16,7 @@ import {
     AIThemesSection,
     CVAnalyzerSection
 } from '../widgets';
+import { CVThemeId } from '../types';
 
 type TabId = 'ats-guide' | 'api-settings' | 'ai-themes' | 'cv-analyzer';
 
@@ -29,8 +30,9 @@ interface MenuItem {
 interface DashboardPageProps {
     apiKey: string | null;
     onSaveApiKey: (key: string) => void;
-    onNavigateToEditor: () => void;
+    onNavigateToEditor: (themeId?: CVThemeId) => void;
     onRequestApiKey: () => void;
+    currentTheme: CVThemeId;
 }
 
 const menuItems: MenuItem[] = [
@@ -64,7 +66,8 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
     apiKey,
     onSaveApiKey,
     onNavigateToEditor,
-    onRequestApiKey
+    onRequestApiKey,
+    currentTheme
 }) => {
     const [activeTab, setActiveTab] = useState<TabId>('api-settings');
 
@@ -80,7 +83,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                     />
                 );
             case 'ai-themes':
-                return <AIThemesSection onOpenEditor={onNavigateToEditor} />;
+                return <AIThemesSection onSelectTheme={onNavigateToEditor} currentTheme={currentTheme} />;
             case 'cv-analyzer':
                 return (
                     <CVAnalyzerSection
@@ -104,8 +107,17 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                     <span className="text-xl font-bold text-slate-800 tracking-tight">CV Maker AI</span>
                 </div>
 
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
-                    U
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={() => onNavigateToEditor()}
+                        className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-indigo-500/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                        CV Editor'ü Aç
+                    </button>
+
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                        U
+                    </div>
                 </div>
             </header>
 

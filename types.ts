@@ -90,6 +90,7 @@ export interface ResumeData {
   website: string;
   linkedin: string;
   summary: string;
+  profileImage?: string; // Base64 encoded image or URL (opsiyonel)
 
   // Sections
   experience: ExperienceItem[];
@@ -127,3 +128,13 @@ export type GeminiModel =
   | 'gemini-3-pro-preview'
   | 'gemini-flash-latest'
   | 'gemini-flash-lite-latest';
+
+// CV Theme Types
+export type CVThemeId = 'classic' | 'executive' | 'modern' | 'sidebar';
+
+export interface CVThemeConfig {
+  id: CVThemeId;
+  name: string;
+  description: string;
+  accentColor: string;
+}

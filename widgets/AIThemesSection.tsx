@@ -1,12 +1,14 @@
 import React from 'react';
-import { Palette, ArrowRight, Sparkles, Check } from 'lucide-react';
+import { ArrowRight, Check, Sparkles } from 'lucide-react';
+import { CVThemeId } from '../types';
 import { GradientButton } from '../shared/ui';
 
 interface AIThemesSectionProps {
-    onOpenEditor: () => void;
+    onSelectTheme: (themeId: CVThemeId) => void;
+    currentTheme: CVThemeId;
 }
 
-const AIThemesSection: React.FC<AIThemesSectionProps> = ({ onOpenEditor }) => {
+const AIThemesSection: React.FC<AIThemesSectionProps> = ({ onSelectTheme, currentTheme }) => {
     return (
         <div className="p-8 max-w-6xl mx-auto">
             {/* Page Header */}
@@ -18,15 +20,26 @@ const AIThemesSection: React.FC<AIThemesSectionProps> = ({ onOpenEditor }) => {
             </div>
 
             {/* Themes Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                {themes.map((theme, idx) => (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                {themes.map((theme) => (
                     <ThemeCard
-                        key={idx}
+                        key={theme.id}
                         theme={theme}
-                        isActive={idx === 0}
-                        onSelect={onOpenEditor}
+                        isActive={currentTheme === theme.id}
+                        onSelect={() => onSelectTheme(theme.id)}
                     />
                 ))}
+            </div>
+
+            {/* CTA */}
+            <div className="text-center">
+                <GradientButton
+                    onClick={() => onSelectTheme(currentTheme)}
+                    size="lg"
+                    icon={<Sparkles className="w-5 h-5" />}
+                >
+                    Editor'da Düzenle
+                </GradientButton>
             </div>
         </div>
     );
@@ -49,38 +62,83 @@ const ThemeCard: React.FC<ThemeCardProps> = ({ theme, isActive, onSelect }) => {
       `}
         >
             {/* Preview */}
-            <div className="relative aspect-[3/4] bg-gradient-to-br from-slate-100 to-slate-50 p-4 overflow-hidden">
-                {/* Mini CV Preview */}
-                <div className="bg-white rounded-lg shadow-xl h-full p-3 transform group-hover:scale-[1.02] transition-transform duration-300">
-                    {/* Header */}
-                    <div className={`h-2 rounded-full mb-2 ${theme.accentColor}`} />
-                    <div className="h-1.5 bg-slate-200 rounded-full w-2/3 mb-1" />
-                    <div className="h-1 bg-slate-100 rounded-full w-1/2 mb-3" />
-
-                    {/* Content Lines */}
-                    <div className="space-y-2">
-                        <div className={`h-1 rounded-full w-1/3 ${theme.accentColor} opacity-70`} />
-                        {[...Array(3)].map((_, i) => (
-                            <div key={i} className="h-1 bg-slate-100 rounded-full" style={{ width: `${85 - i * 10}%` }} />
-                        ))}
-                    </div>
-
-                    <div className="mt-4 space-y-2">
-                        <div className={`h-1 rounded-full w-1/4 ${theme.accentColor} opacity-70`} />
-                        {[...Array(2)].map((_, i) => (
-                            <div key={i} className="h-1 bg-slate-100 rounded-full" style={{ width: `${75 - i * 15}%` }} />
-                        ))}
-                    </div>
-
-                    <div className="mt-4 space-y-2">
-                        <div className={`h-1 rounded-full w-1/5 ${theme.accentColor} opacity-70`} />
-                        <div className="flex gap-1">
-                            {[...Array(4)].map((_, i) => (
-                                <div key={i} className="h-3 bg-slate-100 rounded flex-1" />
+            <div className="relative aspect-[3/4] bg-gradient-to-br from-slate-100 to-slate-50 p-3 overflow-hidden">
+                {/* Mini CV Preview based on theme */}
+                {theme.id === 'classic' && (
+                    <div className="bg-white rounded-lg shadow-lg h-full p-2.5 transform group-hover:scale-[1.02] transition-transform duration-300">
+                        <div className="text-center border-b border-slate-200 pb-2 mb-2">
+                            <div className="h-1.5 bg-slate-700 rounded-full w-16 mx-auto mb-1" />
+                            <div className="h-1 bg-slate-200 rounded-full w-24 mx-auto" />
+                        </div>
+                        <div className="space-y-2">
+                            <div className="h-0.5 bg-slate-300 rounded-full w-1/3 border-b border-slate-300" />
+                            {[...Array(3)].map((_, i) => (
+                                <div key={i} className="h-0.5 bg-slate-100 rounded-full" style={{ width: `${90 - i * 10}%` }} />
                             ))}
                         </div>
                     </div>
-                </div>
+                )}
+
+                {theme.id === 'executive' && (
+                    <div className="bg-white rounded-lg shadow-lg h-full p-2.5 transform group-hover:scale-[1.02] transition-transform duration-300">
+                        <div className="text-center mb-3">
+                            <div className="h-1.5 bg-slate-800 rounded-full w-20 mx-auto mb-1" />
+                            <div className="h-0.5 bg-slate-300 rounded-full w-12 mx-auto" />
+                        </div>
+                        <div className="flex items-center gap-1 justify-center mb-2">
+                            <div className="h-px bg-slate-300 flex-1" />
+                            <div className="h-1 bg-slate-400 rounded-full w-10" />
+                            <div className="h-px bg-slate-300 flex-1" />
+                        </div>
+                        <div className="space-y-1.5">
+                            {[...Array(4)].map((_, i) => (
+                                <div key={i} className="flex items-center gap-1">
+                                    <div className="w-1 h-1 bg-amber-500" style={{ transform: 'rotate(45deg)' }} />
+                                    <div className="h-0.5 bg-slate-100 rounded-full flex-1" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {theme.id === 'modern' && (
+                    <div className="bg-white rounded-lg shadow-lg h-full p-2.5 transform group-hover:scale-[1.02] transition-transform duration-300">
+                        <div className="text-center border-b border-slate-200 pb-2 mb-2">
+                            <div className="h-1.5 bg-slate-800 rounded-full w-24 mx-auto" />
+                        </div>
+                        <div className="space-y-2">
+                            <div className="h-0.5 bg-slate-300 rounded-full w-1/4" />
+                            {[...Array(2)].map((_, i) => (
+                                <div key={i} className="grid grid-cols-[20px_1fr] gap-1">
+                                    <div className="h-0.5 bg-slate-200 rounded-full mt-0.5" />
+                                    <div className="space-y-0.5">
+                                        <div className="h-0.5 bg-cyan-500 rounded-full w-1/2" />
+                                        <div className="h-0.5 bg-slate-100 rounded-full" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {theme.id === 'sidebar' && (
+                    <div className="bg-white rounded-lg shadow-lg h-full p-2 transform group-hover:scale-[1.02] transition-transform duration-300 grid grid-cols-[30px_1fr] gap-2">
+                        <div className="border-r border-amber-100 pr-1 space-y-2">
+                            <div className="w-4 h-4 bg-slate-200 rounded-full mx-auto" />
+                            <div className="h-0.5 bg-amber-500 rounded-full" />
+                            <div className="h-0.5 bg-slate-100 rounded-full" />
+                            <div className="h-0.5 bg-slate-100 rounded-full" />
+                        </div>
+                        <div className="space-y-2">
+                            <div className="h-1 bg-amber-500 rounded-full w-16" />
+                            <div className="space-y-1">
+                                {[...Array(3)].map((_, i) => (
+                                    <div key={i} className="h-0.5 bg-slate-100 rounded-full" style={{ width: `${90 - i * 15}%` }} />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Active Badge */}
                 {isActive && (
@@ -119,42 +177,34 @@ const ThemeCard: React.FC<ThemeCardProps> = ({ theme, isActive, onSelect }) => {
     );
 };
 
-const themes = [
+const themes: { id: CVThemeId; name: string; description: string; accentColor: string; tags: string[] }[] = [
     {
-        name: 'Modern Minimal',
-        description: 'Temiz ve profesyonel, ATS için optimize edilmiş.',
+        id: 'classic',
+        name: 'Classic',
+        description: 'Temiz ve profesyonel, ATS için optimize.',
         accentColor: 'bg-indigo-500',
-        tags: ['ATS Uyumlu', 'Tek Sütun', 'Minimal']
+        tags: ['ATS Uyumlu', 'Minimal']
     },
     {
-        name: 'Executive Pro',
-        description: 'Yönetici pozisyonları için ideal.',
+        id: 'executive',
+        name: 'Executive',
+        description: 'Üst düzey pozisyonlar için ideal.',
         accentColor: 'bg-slate-700',
-        tags: ['Üst Düzey', 'Profesyonel']
+        tags: ['Profesyonel', 'Kurumsal']
     },
     {
-        name: 'Tech Creative',
-        description: 'Teknoloji sektörü için modern görünüm.',
+        id: 'modern',
+        name: 'Modern',
+        description: 'Sol tarihli, temiz ve modern.',
         accentColor: 'bg-cyan-500',
-        tags: ['Teknoloji', 'Modern']
+        tags: ['Modern', 'Teknoloji']
     },
     {
-        name: 'Classic Elegant',
-        description: 'Geleneksel sektörler için klasik görünüm.',
-        accentColor: 'bg-amber-600',
-        tags: ['Klasik', 'Güvenilir']
-    },
-    {
-        name: 'Fresh Graduate',
-        description: 'Yeni mezunlar için beceri odaklı.',
-        accentColor: 'bg-emerald-500',
-        tags: ['Yeni Mezun', 'Temiz']
-    },
-    {
-        name: 'Bold Impact',
-        description: 'Dikkat çekici ve etkileyici tasarım.',
-        accentColor: 'bg-rose-500',
-        tags: ['Etkileyici', 'Cesur']
+        id: 'sidebar',
+        name: 'Sidebar',
+        description: 'İki kolonlu, detaylı görünüm.',
+        accentColor: 'bg-amber-500',
+        tags: ['İki Kolon', 'Detaylı']
     }
 ];
 

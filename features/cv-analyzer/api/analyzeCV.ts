@@ -2,19 +2,19 @@ import { GoogleGenAI } from "@google/genai";
 import { CVAnalysisResult } from "../model/types";
 
 export interface FileAttachment {
-    base64: string;
-    mimeType: string;
+  base64: string;
+  mimeType: string;
 }
 
 export const analyzeCV = async (
-    apiKey: string,
-    attachment: FileAttachment
+  apiKey: string,
+  attachment: FileAttachment
 ): Promise<CVAnalysisResult> => {
-    if (!apiKey) throw new Error("API Key gerekli");
+  if (!apiKey) throw new Error("API Key gerekli");
 
-    const ai = new GoogleGenAI({ apiKey });
+  const ai = new GoogleGenAI({ apiKey });
 
-    const systemInstruction = `
+  const systemInstruction = `
     Sen bir profesyonel İK uzmanı ve ATS (Applicant Tracking System) analistisin.
     Yüklenen CV'yi detaylı analiz et ve aşağıdaki JSON formatında yanıt ver:
 
@@ -88,44 +88,44 @@ export const analyzeCV = async (
     JSON formatında yanıt ver, başka açıklama ekleme.
   `;
 
-    const cleanBase64 = attachment.base64.replace(/^data:(.*);base64,/, "");
+  const cleanBase64 = attachment.base64.replace(/^data:(.*);base64,/, "");
 
-    const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
-        contents: [
-            {
-                role: "user",
-                parts: [
-                    {
-                        inlineData: {
-                            data: cleanBase64,
-                            mimeType: attachment.mimeType,
-                        },
-                    },
-                    {
-                        text: "Bu CV'yi analiz et ve değerlendir.",
-                    },
-                ],
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: [
+      {
+        role: "user",
+        parts: [
+          {
+            inlineData: {
+              data: cleanBase64,
+              mimeType: attachment.mimeType,
             },
+          },
+          {
+            text: "Bu CV'yi analiz et ve değerlendir.",
+          },
         ],
-        config: {
-            systemInstruction: systemInstruction,
-            temperature: 0.3,
-        },
-    });
+      },
+    ],
+    config: {
+      systemInstruction: systemInstruction,
+      temperature: 0.3,
+    },
+  });
 
-    const text = response.text;
-    if (!text) throw new Error("Gemini'den yanıt alınamadı");
+  const text = response.text;
+  if (!text) throw new Error("Gemini'den yanıt alınamadı");
 
-    // JSON parse
-    let cleanText = text.replace(/```json\s*/g, "").replace(/```/g, "").trim();
-    const firstBrace = cleanText.indexOf("{");
-    const lastBrace = cleanText.lastIndexOf("}");
+  // JSON parse
+  let cleanText = text.replace(/```json\s*/g, "").replace(/```/g, "").trim();
+  const firstBrace = cleanText.indexOf("{");
+  const lastBrace = cleanText.lastIndexOf("}");
 
-    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-        cleanText = cleanText.substring(firstBrace, lastBrace + 1);
-    }
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    cleanText = cleanText.substring(firstBrace, lastBrace + 1);
+  }
 
-    const result: CVAnalysisResult = JSON.parse(cleanText);
-    return result;
+  const result: CVAnalysisResult = JSON.parse(cleanText);
+  return result;
 };

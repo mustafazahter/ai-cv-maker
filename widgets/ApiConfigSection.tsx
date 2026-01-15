@@ -226,9 +226,6 @@ const ApiConfigSection: React.FC<ApiConfigSectionProps> = ({ apiKey, onSaveApiKe
                                 </li>
                             ))}
                         </ul>
-                        <button className="inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-700 mt-4">
-                            TAM REHBERİ GÖR <ExternalLink className="w-3 h-3" />
-                        </button>
                     </div>
                 </div>
             </div>
