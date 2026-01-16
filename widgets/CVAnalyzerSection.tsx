@@ -120,7 +120,18 @@ const CVAnalyzerSection: React.FC<CVAnalyzerSectionProps> = ({ apiKey, onRequest
             }, 500);
 
         } catch (err: any) {
-            setError(err.message || t('common.error'));
+            // Friendly error messages for common API issues
+            const errorMessage = err.message?.toLowerCase() || '';
+
+            if (errorMessage.includes('api key') || errorMessage.includes('apikey') || errorMessage.includes('401') || errorMessage.includes('invalid')) {
+                setError(t('cvAnalyzer.apiKeyError', 'API anahtarınızı kontrol edin. Geçersiz veya eksik olabilir.'));
+            } else if (errorMessage.includes('quota') || errorMessage.includes('429') || errorMessage.includes('rate')) {
+                setError(t('cvAnalyzer.quotaError', 'API kullanım limitine ulaşıldı. Lütfen biraz bekleyin.'));
+            } else if (errorMessage.includes('network') || errorMessage.includes('fetch')) {
+                setError(t('cvAnalyzer.networkError', 'Bağlantı hatası. İnternet bağlantınızı kontrol edin.'));
+            } else {
+                setError(t('cvAnalyzer.genericError', 'Analiz sırasında bir hata oluştu. Lütfen tekrar deneyin.'));
+            }
             setIsAnalyzing(false);
         } finally {
             clearInterval(progressInterval);
