@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Edit3, Key, Printer, Sparkles, PanelLeftClose, PanelLeftOpen, FileText, Home, Palette, Eye, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { ResumeData, CVThemeId } from '@/shared/types';
-import { INITIAL_RESUME_DATA, getInitialResumeData, INITIAL_RESUME_DATA_EN, INITIAL_RESUME_DATA_TR } from '@/shared/constants';
+import { getInitialResumeData, INITIAL_RESUME_DATA_EN, INITIAL_RESUME_DATA_TR } from '@/shared/constants';
 import { ChatAssistant } from '@/widgets/chat-panel';
 import { CVPreview } from '@/entities/resume';
 import { ManualEditor } from '@/widgets/resume-editor';
@@ -33,11 +33,27 @@ const App: React.FC = () => {
   const { t, i18n } = useTranslation();
   const [currentView, setCurrentView] = useState<AppView>(getViewFromHash());
 
-  // Apply correct initial data based on current language
+  // Apply correct initial data based on current language and localStorage
   // We use lazy initialization to only run this once on mount
   const [resumeData, setResumeData] = useState<ResumeData>(() => {
+    // 1. Try to load from localStorage
+    try {
+      const saved = localStorage.getItem('resumeData');
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (e) {
+      console.error('Failed to parse resumeData from localStorage', e);
+    }
+
+    // 2. Fallback to default
     return getInitialResumeData(i18n.language);
   });
+
+  // Save to localStorage whenever resumeData changes
+  useEffect(() => {
+    localStorage.setItem('resumeData', JSON.stringify(resumeData));
+  }, [resumeData]);
   const [apiKey, setApiKey] = useState<string | null>(localStorage.getItem('gemini_api_key'));
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [currentTheme, setCurrentTheme] = useState<CVThemeId>('classic');
