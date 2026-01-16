@@ -127,6 +127,11 @@ export interface ChatMessage {
   content: string;
   thoughts?: string;
   timestamp: number;
+  attachmentPreview?: {
+    url: string;
+    type: 'image' | 'pdf';
+    fileName?: string;
+  };
 }
 
 export type GeminiModel =

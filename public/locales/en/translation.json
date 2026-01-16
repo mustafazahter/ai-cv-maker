@@ -215,6 +215,7 @@
         "welcomeMessage": "Hello! I am your **ATS CV Agent**. \n\nI can analyze your existing resume from a **PDF** or **Image**, or we can build one together from scratch. \n\nHow can I help you today?",
         "uploadError": "Please upload a PDF or an Image file.",
         "analyzed": "Analyzed",
+        "analyzeThis": "Analyze:",
         "error": "Sorry, I encountered an error. Please check your API Key and try again.",
         "disclaimer": "Gemini may display inaccurate info, including about people, so double-check its responses.",
         "newChat": "New Chat",

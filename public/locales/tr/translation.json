@@ -215,6 +215,7 @@
         "welcomeMessage": "Merhaba! Ben senin **ATS CV Asistanınım**. \n\nMevcut CV'ni **PDF** veya **Görsel** olarak analiz edebilirim ya da sıfırdan birlikte oluşturabiliriz. \n\nBugün sana nasıl yardımcı olabilirim?",
         "uploadError": "Lütfen bir PDF veya görsel dosyası yükleyin.",
         "analyzed": "Analiz edildi",
+        "analyzeThis": "Analiz et:",
         "error": "Üzgünüm, bir hata oluştu. Lütfen API anahtarınızı kontrol edin ve tekrar deneyin.",
         "disclaimer": "Gemini hatalı bilgi verebilir, lütfen yanıtları kontrol edin.",
         "newChat": "Yeni Sohbet",

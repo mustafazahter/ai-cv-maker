@@ -112,14 +112,19 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
     // Prepare User Message
     let userDisplayContent = input;
     if (currentAttachment) {
-      userDisplayContent = input ? input : `${t('chat.analyzed')} ${currentAttachment.file.name}`;
+      userDisplayContent = input ? input : `${t('chat.analyzeThis')} ${currentAttachment.file.name}`;
     }
 
     const newMessage: ChatMessage = {
       id: Date.now().toString(),
       role: 'user',
       content: userDisplayContent,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      attachmentPreview: currentAttachment ? {
+        url: currentAttachment.previewUrl,
+        type: currentAttachment.type,
+        fileName: currentAttachment.file.name
+      } : undefined
     };
 
     // Update UI immediately
@@ -264,6 +269,23 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
                     : 'bg-white text-slate-800 border border-blue-100 rounded-tl-sm ring-1 ring-slate-100/50'
                   }
                     `}>
+                  {/* Attachment Preview */}
+                  {msg.attachmentPreview && (
+                    <div className="mb-2 pb-2 border-b border-slate-200">
+                      {msg.attachmentPreview.type === 'image' ? (
+                        <img
+                          src={msg.attachmentPreview.url}
+                          alt={msg.attachmentPreview.fileName || 'Uploaded image'}
+                          className="max-w-[200px] max-h-[150px] rounded-lg object-cover"
+                        />
+                      ) : (
+                        <div className="flex items-center gap-2 text-indigo-600">
+                          <FileText className="w-5 h-5" />
+                          <span className="text-xs font-medium">{msg.attachmentPreview.fileName || 'PDF File'}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                   <MarkdownRenderer content={msg.content} />
                 </div>
               </div>
