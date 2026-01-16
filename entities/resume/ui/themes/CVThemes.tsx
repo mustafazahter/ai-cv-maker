@@ -276,25 +276,68 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
             if (theme === 'modern' || theme === 'executive') {
                 addBlock(
                     <div className="grid grid-cols-2 gap-x-6 gap-y-1 mb-4">
-                        {data.skills.flatMap(group => group.items).map((skill, idx) => (
-                            <div key={idx} className="flex justify-between text-xs border-b border-dotted border-slate-200 pb-0.5">
-                                <span className="text-slate-800">{skill}</span>
-                                <span className="text-slate-500 text-[10px]">{t('cv.expert', 'Expert')}</span>
-                            </div>
-                        ))}
+                        {data.skills.flatMap(group =>
+                            group.items.map(item => {
+                                if (typeof item === 'string') {
+                                    return { name: item, level: 3, showLevel: group.showLevel ?? false };
+                                }
+                                return { ...item, showLevel: group.showLevel ?? false };
+                            })
+                        ).map((skill, idx) => {
+                            const level = skill.level ?? 3;
+                            const showLevel = skill.showLevel;
+
+                            let levelText = '';
+                            if (showLevel) {
+                                if (level === 5) levelText = t('cv.expert', 'Expert');
+                                else if (level === 4) levelText = t('cv.advanced', 'Advanced');
+                                else if (level === 3) levelText = t('cv.intermediate', 'Intermediate');
+                                else if (level === 2) levelText = t('cv.elementary', 'Elementary');
+                                else levelText = t('cv.beginner', 'Beginner');
+                            }
+
+                            return (
+                                <div key={idx} className="flex justify-between text-xs border-b border-dotted border-slate-200 pb-0.5">
+                                    <span className="text-slate-800">{skill.name}</span>
+                                    {showLevel && <span className="text-slate-500 text-[10px]">{levelText}</span>}
+                                </div>
+                            );
+                        })}
                     </div>,
                     'skills-body'
                 );
             } else if (theme === 'sidebar') {
                 addBlock(
-                    <div className="space-y-2 mb-4">
+                    <div className="space-y-4 mb-4">
                         {data.skills.map((skillGroup, idx) => (
                             <div key={idx}>
-                                <div className="text-xs font-bold text-amber-600 mb-1">{skillGroup.name}</div>
-                                <div className="flex flex-wrap gap-1">
-                                    {(skillGroup.items || []).map((skill, i) => (
-                                        <span key={i} className="text-xs bg-amber-50 text-slate-700 px-2 py-0.5 rounded">{skill}</span>
-                                    ))}
+                                <div className="text-xs font-bold text-amber-600 mb-1.5 uppercase tracking-wide">{skillGroup.name}</div>
+                                <div className="space-y-1.5 border-l-2 border-amber-100 pl-3">
+                                    {(skillGroup.items || []).map((skill, i) => {
+                                        const name = typeof skill === 'string' ? skill : skill.name;
+                                        const level = typeof skill === 'string' ? 3 : (skill.level ?? 3);
+
+                                        return (
+                                            <div key={i} className="flex flex-col">
+                                                <span className="text-xs text-slate-700 font-medium">{name}</span>
+                                                {skillGroup.showLevel && (
+                                                    <svg width="88" height="4" style={{ display: 'block', marginTop: '2px' }}>
+                                                        {[0, 1, 2, 3, 4].map(i => (
+                                                            <rect
+                                                                key={i}
+                                                                x={i * 18}
+                                                                y="0"
+                                                                width="16"
+                                                                height="4"
+                                                                rx="2"
+                                                                fill={i < level ? '#fbbf24' : '#e2e8f0'}
+                                                            />
+                                                        ))}
+                                                    </svg>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         ))}
@@ -303,11 +346,38 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
                 );
             } else {
                 addBlock(
-                    <div className="space-y-1 mb-4">
+                    <div className="space-y-2 mb-4">
                         {data.skills.map((skillGroup, idx) => (
                             <div key={idx} className="text-xs">
-                                <span className="font-bold text-slate-900 mr-2">{skillGroup.name}:</span>
-                                <span className="text-slate-800">{(skillGroup.items || []).join(', ')}</span>
+                                <span className="font-bold text-slate-900 block mb-1">{skillGroup.name}:</span>
+                                <div className="flex flex-wrap gap-x-4 gap-y-1">
+                                    {(skillGroup.items || []).map((skill, i) => {
+                                        const name = typeof skill === 'string' ? skill : skill.name;
+                                        const level = typeof skill === 'string' ? 3 : (skill.level ?? 3);
+
+                                        return (
+                                            <span key={i} className="text-slate-800 inline-flex items-center gap-1.5">
+                                                <span>{name}</span>
+                                                {skillGroup.showLevel && (
+                                                    <span className="flex items-center gap-0.5">
+                                                        {[1, 2, 3, 4, 5].map(l => (
+                                                            <span
+                                                                key={l}
+                                                                style={{
+                                                                    fontSize: '10px',
+                                                                    lineHeight: 1,
+                                                                    color: l <= level ? '#94a3b8' : '#e2e8f0',
+                                                                    WebkitPrintColorAdjust: 'exact',
+                                                                    printColorAdjust: 'exact'
+                                                                } as React.CSSProperties}
+                                                            >★</span>
+                                                        ))}
+                                                    </span>
+                                                )}
+                                            </span>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         ))}
                     </div>,

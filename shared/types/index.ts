@@ -19,9 +19,15 @@ export interface EducationItem {
   current: boolean;
 }
 
+export interface SkillItem {
+  name: string;
+  level: number; // 1-5
+}
+
 export interface SkillCategory {
   name: string;
-  items: string[];
+  items: SkillItem[];
+  showLevel?: boolean;
 }
 
 export interface ProjectItem {
@@ -130,7 +136,7 @@ export type GeminiModel =
   | 'gemini-flash-lite-latest';
 
 // CV Theme Types
-export type CVThemeId = 'classic' | 'executive' | 'modern' | 'sidebar';
+export type CVThemeId = 'classic' | 'executive' | 'modern' | 'sidebar' | 'professional' | 'elegant' | 'creative';
 
 export interface CVThemeConfig {
   id: CVThemeId;

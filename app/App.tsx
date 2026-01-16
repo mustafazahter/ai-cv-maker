@@ -17,6 +17,9 @@ const THEME_OPTIONS: { id: CVThemeId; name: string; color: string }[] = [
   { id: 'executive', name: 'Executive', color: 'bg-slate-700' },
   { id: 'modern', name: 'Modern', color: 'bg-cyan-500' },
   { id: 'sidebar', name: 'Sidebar', color: 'bg-amber-500' },
+  { id: 'professional', name: 'Professional', color: 'bg-blue-700' },
+  { id: 'elegant', name: 'Elegant', color: 'bg-black' },
+  { id: 'creative', name: 'Creative', color: 'bg-violet-600' },
 ];
 
 // Simple hash-based routing

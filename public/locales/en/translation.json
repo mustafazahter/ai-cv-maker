@@ -204,7 +204,12 @@
         "interests": "Interests",
         "references": "References",
         "present": "Present",
-        "profile": "Profile"
+        "profile": "Profile",
+        "expert": "Expert",
+        "advanced": "Advanced",
+        "intermediate": "Intermediate",
+        "elementary": "Elementary",
+        "beginner": "Beginner"
     },
     "chat": {
         "welcomeMessage": "Hello! I am your **ATS CV Agent**. \n\nI can analyze your existing resume from a **PDF** or **Image**, or we can build one together from scratch. \n\nHow can I help you today?",
@@ -238,6 +243,7 @@
         "addExperience": "Add Experience",
         "addEducation": "Add Education",
         "addSkillCategory": "Add Skill Category",
+        "addSkill": "Add Skill",
         "addProject": "Add Project",
         "addCertification": "Add Certification",
         "addLanguage": "Add Language",
@@ -257,6 +263,7 @@
         "company": "Company",
         "startDate": "Start",
         "endDate": "End",
+        "showLevel": "Show Levels",
         "categoryName": "Category Name",
         "projectName": "Project Name",
         "link": "Link (URL)",

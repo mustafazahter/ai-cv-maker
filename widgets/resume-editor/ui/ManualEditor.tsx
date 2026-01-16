@@ -314,16 +314,88 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                         handleChange('skills', newSkills);
                     }} className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
 
-                    <Input label={t('editor.categoryName')} value={cat.name} onChange={(v) => {
-                        const newSkills = [...data.skills];
-                        newSkills[idx].name = v;
-                        handleChange('skills', newSkills);
-                    }} />
-                    <Textarea label={t('editor.skillsPlaceholder')} value={cat.items.join(', ')} onChange={(v) => {
-                        const newSkills = [...data.skills];
-                        newSkills[idx].items = v.split(',').map(s => s.trim()).filter(Boolean);
-                        handleChange('skills', newSkills);
-                    }} rows={2} />
+                    <div className="flex justify-between items-end mb-2 gap-4">
+                        <Input label={t('editor.categoryName')} value={cat.name} onChange={(v) => {
+                            const newSkills = [...data.skills];
+                            newSkills[idx].name = v;
+                            handleChange('skills', newSkills);
+                        }} containerClassName="flex-1" />
+
+                        <div className="flex items-center gap-2 pb-3 shrink-0">
+                            <label className="text-[10px] uppercase tracking-wider text-slate-400 font-bold whitespace-nowrap">{t('editor.showLevel')}</label>
+                            <button
+                                onClick={() => {
+                                    const newSkills = [...data.skills];
+                                    newSkills[idx].showLevel = !newSkills[idx].showLevel;
+                                    handleChange('skills', newSkills);
+                                }}
+                                className={`w-10 h-5 rounded-full relative transition-colors ${cat.showLevel ? 'bg-indigo-500' : 'bg-slate-200'}`}
+                            >
+                                <div className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-all ${cat.showLevel ? 'left-6' : 'left-1'}`} />
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="space-y-2 mt-3">
+                        {cat.items.map((skill, skIdx) => (
+                            <div key={skIdx} className="flex items-center gap-2">
+                                <div className="flex-1">
+                                    <input
+                                        className="w-full p-2 text-sm border border-slate-200 rounded-lg outline-none focus:border-indigo-500"
+                                        value={typeof skill === 'string' ? skill : skill.name}
+                                        onChange={(e) => {
+                                            const newSkills = [...data.skills];
+                                            const currentLevel = typeof skill === 'string' ? 3 : skill.level;
+                                            newSkills[idx].items[skIdx] = { name: e.target.value, level: currentLevel };
+                                            handleChange('skills', newSkills);
+                                        }}
+                                        placeholder="Skill Name"
+                                    />
+                                </div>
+                                {cat.showLevel && (
+                                    <div className="shrink-0 flex items-center gap-1 bg-white border border-slate-200 rounded-lg p-1 px-2">
+                                        {[1, 2, 3, 4, 5].map((lvl) => (
+                                            <button
+                                                key={lvl}
+                                                onClick={() => {
+                                                    const newSkills = [...data.skills];
+                                                    const currentName = typeof skill === 'string' ? skill : skill.name;
+                                                    newSkills[idx].items[skIdx] = { name: currentName, level: lvl };
+                                                    handleChange('skills', newSkills);
+                                                }}
+                                                className={`p-0.5 transition-colors ${(typeof skill === 'string' ? 3 : skill.level) >= lvl
+                                                    ? 'text-yellow-400'
+                                                    : 'text-slate-200'
+                                                    }`}
+                                            >
+                                                <Star className="w-3 h-3 fill-current" />
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                                <button
+                                    onClick={() => {
+                                        const newSkills = [...data.skills];
+                                        newSkills[idx].items = newSkills[idx].items.filter((_, i) => i !== skIdx);
+                                        handleChange('skills', newSkills);
+                                    }}
+                                    className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </div>
+                        ))}
+                        <button
+                            onClick={() => {
+                                const newSkills = [...data.skills];
+                                newSkills[idx].items.push({ name: '', level: 3 });
+                                handleChange('skills', newSkills);
+                            }}
+                            className="text-xs text-indigo-600 font-medium hover:underline flex items-center gap-1 mt-2"
+                        >
+                            <Plus className="w-3 h-3" /> {t('editor.addSkill')}
+                        </button>
+                    </div>
                 </div>
             ))}
             <ButtonAdd onClick={() => handleChange('skills', [...data.skills, { name: 'New Category', items: [] }])} label={t('editor.addSkillCategory')} />

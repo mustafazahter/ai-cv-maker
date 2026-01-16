@@ -53,7 +53,17 @@ const resumeSchemaProps = {
       type: Type.OBJECT,
       properties: {
         name: { type: Type.STRING },
-        items: { type: Type.ARRAY, items: { type: Type.STRING } },
+        showLevel: { type: Type.BOOLEAN },
+        items: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              name: { type: Type.STRING },
+              level: { type: Type.NUMBER }
+            }
+          }
+        },
       },
     },
   },
@@ -254,7 +264,13 @@ export const chatWithCVAgent = async (
     4. **Job-Specific Terms**: If the user mentions a target role/industry, include relevant keywords for that field.
     5. **Skills Section**: Ensure the skills section includes both hard skills (technical) and soft skills that ATS systems scan for.
     6. **Standard Section Headers**: Use standard headers like "Experience", "Education", "Skills" for better ATS parsing.
-    7. **Avoid**: Graphics, tables, special characters that ATS cannot parse (you're generating text data, so this is handled).
+    8. **SKILL LEVELS (IMPORTANT)**: 
+         - If the user explicitly mentions skill levels (e.g., "Expert in React", "Advanced Python"), enable levels for that category by setting "showLevel": true.
+         - Map levels to a 1-5 scale: Beginner=1, Elementary=2, Intermediate=3, Advanced=4, Expert=5.
+         - If NO level is mentioned, set "showLevel": false and default level to 3.
+         - Structure: { "name": "Tech Stack", "showLevel": true, "items": [{ "name": "React", "level": 5 }] }
+
+    9. **Avoid**: Graphics, tables, special characters that ATS cannot parse (you're generating text data, so this is handled).
     
     Always inform the user in your 'chatResponse' about the ATS keywords you've added or optimized.
 
@@ -337,7 +353,11 @@ export const chatWithCVAgent = async (
             "sectionOrder": ["summary", "experience", "education", "skills", ...],
             "experience": [{ "id": "exp-1", "company": "...", "title": "...", "location": "...", "startDate": "...", "endDate": "...", "current": true/false, "description": ["bullet 1", "bullet 2"] }],
             "education": [{ "id": "edu-1", "institution": "...", "degree": "...", "location": "...", "startDate": "...", "endDate": "..." }],
-            "skills": [{ "name": "Category Name", "items": ["skill1", "skill2"] }],
+            "skills": [{ 
+                "name": "Category Name", 
+                "showLevel": true, 
+                "items": [{ "name": "Skill Name", "level": 1-5 }] 
+            }],
             "languages": [{ "id": "lang-1", "language": "...", "proficiency": "..." }],
             "awards": [{ "id": "award-1", "title": "...", "issuer": "...", "date": "...", "description": "..." }],
             "certifications": [],

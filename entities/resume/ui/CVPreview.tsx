@@ -2,6 +2,7 @@ import React, { useState, useRef, useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ResumeData, CVThemeId } from '@/shared/types';
 import { renderClassicTheme, renderExecutiveTheme, renderModernTheme, renderSidebarTheme } from './themes/CVThemes';
+import { renderProfessionalTheme, renderElegantTheme, renderCreativeTheme } from './themes/NewThemes';
 
 interface CVPreviewProps {
   data: ResumeData;
@@ -38,6 +39,15 @@ const CVPreview: React.FC<CVPreviewProps> = ({ data, theme = 'classic' }) => {
         break;
       case 'sidebar':
         renderSidebarTheme({ data, addBlock, t });
+        break;
+      case 'professional':
+        renderProfessionalTheme({ data, addBlock, t });
+        break;
+      case 'elegant':
+        renderElegantTheme({ data, addBlock, t });
+        break;
+      case 'creative':
+        renderCreativeTheme({ data, addBlock, t });
         break;
       default:
         renderClassicTheme({ data, addBlock, t });

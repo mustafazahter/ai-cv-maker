@@ -43,6 +43,7 @@ html {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -53,6 +54,7 @@ html {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -64,6 +66,7 @@ html {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -75,6 +78,7 @@ html {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -82,9 +86,12 @@ html {
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }
@@ -94,6 +101,7 @@ html {
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(100%);
   }
@@ -133,6 +141,7 @@ html {
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -173,4 +182,101 @@ html {
   color: #1e1b4b;
 }
 
-/* Print styles are defined in index.html */
+/* Print styles */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html,
+  body {
+    background-color: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure background colors are printed using GRADIENT hack (browsers handle images better than bg colors) */
+  .bg-blue-700 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-image: linear-gradient(#1d4ed8, #1d4ed8) !important;
+    background-color: #1d4ed8 !important;
+    border: 1px solid #1d4ed8 !important;
+    /* Fallback border */
+  }
+
+  .bg-slate-100 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-image: linear-gradient(#f1f5f9, #f1f5f9) !important;
+    background-color: #f1f5f9 !important;
+    border: 1px solid #e2e8f0 !important;
+    /* Slight border for visibility */
+  }
+
+  .bg-indigo-500 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-image: linear-gradient(#6366f1, #6366f1) !important;
+    background-color: #6366f1 !important;
+    border: 1px solid #6366f1 !important;
+  }
+
+  .bg-slate-200 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-image: linear-gradient(#e2e8f0, #e2e8f0) !important;
+    background-color: #e2e8f0 !important;
+  }
+
+  /* Black for Elegant theme */
+  .bg-black {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-image: linear-gradient(#000000, #000000) !important;
+    background-color: #000000 !important;
+  }
+
+  /* Violet for Creative theme */
+  .bg-violet-600 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-image: linear-gradient(#7c3aed, #7c3aed) !important;
+    background-color: #7c3aed !important;
+  }
+
+  /* Amber colors for Sidebar theme */
+  .bg-amber-400 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-image: linear-gradient(#fbbf24, #fbbf24) !important;
+    background-color: #fbbf24 !important;
+    border: 1px solid #fbbf24 !important;
+  }
+
+  .bg-amber-200 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-image: linear-gradient(#fde68a, #fde68a) !important;
+    background-color: #fde68a !important;
+    border: 1px solid #fde68a !important;
+  }
+
+  .bg-amber-100 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-image: linear-gradient(#fef3c7, #fef3c7) !important;
+    background-color: #fef3c7 !important;
+    border: 1px solid #fef3c7 !important;
+  }
+
+  /* Progress Bar Specific Fixes */
+  [role="progressbar"],
+  .h-1.5,
+  .h-full,
+  .h-1 {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+}

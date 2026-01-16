@@ -40,6 +40,27 @@ const AIThemesSection: React.FC<AIThemesSectionProps> = ({ onSelectTheme, curren
             description: t('aiThemes.themes.sidebarDesc'),
             accentColor: 'bg-amber-500',
             tags: [t('aiThemes.tags.twoColumn'), t('aiThemes.tags.detailed')]
+        },
+        {
+            id: 'professional',
+            name: 'Professional',
+            description: t('aiThemes.themes.professionalDesc', 'Clean blue accents'),
+            accentColor: 'bg-blue-700',
+            tags: [t('aiThemes.tags.professional'), t('aiThemes.tags.minimal')]
+        },
+        {
+            id: 'elegant',
+            name: 'Elegant',
+            description: t('aiThemes.themes.elegantDesc', 'Serif academic style'),
+            accentColor: 'bg-black',
+            tags: [t('aiThemes.tags.classic'), t('aiThemes.tags.academic')]
+        },
+        {
+            id: 'creative',
+            name: 'Creative',
+            description: t('aiThemes.themes.creativeDesc', 'Modern violet design'),
+            accentColor: 'bg-violet-600',
+            tags: [t('aiThemes.tags.modern'), t('aiThemes.tags.creative')]
         }
     ];
 
@@ -172,6 +193,62 @@ const ThemeCard: React.FC<ThemeCardProps> = ({ theme, isActive, onSelect, t }) =
                                     <div key={i} className="h-0.5 bg-slate-100 rounded-full" style={{ width: `${90 - i * 15}%` }} />
                                 ))}
                             </div>
+                        </div>
+                    </div>
+                )}
+
+                {theme.id === 'professional' && (
+                    <div className="bg-white rounded-lg shadow-lg h-full p-2.5 transform group-hover:scale-[1.02] transition-transform duration-300">
+                        <div className="flex justify-between border-b-2 border-blue-700 pb-1 mb-2">
+                            <div className="h-1.5 bg-blue-700 rounded-full w-12" />
+                            <div className="h-0.5 bg-slate-200 w-8" />
+                        </div>
+                        <div className="space-y-2">
+                            {[...Array(3)].map((_, i) => (
+                                <div key={i} className="space-y-0.5">
+                                    <div className="h-0.5 bg-blue-700/50 w-8" />
+                                    <div className="h-0.5 bg-slate-100 w-full" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {theme.id === 'elegant' && (
+                    <div className="bg-white rounded-lg shadow-lg h-full p-2.5 transform group-hover:scale-[1.02] transition-transform duration-300">
+                        <div className="text-center mb-2">
+                            <div className="h-1.5 bg-slate-900 rounded-sm w-16 mx-auto mb-1" />
+                            <div className="border-b border-double border-slate-300 w-full h-px" />
+                        </div>
+                        <div className="space-y-2">
+                            <div className="bg-slate-100 h-1 w-full mx-auto" />
+                            {[...Array(3)].map((_, i) => (
+                                <div key={i} className="flex gap-1 items-center">
+                                    <div className="w-0.5 h-0.5 bg-slate-900 rotate-45" />
+                                    <div className="h-px bg-slate-200 w-full" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {theme.id === 'creative' && (
+                    <div className="bg-white rounded-lg shadow-lg h-full p-2.5 transform group-hover:scale-[1.02] transition-transform duration-300">
+                        <div className="flex gap-2 mb-2 items-center">
+                            <div className="w-5 h-5 rounded-full bg-slate-100 border border-violet-200" />
+                            <div className="space-y-0.5">
+                                <div className="h-1.5 bg-slate-900 w-12" />
+                                <div className="h-0.5 bg-violet-500 w-8" />
+                            </div>
+                        </div>
+                        <div className="space-y-2 pl-2 border-l border-violet-100">
+                            {[...Array(3)].map((_, i) => (
+                                <div key={i} className="space-y-0.5 relative">
+                                    <div className="absolute -left-[11px] top-0 w-1 h-1 bg-violet-300 rounded-full" />
+                                    <div className="h-0.5 bg-slate-200 w-10" />
+                                    <div className="h-0.5 bg-slate-100 w-full" />
+                                </div>
+                            ))}
                         </div>
                     </div>
                 )}
