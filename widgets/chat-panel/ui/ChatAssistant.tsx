@@ -16,7 +16,7 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
   const { t } = useTranslation();
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<GeminiModel>('gemini-3-pro-preview');
+  const [selectedModel, setSelectedModel] = useState<GeminiModel>('gemini-flash-latest');
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'welcome',
@@ -205,8 +205,8 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ apiKey, currentResumeData
             >
               <option value="gemini-3-flash-preview">Gemini 3 Flash</option>
               <option value="gemini-3-pro-preview">Gemini 3 Pro</option>
-              <option value="gemini-flash-latest">Gemini 2.5 Flash</option>
-              <option value="gemini-flash-lite-latest">Gemini Flash Lite</option>
+              <option value="gemini-flash-latest">Gemini Flash (Latest)</option>
+              <option value="gemini-flash-lite-latest">Gemini Flash Lite (Latest)</option>
             </select>
             <Sparkles className="w-3 h-3 text-indigo-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <ChevronDown className="w-3 h-3 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
