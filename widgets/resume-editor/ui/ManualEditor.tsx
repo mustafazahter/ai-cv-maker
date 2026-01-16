@@ -270,6 +270,7 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                     <div className="grid gap-3">
                         <Input label={t('editor.company')} value={exp.company} onChange={(v) => handleArrayChange('experience', exp.id, 'company', v)} />
                         <Input label={t('editor.jobTitle')} value={exp.title} onChange={(v) => handleArrayChange('experience', exp.id, 'title', v)} />
+                        <Input label={t('editor.location')} value={exp.location || ''} onChange={(v) => handleArrayChange('experience', exp.id, 'location', v)} icon={<MapPin className="w-3 h-3" />} />
                         <div className="grid grid-cols-2 gap-2">
                             <Input label={t('editor.startDate')} value={exp.startDate} onChange={(v) => handleArrayChange('experience', exp.id, 'startDate', v)} />
                             <Input label={t('editor.endDate')} value={exp.endDate} onChange={(v) => handleArrayChange('experience', exp.id, 'endDate', v)} disabled={exp.current} />
@@ -294,6 +295,7 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                     <div className="grid gap-3">
                         <Input label={t('editor.institution')} value={edu.institution} onChange={(v) => handleArrayChange('education', edu.id, 'institution', v)} />
                         <Input label={t('editor.degree')} value={edu.degree} onChange={(v) => handleArrayChange('education', edu.id, 'degree', v)} />
+                        <Input label={t('editor.location')} value={edu.location || ''} onChange={(v) => handleArrayChange('education', edu.id, 'location', v)} icon={<MapPin className="w-3 h-3" />} />
                         <div className="grid grid-cols-2 gap-2">
                             <Input label={t('editor.startDate')} value={edu.startDate} onChange={(v) => handleArrayChange('education', edu.id, 'startDate', v)} />
                             <Input label={t('editor.endDate')} value={edu.endDate} onChange={(v) => handleArrayChange('education', edu.id, 'endDate', v)} />
@@ -728,8 +730,8 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
 
 // --- SUB-COMPONENTS ---
 
-const Input = ({ label, value, onChange, disabled = false, icon, placeholder }: { label: string, value: string, onChange: (val: string) => void, disabled?: boolean, icon?: React.ReactNode, placeholder?: string }) => (
-    <div className="relative">
+const Input = ({ label, value, onChange, disabled = false, icon, placeholder, containerClassName }: { label: string, value: string, onChange: (val: string) => void, disabled?: boolean, icon?: React.ReactNode, placeholder?: string, containerClassName?: string }) => (
+    <div className={`relative ${containerClassName || ''}`}>
         <label className="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">{label}</label>
         <div className="relative">
             <input

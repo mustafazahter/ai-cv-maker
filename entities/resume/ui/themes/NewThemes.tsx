@@ -167,7 +167,10 @@ const renderNewSections = (data: ResumeData, addBlock: (node: React.ReactNode, k
                         <div className="mb-4">
                             <div className="flex justify-between items-baseline mb-1">
                                 <h3 className="font-bold text-slate-900 text-sm">{exp.title}, <span className="text-slate-700 font-semibold">{exp.company}</span></h3>
-                                <span className="font-bold text-slate-900 text-xs">{exp.startDate} — {exp.current ? t('cv.present') : exp.endDate}</span>
+                                <div className="text-right">
+                                    <span className="font-bold text-slate-900 text-xs block">{exp.startDate} — {exp.current ? t('cv.present') : exp.endDate}</span>
+                                    {exp.location && <span className="text-xs text-slate-500">{exp.location}</span>}
+                                </div>
                             </div>
                             <ul className="list-disc ml-5 space-y-1">
                                 {(exp.description || []).map((desc, i) => (
@@ -244,7 +247,7 @@ const renderNewSections = (data: ResumeData, addBlock: (node: React.ReactNode, k
                             </div>
                             <div className="text-right">
                                 <span className="font-bold text-slate-900 text-xs block">{edu.startDate} — {edu.endDate}</span>
-                                <span className="text-xs text-slate-500">{edu.location}</span>
+                                {edu.location && <span className="text-xs text-slate-500">{edu.location}</span>}
                             </div>
                         </div>,
                         `edu-${edu.id}`
@@ -275,6 +278,7 @@ const renderNewSections = (data: ResumeData, addBlock: (node: React.ReactNode, k
                             <div className="absolute -left-[5px] top-1.5 w-2 h-2 bg-white border-2 border-indigo-200 rounded-full"></div>
                             <h3 className="font-bold text-slate-900 text-sm">{edu.degree}</h3>
                             <div className="text-xs text-slate-500">{edu.institution}</div>
+                            {edu.location && <div className="text-xs text-slate-400">{edu.location}</div>}
                             <div className="text-[10px] text-indigo-500 font-medium mt-1 uppercase">{edu.startDate} — {edu.endDate}</div>
                         </div>,
                         `edu-${edu.id}`
