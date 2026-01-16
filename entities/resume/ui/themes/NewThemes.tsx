@@ -21,7 +21,7 @@ export const renderProfessionalTheme = ({ data, addBlock, t }: ThemeRenderProps)
                 <h1 className="text-4xl font-bold text-blue-700 uppercase tracking-tight mb-2">{data.fullName}</h1>
                 <p className="text-xl font-bold text-slate-800 mb-3 uppercase tracking-wide">{data.title}</p>
                 <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium text-slate-600">
-                    {[data.location, data.phone, data.email].filter(Boolean).map((item, i, arr) => (
+                    {[data.location, data.phone, data.email, data.linkedin, data.website].filter(Boolean).map((item, i, arr) => (
                         <span key={i} className="flex items-center gap-1">
                             {item}
                             {i < arr.length - 1 && <span className="text-slate-300">|</span>}
@@ -63,13 +63,11 @@ export const renderElegantTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
             {/* Phone and Email Line with solid border above and below or just below?
                  Image shows: Address line. Then (Phone ... Email) line. Then a DOUBLE LINE.
              */}
-            <div className="flex justify-between items-center pt-2 pb-1 border-b-[3px] border-slate-400 border-double">
-                <div className="font-serif text-slate-900 font-bold text-sm">
-                    {data.phone}
-                </div>
-                <div className="font-serif text-slate-900 font-bold text-sm">
-                    {data.email}
-                </div>
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 pt-2 pb-1 border-b-[3px] border-slate-400 border-double">
+                {data.phone && <div className="font-serif text-slate-900 font-bold text-sm">{data.phone}</div>}
+                {data.email && <div className="font-serif text-slate-900 font-bold text-sm">{data.email}</div>}
+                {data.linkedin && <div className="font-serif text-slate-900 font-bold text-sm">{data.linkedin}</div>}
+                {data.website && <div className="font-serif text-slate-900 font-bold text-sm">{data.website}</div>}
             </div>
         </header>,
         'elegant-header'
@@ -100,6 +98,8 @@ export const renderCreativeTheme = ({ data, addBlock, t }: ThemeRenderProps) => 
                     {data.location && <div className="flex items-center gap-2"><MapPin className="w-3 h-3" /> {data.location}</div>}
                     {data.email && <div className="flex items-center gap-2"><Mail className="w-3 h-3" /> {data.email}</div>}
                     {data.phone && <div className="flex items-center gap-2"><Phone className="w-3 h-3" /> {data.phone}</div>}
+                    {data.linkedin && <div className="flex items-center gap-2"><span>in</span> {data.linkedin}</div>}
+                    {data.website && <div className="flex items-center gap-2"><span>🌐</span> {data.website}</div>}
                 </div>
             </div>
         </header>,
@@ -496,6 +496,50 @@ const renderNewSections = (data: ResumeData, addBlock: (node: React.ReactNode, k
                         </div>,
                         `vol-${vol.id}`
                     );
+                });
+            } else if (key === 'awards') {
+                data.awards.forEach(award => {
+                    const content = theme === 'elegant' ? (
+                        <div className="mb-2">
+                            <div className="flex items-end text-xs">
+                                <span className="font-serif font-bold text-slate-900 shrink-0">{award.title}</span>
+                                {award.issuer && <span className="font-serif text-slate-600 mx-1">- {award.issuer}</span>}
+                                <div className="flex-1 border-b border-dotted border-slate-400 mx-2 relative top-[-5px]"></div>
+                                <span className="font-serif text-slate-700 shrink-0">{award.date}</span>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className={`mb-2 text-xs ${theme === 'creative' ? 'pl-6 border-l-2 border-orange-100 relative' : ''}`}>
+                            {theme === 'creative' && <div className="absolute -left-[5px] top-1 w-2 h-2 bg-orange-200 rounded-full"></div>}
+                            <div className="flex justify-between items-baseline">
+                                <span className="font-bold text-slate-900">{award.title} {award.issuer && <span className="font-normal text-slate-600">- {award.issuer}</span>}</span>
+                                <span className="text-slate-500">{award.date}</span>
+                            </div>
+                        </div>
+                    );
+                    addBlock(content, `award-${award.id}`);
+                });
+            } else if (key === 'certifications') {
+                data.certifications.forEach(cert => {
+                    const content = theme === 'elegant' ? (
+                        <div className="mb-2">
+                            <div className="flex items-end text-xs">
+                                <span className="font-serif font-bold text-slate-900 shrink-0">{cert.name}</span>
+                                {cert.issuer && <span className="font-serif text-slate-600 mx-1">- {cert.issuer}</span>}
+                                <div className="flex-1 border-b border-dotted border-slate-400 mx-2 relative top-[-5px]"></div>
+                                <span className="font-serif text-slate-700 shrink-0">{cert.date}</span>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className={`mb-2 text-xs ${theme === 'creative' ? 'pl-6 border-l-2 border-indigo-100 relative' : ''}`}>
+                            {theme === 'creative' && <div className="absolute -left-[5px] top-1 w-2 h-2 bg-indigo-200 rounded-full"></div>}
+                            <div className="flex justify-between items-baseline">
+                                <span className="font-bold text-slate-900">{cert.name} {cert.issuer && <span className="font-normal text-slate-600">- {cert.issuer}</span>}</span>
+                                <span className="text-slate-500">{cert.date}</span>
+                            </div>
+                        </div>
+                    );
+                    addBlock(content, `cert-${cert.id}`);
                 });
             } else {
                 // Fallback for others

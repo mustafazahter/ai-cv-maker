@@ -51,6 +51,8 @@ export const renderExecutiveTheme = ({ data, addBlock, t }: ThemeRenderProps) =>
             <div className="flex justify-center gap-6 text-xs text-slate-600">
                 {data.phone && <span>{data.phone}</span>}
                 {data.email && <span>{data.email}</span>}
+                {data.linkedin && <span>{data.linkedin}</span>}
+                {data.website && <span>{data.website}</span>}
             </div>
         </header>,
         'main-header'
@@ -72,7 +74,7 @@ export const renderModernTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
                     <h1 className="text-2xl font-bold text-slate-900 mb-1">
                         {data.fullName}{data.title && <span className="font-normal text-slate-600">, {data.title}</span>}
                     </h1>
-                    <p className="text-sm text-slate-600">{[data.location, data.phone, data.email].filter(Boolean).join(', ')}</p>
+                    <p className="text-sm text-slate-600">{[data.location, data.phone, data.email, data.linkedin, data.website].filter(Boolean).join(', ')}</p>
                 </div>
             </div>
         </header>,
@@ -97,6 +99,8 @@ export const renderSidebarTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
                     {data.location && <p>{data.location}</p>}
                     {data.phone && <p>{data.phone}</p>}
                     {data.email && <p>{data.email}</p>}
+                    {data.linkedin && <p>{data.linkedin}</p>}
+                    {data.website && <p>{data.website}</p>}
                 </div>
             </div>
         </header>,
@@ -440,32 +444,30 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
             addBlock(<SectionHeader title={t('cv.certifications')} theme={theme} />, 'cert-header');
 
             if (theme === 'executive') {
-                addBlock(
-                    <div className="space-y-2 mb-4">
-                        {data.certifications.map((cert) => (
-                            <div key={cert.id} className="flex items-start gap-2">
-                                <span className="text-amber-600 text-xs mt-0.5">◆</span>
-                                <div className="flex-1 flex justify-between items-baseline text-xs">
-                                    <div><span className="font-bold text-slate-900">{cert.name}</span> - {cert.issuer}</div>
-                                    <span className="text-slate-600">{cert.date}</span>
-                                </div>
+                data.certifications.forEach((cert, index) => {
+                    const isLast = index === data.certifications.length - 1;
+                    addBlock(
+                        <div className={`flex items-start gap-2 ${isLast ? 'mb-4' : 'mb-2'}`}>
+                            <span className="text-amber-600 text-xs mt-0.5">◆</span>
+                            <div className="flex-1 flex justify-between items-baseline text-xs">
+                                <div><span className="font-bold text-slate-900">{cert.name}</span> - {cert.issuer}</div>
+                                <span className="text-slate-600">{cert.date}</span>
                             </div>
-                        ))}
-                    </div>,
-                    'cert-body'
-                );
+                        </div>,
+                        `cert-${cert.id}`
+                    );
+                });
             } else {
-                addBlock(
-                    <div className="space-y-1 mb-4">
-                        {data.certifications.map((cert) => (
-                            <div key={cert.id} className="flex justify-between items-baseline text-xs">
-                                <div><span className="font-bold text-slate-900">{cert.name}</span><span className="text-slate-600"> - {cert.issuer}</span></div>
-                                <span className="text-slate-700">{cert.date}</span>
-                            </div>
-                        ))}
-                    </div>,
-                    'cert-body'
-                );
+                data.certifications.forEach((cert, index) => {
+                    const isLast = index === data.certifications.length - 1;
+                    addBlock(
+                        <div className={`flex justify-between items-baseline text-xs ${isLast ? 'mb-4' : 'mb-1'}`}>
+                            <div><span className="font-bold text-slate-900">{cert.name}</span><span className="text-slate-600"> - {cert.issuer}</span></div>
+                            <span className="text-slate-700">{cert.date}</span>
+                        </div>,
+                        `cert-${cert.id}`
+                    );
+                });
             }
         }
 
@@ -474,17 +476,16 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
             addBlock(<SectionHeader title={t('cv.languages')} theme={theme} />, 'lang-header');
 
             if (theme === 'sidebar') {
-                addBlock(
-                    <div className="space-y-1 mb-4">
-                        {data.languages.map((lang) => (
-                            <div key={lang.id} className="flex justify-between text-xs">
-                                <span className="font-bold text-slate-900">{lang.language}</span>
-                                <span className="text-amber-600">{lang.proficiency}</span>
-                            </div>
-                        ))}
-                    </div>,
-                    'lang-body'
-                );
+                data.languages.forEach((lang, index) => {
+                    const isLast = index === data.languages.length - 1;
+                    addBlock(
+                        <div className={`flex justify-between text-xs ${isLast ? 'mb-4' : 'mb-1'}`}>
+                            <span className="font-bold text-slate-900">{lang.language}</span>
+                            <span className="text-amber-600">{lang.proficiency}</span>
+                        </div>,
+                        `lang-${lang.id}`
+                    );
+                });
             } else {
                 addBlock(
                     <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs mb-4">
@@ -538,35 +539,33 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
 
         // AWARDS
         else if (key === 'awards' && data.awards.length > 0) {
-            addBlock(<SectionHeader title={t('cv.awards')} theme={theme} />, 'awards-header');
+            addBlock(<SectionHeader title={theme === 'executive' ? t('cv.awards') : t('cv.awards')} theme={theme} />, 'awards-header');
 
             if (theme === 'executive') {
-                addBlock(
-                    <div className="space-y-2 mb-4">
-                        {data.awards.map((award) => (
-                            <div key={award.id} className="flex items-start gap-2">
-                                <span className="text-amber-600 text-xs mt-0.5">◆</span>
-                                <div className="flex-1 flex justify-between items-baseline text-xs">
-                                    <div><span className="font-bold text-slate-900">{award.title}</span> - {award.issuer}</div>
-                                    <span className="text-slate-600">{award.date}</span>
-                                </div>
+                data.awards.forEach((award, index) => {
+                    const isLast = index === data.awards.length - 1;
+                    addBlock(
+                        <div className={`flex items-start gap-2 ${isLast ? 'mb-4' : 'mb-2'}`}>
+                            <span className="text-amber-600 text-xs mt-0.5">◆</span>
+                            <div className="flex-1 flex justify-between items-baseline text-xs">
+                                <div><span className="font-bold text-slate-900">{award.title}</span> - {award.issuer}</div>
+                                <span className="text-slate-600">{award.date}</span>
                             </div>
-                        ))}
-                    </div>,
-                    'awards-body'
-                );
+                        </div>,
+                        `award-${award.id}`
+                    );
+                });
             } else {
-                addBlock(
-                    <div className="space-y-1 mb-4">
-                        {data.awards.map((award) => (
-                            <div key={award.id} className="flex justify-between items-baseline text-xs">
-                                <div><span className="font-bold text-slate-900">{award.title}</span><span className="text-slate-600"> - {award.issuer}</span></div>
-                                <span className="text-slate-700">{award.date}</span>
-                            </div>
-                        ))}
-                    </div>,
-                    'awards-body'
-                );
+                data.awards.forEach((award, index) => {
+                    const isLast = index === data.awards.length - 1;
+                    addBlock(
+                        <div className={`flex justify-between items-baseline text-xs ${isLast ? 'mb-4' : 'mb-1'}`}>
+                            <div><span className="font-bold text-slate-900">{award.title}</span><span className="text-slate-600"> - {award.issuer}</span></div>
+                            <span className="text-slate-700">{award.date}</span>
+                        </div>,
+                        `award-${award.id}`
+                    );
+                });
             }
         }
 

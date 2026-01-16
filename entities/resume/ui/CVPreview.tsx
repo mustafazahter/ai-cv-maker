@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React, { useState, useRef, useLayoutEffect, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ResumeData, CVThemeId } from '@/shared/types';
 import { renderClassicTheme, renderExecutiveTheme, renderModernTheme, renderSidebarTheme } from './themes/CVThemes';
@@ -9,156 +9,206 @@ interface CVPreviewProps {
   theme?: CVThemeId;
 }
 
-// A4 dimensions
-const PAGE_HEIGHT_PX = 1122;
-const PADDING_MM = 15;
-const PADDING_PX = PADDING_MM * 3.78;
-const FOOTER_HEIGHT = 80; // Significantly increased reserved space for footer
-const CONTENT_HEIGHT = PAGE_HEIGHT_PX - (PADDING_PX * 2) - FOOTER_HEIGHT;
-const SAFE_HEIGHT = CONTENT_HEIGHT - 80; // Large safety buffer to ensure early cut
+const PAGE_WIDTH = '210mm';
+const PAGE_HEIGHT = '297mm';
+const PADDING = '15mm';
+const FOOTER_HEIGHT = '15mm';
+
+// High utilization: near-maximum content per page
+// 850px - aggressive space usage, monitor for footer collisions
+const MAX_CONTENT_HEIGHT_PX = 850;
 
 const CVPreview: React.FC<CVPreviewProps> = ({ data, theme = 'classic' }) => {
   const { t } = useTranslation();
   const [pages, setPages] = useState<React.ReactNode[][]>([]);
-  const hiddenContainerRef = useRef<HTMLDivElement>(null);
+  const measureRef = useRef<HTMLDivElement>(null);
 
-  const getFlattenedBlocks = () => {
-    const blocks: React.ReactNode[] = [];
+  const [updateKey, setUpdateKey] = useState(0);
 
-    const addBlock = (node: React.ReactNode, key: string) => {
-      blocks.push(<div key={key} data-id={key}>{node}</div>);
+  useEffect(() => {
+    console.log('🔄 Data changed, forcing pagination update');
+    setUpdateKey(k => k + 1);
+  }, [JSON.stringify(data), theme]);
+
+  const blocks = useMemo(() => {
+    const result: React.ReactNode[] = [];
+    const addBlock = (node: React.ReactNode, id: string) => {
+      result.push(<div key={id} data-id={id}>{node}</div>);
     };
 
-    // Render based on theme
     switch (theme) {
-      case 'executive':
-        renderExecutiveTheme({ data, addBlock, t });
-        break;
-      case 'modern':
-        renderModernTheme({ data, addBlock, t });
-        break;
-      case 'sidebar':
-        renderSidebarTheme({ data, addBlock, t });
-        break;
-      case 'professional':
-        renderProfessionalTheme({ data, addBlock, t });
-        break;
-      case 'elegant':
-        renderElegantTheme({ data, addBlock, t });
-        break;
-      case 'creative':
-        renderCreativeTheme({ data, addBlock, t });
-        break;
-      default:
-        renderClassicTheme({ data, addBlock, t });
+      case 'executive': renderExecutiveTheme({ data, addBlock, t }); break;
+      case 'modern': renderModernTheme({ data, addBlock, t }); break;
+      case 'sidebar': renderSidebarTheme({ data, addBlock, t }); break;
+      case 'professional': renderProfessionalTheme({ data, addBlock, t }); break;
+      case 'elegant': renderElegantTheme({ data, addBlock, t }); break;
+      case 'creative': renderCreativeTheme({ data, addBlock, t }); break;
+      default: renderClassicTheme({ data, addBlock, t });
     }
-
-    return blocks;
-  };
-
-  const blocks = getFlattenedBlocks();
+    return result;
+  }, [data, theme, t]);
 
   useLayoutEffect(() => {
-    if (!hiddenContainerRef.current) return;
-
-    const container = hiddenContainerRef.current;
-    const children = Array.from(container.children) as HTMLElement[];
-
-    const newPages: React.ReactNode[][] = [];
-    let currentPage: React.ReactNode[] = [];
-    let currentHeight = 0;
-
-    const reservedFooterHeight = 100; // Strictly reserved height for footer area
-    const effectivePageHeight = CONTENT_HEIGHT - reservedFooterHeight;
-
-    children.forEach((child, index) => {
-      const style = window.getComputedStyle(child);
-      const marginTop = parseFloat(style.marginTop) || 0;
-      const marginBottom = parseFloat(style.marginBottom) || 0;
-      const height = child.offsetHeight + marginTop + marginBottom;
-
-      const blockNode = blocks[index];
-      const dataId = child.getAttribute('data-id') || '';
-      const isHeader = dataId.endsWith('-header');
-
-      // Proactive "Keep With Next" check for headers
-      // If this is a header, check if we have room for it PLUS some content
-      let forceBreak = false;
-      if (isHeader) {
-        // Look ahead to see the next item's height (approximate or min safe buffer)
-        const minContentBuffer = 60; // Minimum space required for the content AFTER a header
-        if (currentHeight + height + minContentBuffer > effectivePageHeight) {
-          forceBreak = true;
-        }
+    const runPagination = () => {
+      const container = measureRef.current;
+      if (!container) {
+        console.log('❌ Container not found');
+        return;
       }
 
-      // Standard overflow check or forced break
-      if (forceBreak || currentHeight + height > effectivePageHeight) {
-        // If we are breaking, close the current page
-        if (currentPage.length > 0) {
+      const children = Array.from(container.children) as HTMLElement[];
+      if (children.length === 0) {
+        console.log('❌ No children found');
+        return;
+      }
+
+      console.log('✅ Starting pagination with', children.length, 'blocks (updateKey:', updateKey, ')');
+
+      const newPages: React.ReactNode[][] = [];
+      let currentPage: React.ReactNode[] = [];
+      let currentHeight = 0;
+
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        const h = child.offsetHeight;
+        const id = child.getAttribute('data-id') || '';
+        const isHeader = id.endsWith('-header');
+
+        console.log(`Block ${i}: "${id}" - ${h}px (total: ${currentHeight}px)`);
+
+        let shouldBreak = false;
+
+        if (currentHeight > 0) {
+          if (isHeader && currentHeight + h + 80 > MAX_CONTENT_HEIGHT_PX) {
+            shouldBreak = true;
+            console.log(`  → BREAK (header would overflow)`);
+          } else if (currentHeight + h > MAX_CONTENT_HEIGHT_PX) {
+            shouldBreak = true;
+            console.log(`  → BREAK (content would overflow)`);
+          }
+        }
+
+        if (shouldBreak) {
           newPages.push([...currentPage]);
+          console.log(`📄 Page ${newPages.length} created with ${currentPage.length} blocks`);
+          currentPage = [];
+          currentHeight = 0;
         }
 
-        // Start new page with current block
-        currentPage = [blockNode];
-        currentHeight = height;
-      } else {
-        // Fits in current page
-        currentPage.push(blockNode);
-        currentHeight += height;
+        currentPage.push(blocks[i]);
+        currentHeight += h;
       }
-    });
 
-    // Push the last page
-    if (currentPage.length > 0) {
-      newPages.push(currentPage);
-    }
+      if (currentPage.length > 0) {
+        newPages.push(currentPage);
+        console.log(`📄 Final page ${newPages.length} created with ${currentPage.length} blocks`);
+      }
 
-    setPages(newPages);
-  }, [data, theme]); // Recalculate when data or theme changes
+      console.log(`✅ Total pages: ${newPages.length}`);
+
+      // Debug: Show which blocks are in which page
+      newPages.forEach((page, pageIdx) => {
+        const blockIds = page.map((block: any) => block.key).join(', ');
+        console.log(`📄 Page ${pageIdx + 1} contains: [${blockIds}]`);
+      });
+
+      setPages(newPages);
+    };
+
+    const timer = setTimeout(runPagination, 200);
+    return () => clearTimeout(timer);
+  }, [blocks, updateKey]);
+
+  const totalPages = pages.length;
+
+  console.log('🔄 Render - Total pages:', totalPages);
 
   return (
-    <div className="flex flex-col items-center gap-8 print:gap-0 print:p-0 print:bg-white print:min-h-0 print:block">
-      {/* Hidden container for measurement */}
+    <div className="flex flex-col items-center gap-8 print:gap-0 print:block">
+      {/* Hidden measurement container - EXACT SAME STRUCTURE AS REAL PAGE */}
       <div
-        ref={hiddenContainerRef}
-        style={{ width: '210mm', padding: '15mm', visibility: 'hidden', position: 'absolute', top: -9999, left: -9999, boxSizing: 'border-box' }}
-        className="bg-white print:hidden"
+        style={{
+          position: 'fixed',
+          left: '-99999px',
+          top: 0,
+          width: PAGE_WIDTH,
+          height: PAGE_HEIGHT,
+          boxSizing: 'border-box',
+          visibility: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
       >
-        {blocks}
+        {/* Content area - matches real page structure */}
+        <div
+          ref={measureRef}
+          style={{
+            flex: '1 1 auto',
+            padding: PADDING,
+            overflow: 'visible', // For measurement we need visible
+            minHeight: 0,
+          }}
+        >
+          {blocks}
+        </div>
+
+        {/* Footer area - matches real page structure */}
+        <div
+          style={{
+            flexShrink: 0,
+            height: FOOTER_HEIGHT,
+          }}
+        />
       </div>
 
-      {/* Render Pages */}
+      {/* Pages */}
       {pages.length === 0 ? (
-        <div className="w-[210mm] h-[297mm] bg-white shadow-2xl animate-pulse"></div>
+        <div
+          className="bg-white shadow-2xl animate-pulse"
+          style={{ width: PAGE_WIDTH, height: PAGE_HEIGHT }}
+        />
       ) : (
-        pages.map((pageContent, pageIndex) => (
+        pages.map((content, idx) => (
           <div
-            key={pageIndex}
-            className="bg-white shadow-2xl relative print:shadow-none print:m-0 print:break-after-page relative group"
+            key={`page-${idx}-${updateKey}`}
+            className="bg-white shadow-2xl print:shadow-none"
             style={{
-              width: '210mm',
-              height: '297mm',
-              padding: '15mm',
-              paddingBottom: '25mm', // Extra padding at bottom for visual balance and footer
+              width: PAGE_WIDTH,
+              height: PAGE_HEIGHT,
               boxSizing: 'border-box',
-              pageBreakAfter: pageIndex < pages.length - 1 ? 'always' : 'auto',
-              overflow: 'hidden' // Force strict clipping
+              pageBreakAfter: idx < totalPages - 1 ? 'always' : 'auto',
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
-            <div className="h-full block"> {/* Changed to block for correct margin collapsing */}
-              {pageContent}
+            {/* Content area */}
+            <div
+              style={{
+                flex: '1 1 auto',
+                padding: PADDING,
+                overflow: 'hidden', // CRITICAL: prevents content from overlapping footer
+                minHeight: 0,
+              }}
+            >
+              {content}
             </div>
 
-            {/* Absolute Footer - Outside of content flow */}
-            {pages.length > 1 && (
-              <div
-                className="absolute bottom-[10mm] left-0 right-0 text-center text-slate-400 text-xs print:bottom-[10mm]"
-                style={{ height: '20px' }}
-              >
-                {pageIndex + 1}/{pages.length}
-              </div>
-            )}
+            {/* Footer area */}
+            <div
+              style={{
+                flexShrink: 0,
+                height: FOOTER_HEIGHT,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {totalPages > 1 && (
+                <span style={{ fontSize: '10px', color: '#9ca3af' }}>
+                  {idx + 1}/{totalPages}
+                </span>
+              )}
+            </div>
           </div>
         ))
       )}
