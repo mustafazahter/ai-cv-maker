@@ -213,7 +213,7 @@ const App: React.FC = () => {
             <div className="flex items-center gap-2">
               <FileText className="w-6 h-6 text-indigo-600 hidden md:block" />
               <h1 className="hidden md:block text-lg font-bold text-slate-800 tracking-tight whitespace-nowrap">
-                ATS Pro CV Maker
+                AI CV Maker
               </h1>
             </div>
           </div>

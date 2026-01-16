@@ -116,7 +116,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                     </button>
 
                     <img src={`${import.meta.env.BASE_URL}favicon.png`} alt="Logo" className="w-9 h-9 object-contain" />
-                    <span className="text-xl font-bold text-slate-800 tracking-tight hidden sm:inline">CV Maker AI</span>
+                    <span className="text-xl font-bold text-slate-800 tracking-tight hidden sm:inline">AI CV Maker</span>
                 </div>
 
                 <div className="flex items-center gap-4">
