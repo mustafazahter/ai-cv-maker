@@ -204,7 +204,12 @@
         "interests": "İlgi Alanları",
         "references": "Referanslar",
         "present": "Devam Ediyor",
-        "profile": "Profil"
+        "profile": "Profil",
+        "expert": "Uzman",
+        "advanced": "İleri Seviye",
+        "intermediate": "Orta Seviye",
+        "elementary": "Temel Seviye",
+        "beginner": "Başlangıç"
     },
     "chat": {
         "welcomeMessage": "Merhaba! Ben senin **ATS CV Asistanınım**. \n\nMevcut CV'ni **PDF** veya **Görsel** olarak analiz edebilirim ya da sıfırdan birlikte oluşturabiliriz. \n\nBugün sana nasıl yardımcı olabilirim?",
@@ -238,6 +243,7 @@
         "addExperience": "Deneyim Ekle",
         "addEducation": "Eğitim Ekle",
         "addSkillCategory": "Yetenek Kategorisi Ekle",
+        "addSkill": "Yetenek Ekle",
         "addProject": "Proje Ekle",
         "addCertification": "Sertifika Ekle",
         "addLanguage": "Dil Ekle",
@@ -257,6 +263,7 @@
         "company": "Şirket",
         "startDate": "Başlangıç",
         "endDate": "Bitiş",
+        "showLevel": "Seviyeleri Göster",
         "categoryName": "Kategori Adı",
         "projectName": "Proje Adı",
         "link": "Bağlantı (URL)",
