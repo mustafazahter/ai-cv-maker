@@ -3,7 +3,9 @@
         "loading": "Loading...",
         "error": "Error",
         "success": "Success",
-        "languageCode": "en"
+        "languageCode": "en",
+        "cancel": "Cancel",
+        "reset": "Reset"
     },
     "nav": {
         "atsGuide": "ATS Guide",
@@ -280,6 +282,9 @@
         "interestsPlaceholder": "Interests (Comma separated)",
         "skillsPlaceholder": "Skills (Comma separated)",
         "subtitle": "Subtitle (Optional)",
-        "dateOptional": "Date (Optional)"
+        "dateOptional": "Date (Optional)",
+        "resetEditor": "Reset Editor",
+        "resetConfirmTitle": "Reset Editor?",
+        "resetConfirmMessage": "Are you sure you want to reset the editor? All your changes will be lost and returned to default."
     }
 }
