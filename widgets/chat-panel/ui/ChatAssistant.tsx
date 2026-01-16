@@ -8,6 +8,7 @@ interface ChatAssistantProps {
   apiKey: string | null;
   currentResumeData: ResumeData;
   onUpdateResume: (data: ResumeData) => void;
+  onRequestApiKey: () => void;
   onResetCV?: () => void;
 }
 

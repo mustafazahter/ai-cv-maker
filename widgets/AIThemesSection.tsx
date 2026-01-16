@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowRight, Check, Sparkles } from 'lucide-react';
-import { CVThemeId } from '../types';
-import { GradientButton } from '../shared/ui';
+import { CVThemeId } from '@/shared/types';
+import { GradientButton } from '@/shared/ui';
 import { useTranslation } from 'react-i18next';
 
 interface AIThemesSectionProps {

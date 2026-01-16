@@ -283,9 +283,9 @@ const App: React.FC = () => {
         </header>
 
         {/* Preview Canvas */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-4 lg:p-8 flex justify-center bg-slate-200/50 print:p-0 print:bg-white print:block print:overflow-visible relative">
+        <div className="flex-1 overflow-auto custom-scrollbar p-4 lg:p-8 flex bg-slate-200/50 print:p-0 print:bg-white print:block print:overflow-visible relative">
           <div
-            className="animate-in fade-in zoom-in-95 duration-300 origin-top print:animate-none print:transform-none"
+            className="m-auto animate-in fade-in zoom-in-95 duration-300 origin-top print:animate-none print:!transform-none print:!m-0 print:!p-0"
             style={{ transform: `scale(${zoom})`, transformOrigin: 'top center', transition: 'transform 0.2s ease-out' }}
           >
             <CVPreview data={resumeData} theme={currentTheme} />

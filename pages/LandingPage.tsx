@@ -3,7 +3,8 @@ import {
     ATSGuideSection,
     ApiConfigSection,
     AIThemesSection,
-    CVAnalyzerSection
+    CVAnalyzerSection,
+    HeroSection,
 } from '../widgets';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../features/language-switcher';
@@ -83,7 +84,8 @@ const LandingPage: React.FC<LandingPageProps> = ({
             {/* AI Themes */}
             <div id="themes">
                 <AIThemesSection
-                    onOpenEditor={onNavigateToEditor}
+                    onSelectTheme={onNavigateToEditor}
+                    currentTheme="classic"
                 />
             </div>
 
