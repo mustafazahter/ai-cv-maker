@@ -3,7 +3,9 @@
         "loading": "Yükleniyor...",
         "error": "Hata",
         "success": "Başarılı",
-        "languageCode": "tr"
+        "languageCode": "tr",
+        "cancel": "İptal",
+        "reset": "Sıfırla"
     },
     "nav": {
         "atsGuide": "ATS Rehberi",
@@ -280,6 +282,9 @@
         "interestsPlaceholder": "İlgi alanları (Virgülle ayrılmış)",
         "skillsPlaceholder": "Yetenekler (Virgülle ayrılmış)",
         "subtitle": "Alt Başlık (Opsiyonel)",
-        "dateOptional": "Tarih (Opsiyonel)"
+        "dateOptional": "Tarih (Opsiyonel)",
+        "resetEditor": "Editörü Sıfırla",
+        "resetConfirmTitle": "Editörü Sıfırla?",
+        "resetConfirmMessage": "Editörü sıfırlamak istediğinize emin misiniz? Tüm değişiklikleriniz kaybolacak ve varsayılana dönecektir."
     }
 }

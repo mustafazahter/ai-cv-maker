@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { ResumeData, ExperienceItem, EducationItem, SkillCategory, ProjectItem, CertificationItem, LanguageItem, VolunteeringItem, AwardItem, CustomSection, CustomSectionItem } from '@/shared/types';
+import { getInitialResumeData } from '@/shared/constants';
 import {
     Plus, Trash2, MapPin, Calendar, Briefcase, User, Mail, Globe, Linkedin, Phone,
     ChevronDown, ChevronUp, GripVertical, Star, Book, Award, Heart, Layout, Type,
-    Camera, X, ImageIcon
+    Camera, X, ImageIcon, RotateCcw
 } from 'lucide-react';
 
 interface ManualEditorProps {
@@ -13,9 +15,10 @@ interface ManualEditorProps {
 }
 
 const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [expandedSection, setExpandedSection] = useState<string | null>('personal');
     const [activeSectionMenu, setActiveSectionMenu] = useState(false);
+    const [isResetModalOpen, setIsResetModalOpen] = useState(false);
     const [draggedItemIndex, setDraggedItemIndex] = useState<number | null>(null);
     const [draggableRow, setDraggableRow] = useState<string | null>(null);
     const [showProfileImage, setShowProfileImage] = useState(!!data.profileImage);
@@ -137,6 +140,12 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
         onChange(newData);
         setActiveSectionMenu(false);
         setExpandedSection(id);
+    };
+
+    const handleReset = () => {
+        const initialData = getInitialResumeData(i18n.language);
+        onChange(initialData);
+        setIsResetModalOpen(false);
     };
 
 
@@ -723,6 +732,52 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                     </div>
                 )}
             </div>
+
+            {/* RESET BUTTON */}
+            <div className="mt-8 border-t border-slate-200 pt-6">
+                <button
+                    onClick={() => setIsResetModalOpen(true)}
+                    className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
+                >
+                    <RotateCcw className="w-4 h-4" />
+                    {t('editor.resetEditor')}
+                </button>
+            </div>
+
+            {/* RESET CONFIRMATION MODAL */}
+            {isResetModalOpen && createPortal(
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-6 text-center">
+                            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <RotateCcw className="w-6 h-6 text-red-600" />
+                            </div>
+                            <h3 className="text-lg font-bold text-slate-900 mb-2">
+                                {t('editor.resetConfirmTitle')}
+                            </h3>
+                            <p className="text-sm text-slate-500 mb-6">
+                                {t('editor.resetConfirmMessage')}
+                            </p>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setIsResetModalOpen(false)}
+                                    className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition-colors"
+                                >
+                                    {t('common.cancel')}
+                                </button>
+                                <button
+                                    onClick={handleReset}
+                                    className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors"
+                                >
+                                    {t('common.reset')}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
+
 
         </div>
     );
