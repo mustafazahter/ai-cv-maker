@@ -8,6 +8,8 @@ import {
     ChevronDown, ChevronUp, GripVertical, Star, Book, Award, Heart, Layout, Type,
     Camera, X, ImageIcon, RotateCcw
 } from 'lucide-react';
+import { SortableList } from './SortableList';
+import { SortableItem } from './SortableItem';
 
 interface ManualEditorProps {
     data: ResumeData;
@@ -273,45 +275,55 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
 
     const renderExperience = () => (
         <div className="space-y-6">
-            {data.experience.map((exp) => (
-                <div key={exp.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative group">
-                    <button onClick={() => removeItem('experience', exp.id)} className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
-                    <div className="grid gap-3">
-                        <Input label={t('editor.company')} value={exp.company} onChange={(v) => handleArrayChange('experience', exp.id, 'company', v)} />
-                        <Input label={t('editor.jobTitle')} value={exp.title} onChange={(v) => handleArrayChange('experience', exp.id, 'title', v)} />
-                        <Input label={t('editor.location')} value={exp.location || ''} onChange={(v) => handleArrayChange('experience', exp.id, 'location', v)} icon={<MapPin className="w-3 h-3" />} />
-                        <div className="grid grid-cols-2 gap-2">
-                            <Input label={t('editor.startDate')} value={exp.startDate} onChange={(v) => handleArrayChange('experience', exp.id, 'startDate', v)} />
-                            <Input label={t('editor.endDate')} value={exp.endDate} onChange={(v) => handleArrayChange('experience', exp.id, 'endDate', v)} disabled={exp.current} />
+            <SortableList
+                items={data.experience}
+                onChange={(items) => handleChange('experience', items)}
+                renderItem={(exp) => (
+                    <SortableItem key={exp.id} id={exp.id} onRemove={() => removeItem('experience', exp.id)}>
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div className="grid gap-3">
+                                <Input label={t('editor.company')} value={exp.company} onChange={(v) => handleArrayChange('experience', exp.id, 'company', v)} />
+                                <Input label={t('editor.jobTitle')} value={exp.title} onChange={(v) => handleArrayChange('experience', exp.id, 'title', v)} />
+                                <Input label={t('editor.location')} value={exp.location || ''} onChange={(v) => handleArrayChange('experience', exp.id, 'location', v)} icon={<MapPin className="w-3 h-3" />} />
+                                <div className="grid grid-cols-2 gap-2">
+                                    <Input label={t('editor.startDate')} value={exp.startDate} onChange={(v) => handleArrayChange('experience', exp.id, 'startDate', v)} />
+                                    <Input label={t('editor.endDate')} value={exp.endDate} onChange={(v) => handleArrayChange('experience', exp.id, 'endDate', v)} disabled={exp.current} />
+                                </div>
+                                <label className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer w-fit select-none">
+                                    <input type="checkbox" checked={exp.current} onChange={(e) => handleArrayChange('experience', exp.id, 'current', e.target.checked)} className="rounded text-indigo-600 focus:ring-0 focus:border-slate-600 cursor-pointer" />
+                                    {t('editor.currentWork')}
+                                </label>
+                                <Textarea label={t('editor.description')} value={(exp.description || []).join('\n')} onChange={(v) => handleArrayChange('experience', exp.id, 'description', v.split('\n'))} rows={4} />
+                            </div>
                         </div>
-                        <label className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer w-fit select-none">
-                            <input type="checkbox" checked={exp.current} onChange={(e) => handleArrayChange('experience', exp.id, 'current', e.target.checked)} className="rounded text-indigo-600 focus:ring-0 focus:border-slate-600 cursor-pointer" />
-                            {t('editor.currentWork')}
-                        </label>
-                        <Textarea label={t('editor.description')} value={(exp.description || []).join('\n')} onChange={(v) => handleArrayChange('experience', exp.id, 'description', v.split('\n'))} rows={4} />
-                    </div>
-                </div>
-            ))}
+                    </SortableItem>
+                )}
+            />
             <ButtonAdd onClick={() => addItem('experience', { id: Date.now().toString(), company: 'New Company', title: 'Role', location: '', startDate: '', endDate: '', current: false, description: [] } as ExperienceItem)} label={t('editor.addExperience')} />
         </div>
     );
 
     const renderEducation = () => (
         <div className="space-y-6">
-            {data.education.map((edu) => (
-                <div key={edu.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative group">
-                    <button onClick={() => removeItem('education', edu.id)} className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
-                    <div className="grid gap-3">
-                        <Input label={t('editor.institution')} value={edu.institution} onChange={(v) => handleArrayChange('education', edu.id, 'institution', v)} />
-                        <Input label={t('editor.degree')} value={edu.degree} onChange={(v) => handleArrayChange('education', edu.id, 'degree', v)} />
-                        <Input label={t('editor.location')} value={edu.location || ''} onChange={(v) => handleArrayChange('education', edu.id, 'location', v)} icon={<MapPin className="w-3 h-3" />} />
-                        <div className="grid grid-cols-2 gap-2">
-                            <Input label={t('editor.startDate')} value={edu.startDate} onChange={(v) => handleArrayChange('education', edu.id, 'startDate', v)} />
-                            <Input label={t('editor.endDate')} value={edu.endDate} onChange={(v) => handleArrayChange('education', edu.id, 'endDate', v)} />
+            <SortableList
+                items={data.education}
+                onChange={(items) => handleChange('education', items)}
+                renderItem={(edu) => (
+                    <SortableItem key={edu.id} id={edu.id} onRemove={() => removeItem('education', edu.id)}>
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div className="grid gap-3">
+                                <Input label={t('editor.institution')} value={edu.institution} onChange={(v) => handleArrayChange('education', edu.id, 'institution', v)} />
+                                <Input label={t('editor.degree')} value={edu.degree} onChange={(v) => handleArrayChange('education', edu.id, 'degree', v)} />
+                                <Input label={t('editor.location')} value={edu.location || ''} onChange={(v) => handleArrayChange('education', edu.id, 'location', v)} icon={<MapPin className="w-3 h-3" />} />
+                                <div className="grid grid-cols-2 gap-2">
+                                    <Input label={t('editor.startDate')} value={edu.startDate} onChange={(v) => handleArrayChange('education', edu.id, 'startDate', v)} />
+                                    <Input label={t('editor.endDate')} value={edu.endDate} onChange={(v) => handleArrayChange('education', edu.id, 'endDate', v)} />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            ))}
+                    </SortableItem>
+                )}
+            />
             <ButtonAdd onClick={() => addItem('education', { id: Date.now().toString(), institution: 'University', degree: 'Degree', location: '', startDate: '', endDate: '', current: false } as EducationItem)} label={t('editor.addEducation')} />
         </div>
     );
@@ -415,81 +427,108 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
 
     const renderProjects = () => (
         <div className="space-y-6">
-            {data.projects.map((proj) => (
-                <div key={proj.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative group">
-                    <button onClick={() => removeItem('projects', proj.id)} className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
-                    <div className="grid gap-3">
-                        <Input label={t('editor.projectName')} value={proj.name} onChange={(v) => handleArrayChange('projects', proj.id, 'name', v)} />
-                        <Input label={t('editor.link')} value={proj.url || ''} onChange={(v) => handleArrayChange('projects', proj.id, 'url', v)} />
-                        <Textarea label={t('editor.description')} value={(proj.description || []).join('\n')} onChange={(v) => handleArrayChange('projects', proj.id, 'description', v.split('\n'))} rows={3} />
-                    </div>
-                </div>
-            ))}
+            <SortableList
+                items={data.projects}
+                onChange={(items) => handleChange('projects', items)}
+                renderItem={(proj) => (
+                    <SortableItem key={proj.id} id={proj.id} onRemove={() => removeItem('projects', proj.id)}>
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div className="grid gap-3">
+                                <Input label={t('editor.projectName')} value={proj.name} onChange={(v) => handleArrayChange('projects', proj.id, 'name', v)} />
+                                <Input label={t('editor.link')} value={proj.url || ''} onChange={(v) => handleArrayChange('projects', proj.id, 'url', v)} />
+                                <Textarea label={t('editor.description')} value={(proj.description || []).join('\n')} onChange={(v) => handleArrayChange('projects', proj.id, 'description', v.split('\n'))} rows={3} />
+                            </div>
+                        </div>
+                    </SortableItem>
+
+                )}
+            />
             <ButtonAdd onClick={() => addItem('projects', { id: Date.now().toString(), name: 'Project Name', description: [] } as ProjectItem)} label={t('editor.addProject')} />
         </div>
     );
 
     const renderCertifications = () => (
         <div className="space-y-4">
-            {data.certifications.map((cert) => (
-                <div key={cert.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative">
-                    <button onClick={() => removeItem('certifications', cert.id)} className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
-                    <Input label={t('editor.certificationName')} value={cert.name} onChange={(v) => handleArrayChange('certifications', cert.id, 'name', v)} />
-                    <Input label={t('editor.issuer')} value={cert.issuer} onChange={(v) => handleArrayChange('certifications', cert.id, 'issuer', v)} />
-                    <Input label={t('editor.date')} value={cert.date} onChange={(v) => handleArrayChange('certifications', cert.id, 'date', v)} />
-                </div>
-            ))}
+            <SortableList
+                items={data.certifications}
+                onChange={(items) => handleChange('certifications', items)}
+                renderItem={(cert) => (
+                    <SortableItem key={cert.id} id={cert.id} onRemove={() => removeItem('certifications', cert.id)}>
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <Input label={t('editor.certificationName')} value={cert.name} onChange={(v) => handleArrayChange('certifications', cert.id, 'name', v)} />
+                            <Input label={t('editor.issuer')} value={cert.issuer} onChange={(v) => handleArrayChange('certifications', cert.id, 'issuer', v)} />
+                            <Input label={t('editor.date')} value={cert.date} onChange={(v) => handleArrayChange('certifications', cert.id, 'date', v)} />
+                        </div>
+                    </SortableItem>
+                )}
+            />
             <ButtonAdd onClick={() => addItem('certifications', { id: Date.now().toString(), name: 'Certificate', issuer: 'Issuer', date: '2023' } as CertificationItem)} label={t('editor.addCertification')} />
         </div>
     );
 
     const renderLanguages = () => (
         <div className="space-y-4">
-            {data.languages.map((lang) => (
-                <div key={lang.id} className="bg-slate-50 p-3 rounded-xl border border-slate-200 relative flex gap-3 items-end">
-                    <div className="flex-1">
-                        <Input label={t('editor.language')} value={lang.language} onChange={(v) => handleArrayChange('languages', lang.id, 'language', v)} />
-                    </div>
-                    <div className="flex-1">
-                        <Input label={t('editor.proficiency')} value={lang.proficiency} onChange={(v) => handleArrayChange('languages', lang.id, 'proficiency', v)} />
-                    </div>
-                    <button onClick={() => removeItem('languages', lang.id)} className="p-2.5 text-slate-300 hover:text-red-500 rounded hover:bg-red-50 mb-[1px]"><Trash2 className="w-4 h-4" /></button>
-                </div>
-            ))}
+            <SortableList
+                items={data.languages}
+                onChange={(items) => handleChange('languages', items)}
+                renderItem={(lang) => (
+                    <SortableItem key={lang.id} id={lang.id} onRemove={() => removeItem('languages', lang.id)}>
+                        <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 flex gap-3 items-end">
+                            <div className="flex-1">
+                                <Input label={t('editor.language')} value={lang.language} onChange={(v) => handleArrayChange('languages', lang.id, 'language', v)} />
+                            </div>
+                            <div className="flex-1">
+                                <Input label={t('editor.proficiency')} value={lang.proficiency} onChange={(v) => handleArrayChange('languages', lang.id, 'proficiency', v)} />
+                            </div>
+                        </div>
+                    </SortableItem>
+                )}
+            />
             <ButtonAdd onClick={() => addItem('languages', { id: Date.now().toString(), language: 'English', proficiency: 'Native' } as LanguageItem)} label={t('editor.addLanguage')} />
         </div>
     );
 
     const renderAwards = () => (
         <div className="space-y-4">
-            {data.awards.map((award) => (
-                <div key={award.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative">
-                    <button onClick={() => removeItem('awards', award.id)} className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
-                    <Input label={t('editor.awardTitle')} value={award.title} onChange={(v) => handleArrayChange('awards', award.id, 'title', v)} />
-                    <Input label={t('editor.issuer')} value={award.issuer} onChange={(v) => handleArrayChange('awards', award.id, 'issuer', v)} />
-                    <Input label={t('editor.date')} value={award.date} onChange={(v) => handleArrayChange('awards', award.id, 'date', v)} />
-                </div>
-            ))}
+            <SortableList
+                items={data.awards}
+                onChange={(items) => handleChange('awards', items)}
+                renderItem={(award) => (
+                    <SortableItem key={award.id} id={award.id} onRemove={() => removeItem('awards', award.id)}>
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <Input label={t('editor.awardTitle')} value={award.title} onChange={(v) => handleArrayChange('awards', award.id, 'title', v)} />
+                            <Input label={t('editor.issuer')} value={award.issuer} onChange={(v) => handleArrayChange('awards', award.id, 'issuer', v)} />
+                            <Input label={t('editor.date')} value={award.date} onChange={(v) => handleArrayChange('awards', award.id, 'date', v)} />
+                        </div>
+                    </SortableItem>
+                )}
+            />
             <ButtonAdd onClick={() => addItem('awards', { id: Date.now().toString(), title: 'Award', issuer: 'Issuer', date: '2023' } as AwardItem)} label={t('editor.addAward')} />
         </div>
     );
 
     const renderVolunteering = () => (
         <div className="space-y-6">
-            {data.volunteering.map((vol) => (
-                <div key={vol.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative group">
-                    <button onClick={() => removeItem('volunteering', vol.id)} className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
-                    <div className="grid gap-3">
-                        <Input label={t('editor.organization')} value={vol.organization} onChange={(v) => handleArrayChange('volunteering', vol.id, 'organization', v)} />
-                        <Input label={t('editor.role')} value={vol.role} onChange={(v) => handleArrayChange('volunteering', vol.id, 'role', v)} />
-                        <div className="grid grid-cols-2 gap-2">
-                            <Input label={t('editor.startDate')} value={vol.startDate} onChange={(v) => handleArrayChange('volunteering', vol.id, 'startDate', v)} />
-                            <Input label={t('editor.endDate')} value={vol.endDate} onChange={(v) => handleArrayChange('volunteering', vol.id, 'endDate', v)} />
+            <SortableList
+                items={data.volunteering}
+                onChange={(items) => handleChange('volunteering', items)}
+                renderItem={(vol) => (
+                    <SortableItem key={vol.id} id={vol.id} onRemove={() => removeItem('volunteering', vol.id)}>
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div className="grid gap-3">
+                                <Input label={t('editor.organization')} value={vol.organization} onChange={(v) => handleArrayChange('volunteering', vol.id, 'organization', v)} />
+                                <Input label={t('editor.role')} value={vol.role} onChange={(v) => handleArrayChange('volunteering', vol.id, 'role', v)} />
+                                <div className="grid grid-cols-2 gap-2">
+                                    <Input label={t('editor.startDate')} value={vol.startDate} onChange={(v) => handleArrayChange('volunteering', vol.id, 'startDate', v)} />
+                                    <Input label={t('editor.endDate')} value={vol.endDate} onChange={(v) => handleArrayChange('volunteering', vol.id, 'endDate', v)} />
+                                </div>
+                                <Textarea label={t('editor.description')} value={(vol.description || []).join('\n')} onChange={(v) => handleArrayChange('volunteering', vol.id, 'description', v.split('\n'))} rows={3} />
+                            </div>
                         </div>
-                        <Textarea label={t('editor.description')} value={(vol.description || []).join('\n')} onChange={(v) => handleArrayChange('volunteering', vol.id, 'description', v.split('\n'))} rows={3} />
-                    </div>
-                </div>
-            ))}
+                    </SortableItem>
+
+                )}
+            />
             <ButtonAdd onClick={() => addItem('volunteering', { id: Date.now().toString(), organization: 'Org', role: 'Volunteer', description: [] } as VolunteeringItem)} label={t('editor.addVolunteering')} />
         </div>
     );
@@ -543,15 +582,20 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
                         </div>
                     )}
 
-                    {customSection.items.map(item => (
-                        <div key={item.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative">
-                            <button onClick={() => removeCustomItem(item.id)} className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
-                            <Input label={t('editor.sectionTitle')} value={item.title} onChange={(v) => updateCustomItem(item.id, 'title', v)} />
-                            <Input label={t('editor.subtitle')} value={item.subtitle || ''} onChange={(v) => updateCustomItem(item.id, 'subtitle', v)} />
-                            <Input label={t('editor.dateOptional')} value={item.date || ''} onChange={(v) => updateCustomItem(item.id, 'date', v)} />
-                            <Textarea label={t('editor.description')} value={(item.description || []).join('\n')} onChange={(v) => updateCustomItem(item.id, 'description', v.split('\n'))} rows={2} />
-                        </div>
-                    ))}
+                    <SortableList
+                        items={customSection.items}
+                        onChange={(items) => updateCustomSection('items', items)}
+                        renderItem={(item) => (
+                            <SortableItem key={item.id} id={item.id} onRemove={() => removeCustomItem(item.id)}>
+                                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 relative">
+                                    <Input label={t('editor.sectionTitle')} value={item.title} onChange={(v) => updateCustomItem(item.id, 'title', v)} />
+                                    <Input label={t('editor.subtitle')} value={item.subtitle || ''} onChange={(v) => updateCustomItem(item.id, 'subtitle', v)} />
+                                    <Input label={t('editor.dateOptional')} value={item.date || ''} onChange={(v) => updateCustomItem(item.id, 'date', v)} />
+                                    <Textarea label={t('editor.description')} value={(item.description || []).join('\n')} onChange={(v) => updateCustomItem(item.id, 'description', v.split('\n'))} rows={2} />
+                                </div>
+                            </SortableItem>
+                        )}
+                    />
                     {customSection.items.length > 0 && <ButtonAdd onClick={addCustomItem} label={t('editor.addItem')} />}
                 </div>
             </div>
