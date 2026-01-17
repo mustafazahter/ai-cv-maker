@@ -45,7 +45,15 @@
         "zoomOut": "Zoom Out",
         "zoomIn": "Zoom In",
         "resetZoom": "Reset",
-        "apiKeySettings": "API Key Settings"
+        "apiKeySettings": "API Key Settings",
+        "downloadResume": "Download Resume",
+        "uploadResume": "Upload Resume",
+        "uploadResumeTitle": "Upload Resume",
+        "uploadResumeDesc": "Select a .armegx file to load your resume data",
+        "selectFile": "Select File",
+        "cancel": "Cancel",
+        "invalidFileType": "Please select a .armegx file",
+        "invalidFileFormat": "Invalid file format"
     },
     "dashboard": {
         "menuTitle": "Menu",

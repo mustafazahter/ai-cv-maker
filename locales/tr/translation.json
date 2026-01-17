@@ -45,7 +45,15 @@
         "zoomOut": "Uzaklaş",
         "zoomIn": "Yakınlaş",
         "resetZoom": "Sıfırla",
-        "apiKeySettings": "API Anahtarı Ayarları"
+        "apiKeySettings": "API Anahtarı Ayarları",
+        "downloadResume": "CV İndir",
+        "uploadResume": "CV Yükle",
+        "uploadResumeTitle": "CV Yükle",
+        "uploadResumeDesc": "Resume verilerinizi yüklemek için bir .armegx dosyası seçin",
+        "selectFile": "Dosya Seç",
+        "cancel": "İptal",
+        "invalidFileType": "Lütfen bir .armegx dosyası seçin",
+        "invalidFileFormat": "Geçersiz dosya formatı"
     },
     "dashboard": {
         "menuTitle": "Menü",
