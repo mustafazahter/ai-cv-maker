@@ -367,8 +367,10 @@ const App: React.FC = () => {
             <CVPreview data={resumeData} theme={currentTheme} />
           </div>
 
-          {/* Floating Zoom Controls */}
-          <div className="fixed bottom-6 right-6 flex items-center gap-1 bg-white/90 backdrop-blur shadow-xl border border-slate-200 p-1.5 rounded-full z-50 print:hidden animate-in slide-in-from-bottom-4">
+          {/* Floating Zoom Controls - Responsive:
+              Mobile: Only when Preview mode (sidebar closed)
+              Desktop: Always visible (preview always visible) */}
+          <div className={`fixed bottom-6 right-6 flex items-center gap-1 bg-white/90 backdrop-blur shadow-xl border border-slate-200 p-1.5 rounded-full z-50 print:hidden animate-in slide-in-from-bottom-4 ${isSidebarOpen ? 'hidden min-[1110px]:flex' : 'flex'}`}>
             <button
               onClick={() => adjustZoom(-0.1)}
               className="p-2 hover:bg-slate-100 rounded-full text-slate-600 active:scale-95 transition-all"
