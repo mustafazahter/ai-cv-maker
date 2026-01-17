@@ -107,7 +107,7 @@ export interface ResumeData {
   languages: LanguageItem[];
   volunteering: VolunteeringItem[];
   awards: AwardItem[];
-  interests: string[]; // Simple list
+  interests: string; // Comma-separated interests
   customSections: CustomSection[];
   references: string;
 

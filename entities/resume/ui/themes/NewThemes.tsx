@@ -405,7 +405,7 @@ const renderNewSections = (data: ResumeData, addBlock: (node: React.ReactNode, k
             (key === 'projects' && data.projects.length > 0) ||
             (key === 'certifications' && data.certifications.length > 0) ||
             (key === 'volunteering' && data.volunteering.length > 0) ||
-            (key === 'interests' && data.interests.length > 0) ||
+            (key === 'interests' && data.interests && data.interests.trim().length > 0) ||
             (key === 'references' && data.references) ||
             key.startsWith('custom-')) {
 
@@ -460,12 +460,41 @@ const renderNewSections = (data: ResumeData, addBlock: (node: React.ReactNode, k
                     );
                 }
             } else if (key === 'interests') {
-                addBlock(
-                    <div className={`text-xs ${theme === 'elegant' ? 'font-serif text-center italic' : ''}`}>
-                        {data.interests.join(', ')}
-                    </div>,
-                    'int-body'
-                );
+                if (theme === 'elegant') {
+                    addBlock(
+                        <div className="flex flex-wrap gap-x-2 gap-y-1 justify-center mb-4">
+                            {data.interests.split(',').map((interest, i) => {
+                                const trimmed = interest.trim();
+                                return (
+                                    <span key={i} className="font-serif text-xs text-slate-700">
+                                        {trimmed}{i < data.interests.split(',').length - 1 && ' •'}
+                                    </span>
+                                );
+                            })}
+                        </div>,
+                        'int-body'
+                    );
+                } else if (theme === 'creative') {
+                    addBlock(
+                        <div className="flex flex-wrap gap-2 mb-4">
+                            {data.interests.split(',').map((interest, i) => (
+                                <span key={i} className="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full">
+                                    {interest.trim()}
+                                </span>
+                            ))}
+                        </div>,
+                        'int-body'
+                    );
+                } else {
+                    addBlock(
+                        <ul className="list-disc ml-4 space-y-0.5 mb-4">
+                            {data.interests.split(',').map((interest, i) => (
+                                <li key={i} className="text-xs text-slate-700">{interest.trim()}</li>
+                            ))}
+                        </ul>,
+                        'int-body'
+                    );
+                }
             } else if (key === 'references') {
                 addBlock(
                     <div className={`text-xs ${theme === 'elegant' ? 'font-serif text-center italic' : ''}`}>

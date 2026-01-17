@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { ResumeData, ExperienceItem, EducationItem, SkillCategory, ProjectItem, CertificationItem, LanguageItem, VolunteeringItem, AwardItem, CustomSection, CustomSectionItem } from '@/shared/types';
@@ -24,6 +24,12 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
     const [draggedItemIndex, setDraggedItemIndex] = useState<number | null>(null);
     const [draggableRow, setDraggableRow] = useState<string | null>(null);
     const [showProfileImage, setShowProfileImage] = useState(!!data.profileImage);
+    const [interestsText, setInterestsText] = useState(data.interests);
+
+    // Sync interestsText when data.interests changes externally (e.g., from reset)
+    useEffect(() => {
+        setInterestsText(data.interests);
+    }, [data.interests]);
 
     // Helper for single field updates
     const handleChange = (field: keyof ResumeData, value: any) => {
@@ -533,9 +539,19 @@ const ManualEditor: React.FC<ManualEditorProps> = ({ data, onChange }) => {
         </div>
     );
 
+
     const renderInterests = () => (
         <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-            <Textarea label={t('editor.interestsPlaceholder')} value={data.interests.join(', ')} onChange={(v) => handleChange('interests', v.split(',').map(s => s.trim()).filter(Boolean))} rows={3} />
+            <Textarea
+                label={t('editor.interestsPlaceholder')}
+                value={interestsText}
+                onChange={(v) => {
+                    setInterestsText(v);
+                    // Store raw comma-separated text, splitting will happen on render
+                    handleChange('interests', v);
+                }}
+                rows={3}
+            />
         </div>
     );
 
@@ -856,12 +872,13 @@ const Input = ({ label, value, onChange, disabled = false, icon, placeholder, co
     </div>
 );
 
-const Textarea = ({ label, value, onChange, rows = 3 }: { label?: string, value: string, onChange: (val: string) => void, rows?: number }) => (
+const Textarea = ({ label, value, onChange, rows = 3, onBlur }: { label?: string, value: string, onChange: (val: string) => void, rows?: number, onBlur?: () => void }) => (
     <div>
         {label && <label className="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">{label}</label>}
         <textarea
             value={value}
             onChange={(e) => onChange(e.target.value)}
+            onBlur={onBlur}
             rows={rows}
             className="w-full p-3 text-sm border border-slate-200 rounded-lg focus:border-slate-500 focus:ring-0 outline-none transition-all placeholder-slate-300 bg-slate-50/50 resize-y"
         />

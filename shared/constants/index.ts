@@ -54,7 +54,7 @@ export const INITIAL_RESUME_DATA_EN: ResumeData = {
   languages: [],
   volunteering: [],
   awards: [],
-  interests: [],
+  interests: "",
   customSections: [],
   references: "Available upon request.",
 
@@ -125,7 +125,7 @@ export const INITIAL_RESUME_DATA_TR: ResumeData = {
   languages: [],
   volunteering: [],
   awards: [],
-  interests: [],
+  interests: "",
   customSections: [],
   references: "İstek üzerine sağlanabilir.",
 

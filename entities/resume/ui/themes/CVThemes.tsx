@@ -570,9 +570,14 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
         }
 
         // INTERESTS
-        else if (key === 'interests' && data.interests.length > 0) {
+        else if (key === 'interests' && data.interests && data.interests.trim().length > 0) {
             addBlock(<SectionHeader title={t('cv.interests')} theme={theme} />, 'int-header');
-            addBlock(<p className="text-xs text-slate-800 mb-4">{data.interests.join(', ')}</p>, 'int-body');
+            addBlock(
+                <ul className="list-disc ml-4 space-y-0.5 mb-4">
+                    {data.interests.split(',').map((interest, idx) => <li key={idx} className="text-xs text-slate-800 leading-snug">{interest.trim()}</li>)}
+                </ul>,
+                'int-body'
+            );
         }
 
         // REFERENCES

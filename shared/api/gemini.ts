@@ -134,10 +134,7 @@ const resumeSchemaProps = {
       }
     }
   },
-  interests: {
-    type: Type.ARRAY,
-    items: { type: Type.STRING }
-  },
+  interests: { type: Type.STRING },
   customSections: {
     type: Type.ARRAY,
     items: {
@@ -212,7 +209,7 @@ const sanitizeResumeData = (data: ResumeData): ResumeData => {
     languages: data.languages || [],
     volunteering: data.volunteering || [],
     awards: data.awards || [],
-    interests: data.interests || [],
+    interests: data.interests || "",
     customSections: data.customSections || [],
   };
 };
@@ -363,7 +360,7 @@ export const chatWithCVAgent = async (
             "certifications": [],
             "projects": [],
             "volunteering": [],
-            "interests": [],
+            "interests": "",
             "customSections": [],
             "references": ""
           }
@@ -484,7 +481,7 @@ export const chatWithCVAgent = async (
         languages: aiData.languages || [],
         volunteering: aiData.volunteering || [],
         awards: aiData.awards || [],
-        interests: aiData.interests || [],
+        interests: aiData.interests || "",
         customSections: aiData.customSections || [],
         references: aiData.references || currentResume.references,
       };
