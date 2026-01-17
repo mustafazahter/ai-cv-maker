@@ -39,7 +39,14 @@ export const INITIAL_RESUME_DATA_EN: ResumeData = {
   skills: [
     {
       name: "Technical Skills",
-      items: ["JavaScript", "TypeScript", "React", "Node.js", "Python", "AWS"]
+      items: [
+        { name: "JavaScript", level: 5 },
+        { name: "TypeScript", level: 5 },
+        { name: "React", level: 5 },
+        { name: "Node.js", level: 4 },
+        { name: "Python", level: 4 },
+        { name: "AWS", level: 3 }
+      ]
     }
   ],
   projects: [],
@@ -103,7 +110,14 @@ export const INITIAL_RESUME_DATA_TR: ResumeData = {
   skills: [
     {
       name: "Teknik Yetkinlikler",
-      items: ["JavaScript", "TypeScript", "React", "Node.js", "Python", "AWS"]
+      items: [
+        { name: "JavaScript", level: 5 },
+        { name: "TypeScript", level: 5 },
+        { name: "React", level: 5 },
+        { name: "Node.js", level: 4 },
+        { name: "Python", level: 4 },
+        { name: "AWS", level: 3 }
+      ]
     }
   ],
   projects: [],
