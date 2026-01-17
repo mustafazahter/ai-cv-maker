@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Edit3, Key, Printer, Sparkles, PanelLeftClose, PanelLeftOpen, FileText, Home, Palette, Eye, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { Edit3, Key, Printer, Sparkles, PanelLeftClose, PanelLeftOpen, FileText, Home, Palette, Eye, ZoomIn, ZoomOut, RotateCcw, Download, Upload, FileUp } from 'lucide-react';
 import { ResumeData, CVThemeId } from '@/shared/types';
 import { getInitialResumeData, INITIAL_RESUME_DATA_EN, INITIAL_RESUME_DATA_TR } from '@/shared/constants';
 import { ChatAssistant } from '@/widgets/chat-panel';
@@ -57,6 +57,7 @@ const App: React.FC = () => {
   const [apiKey, setApiKey] = useState<string | null>(localStorage.getItem('gemini_api_key'));
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [currentTheme, setCurrentTheme] = useState<CVThemeId>('classic');
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   // State for layout modes
   const [sidebarMode, setSidebarMode] = useState<'chat' | 'editor'>('chat');
@@ -114,6 +115,43 @@ const App: React.FC = () => {
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleDownload = () => {
+    const dataStr = JSON.stringify(resumeData, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `resume-${Date.now()}.armegx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Check file extension
+    if (!file.name.endsWith('.armegx')) {
+      alert(t('app.invalidFileType', 'Please select a .armegx file'));
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        const data = JSON.parse(content) as ResumeData;
+        setResumeData(data);
+        setIsUploadModalOpen(false);
+      } catch (error) {
+        alert(t('app.invalidFileFormat', 'Invalid file format'));
+      }
+    };
+    reader.readAsText(file);
   };
 
   const adjustZoom = (delta: number) => {
@@ -290,6 +328,25 @@ const App: React.FC = () => {
             >
               <Key className="w-5 h-5" />
             </button>
+
+            {/* Download Button */}
+            <button
+              onClick={handleDownload}
+              className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-full transition-colors"
+              title={t('app.downloadResume')}
+            >
+              <Download className="w-5 h-5" />
+            </button>
+
+            {/* Upload Button */}
+            <button
+              onClick={() => setIsUploadModalOpen(true)}
+              className="p-2 text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-full transition-colors"
+              title={t('app.uploadResume')}
+            >
+              <Upload className="w-5 h-5" />
+            </button>
+
             <div className="h-6 w-px bg-slate-200 mx-1"></div>
             <button
               onClick={handlePrint}
@@ -340,6 +397,48 @@ const App: React.FC = () => {
           </div>
         </div>
       </main>
+
+      {/* Upload Modal */}
+      {isUploadModalOpen && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 print:hidden">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6 text-center">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileUp className="w-8 h-8 text-purple-600" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 mb-2">
+                {t('app.uploadResumeTitle')}
+              </h3>
+              <p className="text-sm text-slate-500 mb-6">
+                {t('app.uploadResumeDesc')}
+              </p>
+
+              <input
+                type="file"
+                accept=".armegx"
+                onChange={handleFileUpload}
+                className="hidden"
+                id="file-upload"
+              />
+
+              <label
+                htmlFor="file-upload"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold cursor-pointer transition-colors mb-3"
+              >
+                <Upload className="w-4 h-4" />
+                {t('app.selectFile')}
+              </label>
+
+              <button
+                onClick={() => setIsUploadModalOpen(false)}
+                className="block w-full px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg font-semibold transition-colors"
+              >
+                {t('app.cancel')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
