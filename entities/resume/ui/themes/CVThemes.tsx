@@ -401,7 +401,7 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
                             <div className="text-xs text-slate-500 pt-0.5">{proj.startDate || ''}</div>
                             <div>
                                 <h3 className="font-bold text-slate-900 text-sm">{proj.name}</h3>
-                                {proj.url && <a href={proj.url} className="text-[10px] text-blue-600">{proj.url}</a>}
+                                {proj.url && <a href={proj.url.startsWith('http') ? proj.url : `https://${proj.url}`} target="_blank" rel="noopener noreferrer" className="text-[10px] text-blue-600">{proj.url}</a>}
                                 <ul className="list-disc ml-4 space-y-0.5 mt-1">
                                     {(proj.description || []).map((desc, idx) => <li key={idx} className="text-xs text-slate-700 leading-snug">{desc}</li>)}
                                 </ul>
@@ -427,7 +427,7 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
                         <div className="mb-3">
                             <div className="flex justify-between items-baseline mb-1">
                                 <h3 className="font-bold text-slate-900 text-sm">{proj.name}</h3>
-                                {proj.url && <a href={proj.url} className="text-[10px] text-blue-600 underline">{proj.url}</a>}
+                                {proj.url && <a href={proj.url.startsWith('http') ? proj.url : `https://${proj.url}`} target="_blank" rel="noopener noreferrer" className="text-[10px] text-blue-600 underline">{proj.url}</a>}
                             </div>
                             <ul className="list-disc ml-4 space-y-0.5">
                                 {(proj.description || []).map((desc, idx) => <li key={idx} className="text-xs text-slate-800 leading-snug">{desc}</li>)}

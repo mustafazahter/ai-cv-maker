@@ -507,7 +507,7 @@ const renderNewSections = (data: ResumeData, addBlock: (node: React.ReactNode, k
                     addBlock(
                         <div className={`mb-3 ${theme === 'elegant' ? 'font-serif' : ''} ${theme === 'creative' ? 'pl-6 border-l-2 border-slate-100' : ''}`}>
                             <div className="font-bold text-sm">{p.name}</div>
-                            <div className="text-xs text-slate-600 mb-1">{p.url}</div>
+                            {p.url && <a href={p.url.startsWith('http') ? p.url : `https://${p.url}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline mb-1 block">{p.url}</a>}
                             <div className="text-xs">{p.description.join('. ')}</div>
                         </div>,
                         `proj-${p.id}`
