@@ -25,8 +25,8 @@ export const renderClassicTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
                         {data.location && <span>{data.location}</span>}
                         {data.phone && <span>• {data.phone}</span>}
                         {data.email && <span>• {data.email}</span>}
-                        {data.linkedin && <span>• {data.linkedin}</span>}
-                        {data.website && <span>• {data.website}</span>}
+                        {data.linkedin && <span>• <a href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.linkedin.replace(/^https?:\/\//, '')}</a></span>}
+                        {data.website && <span>• <a href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.website.replace(/^https?:\/\//, '')}</a></span>}
                     </div>
                 </div>
             </div>
@@ -51,8 +51,8 @@ export const renderExecutiveTheme = ({ data, addBlock, t }: ThemeRenderProps) =>
             <div className="flex justify-center gap-6 text-xs text-slate-600">
                 {data.phone && <span>{data.phone}</span>}
                 {data.email && <span>{data.email}</span>}
-                {data.linkedin && <span>{data.linkedin}</span>}
-                {data.website && <span>{data.website}</span>}
+                {data.linkedin && <a href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.linkedin.replace(/^https?:\/\//, '')}</a>}
+                {data.website && <a href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.website.replace(/^https?:\/\//, '')}</a>}
             </div>
         </header>,
         'main-header'
@@ -74,7 +74,17 @@ export const renderModernTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
                     <h1 className="text-2xl font-bold text-slate-900 mb-1">
                         {data.fullName}{data.title && <span className="font-normal text-slate-600">, {data.title}</span>}
                     </h1>
-                    <p className="text-sm text-slate-600">{[data.location, data.phone, data.email, data.linkedin, data.website].filter(Boolean).join(', ')}</p>
+                    <div className="text-sm text-slate-600 flex flex-wrap gap-x-1">
+                        {[
+                            data.location,
+                            data.phone,
+                            data.email && <a key="email" href={`mailto:${data.email}`} className="hover:underline">{data.email}</a>,
+                            data.linkedin && <a key="in" href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.linkedin.replace(/^https?:\/\//, '')}</a>,
+                            data.website && <a key="web" href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.website.replace(/^https?:\/\//, '')}</a>
+                        ].filter(Boolean).map((item, i, arr) => (
+                            <span key={i}>{item}{i < arr.length - 1 ? ', ' : ''}</span>
+                        ))}
+                    </div>
                 </div>
             </div>
         </header>,
@@ -99,8 +109,8 @@ export const renderSidebarTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
                     {data.location && <p>{data.location}</p>}
                     {data.phone && <p>{data.phone}</p>}
                     {data.email && <p>{data.email}</p>}
-                    {data.linkedin && <p>{data.linkedin}</p>}
-                    {data.website && <p>{data.website}</p>}
+                    {data.linkedin && <p><a href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.linkedin.replace(/^https?:\/\//, '')}</a></p>}
+                    {data.website && <p><a href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.website.replace(/^https?:\/\//, '')}</a></p>}
                 </div>
             </div>
         </header>,
@@ -401,7 +411,7 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
                             <div className="text-xs text-slate-500 pt-0.5">{proj.startDate || ''}</div>
                             <div>
                                 <h3 className="font-bold text-slate-900 text-sm">{proj.name}</h3>
-                                {proj.url && <a href={proj.url.startsWith('http') ? proj.url : `https://${proj.url}`} target="_blank" rel="noopener noreferrer" className="text-[10px] text-blue-600">{proj.url}</a>}
+                                {proj.url && <a href={proj.url.startsWith('http') ? proj.url : `https://${proj.url}`} target="_blank" rel="noopener noreferrer" className="text-[10px] text-blue-600 hover:underline break-all relative z-10 inline-block mt-0.5">{proj.url}</a>}
                                 <ul className="list-disc ml-4 space-y-0.5 mt-1">
                                     {(proj.description || []).map((desc, idx) => <li key={idx} className="text-xs text-slate-700 leading-snug">{desc}</li>)}
                                 </ul>
@@ -416,6 +426,7 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
                                 <span className="text-amber-600 text-xs">◆</span>
                                 <h3 className="font-bold text-slate-900 text-sm">{proj.name}</h3>
                             </div>
+                            {proj.url && <div className="ml-4 mb-1"><a href={proj.url.startsWith('http') ? proj.url : `https://${proj.url}`} target="_blank" rel="noopener noreferrer" className="text-[10px] text-amber-600 hover:underline break-all relative z-10 inline-block">{proj.url}</a></div>}
                             <ul className="list-none ml-4 space-y-0.5">
                                 {(proj.description || []).map((desc, idx) => <li key={idx} className="text-xs text-slate-700">• {desc}</li>)}
                             </ul>
@@ -427,7 +438,7 @@ const renderSections = (data: ResumeData, addBlock: (node: React.ReactNode, key:
                         <div className="mb-3">
                             <div className="flex justify-between items-baseline mb-1">
                                 <h3 className="font-bold text-slate-900 text-sm">{proj.name}</h3>
-                                {proj.url && <a href={proj.url.startsWith('http') ? proj.url : `https://${proj.url}`} target="_blank" rel="noopener noreferrer" className="text-[10px] text-blue-600 underline">{proj.url}</a>}
+                                {proj.url && <a href={proj.url.startsWith('http') ? proj.url : `https://${proj.url}`} target="_blank" rel="noopener noreferrer" className="text-[10px] text-blue-600 hover:underline break-all relative z-10 inline-block">{proj.url}</a>}
                             </div>
                             <ul className="list-disc ml-4 space-y-0.5">
                                 {(proj.description || []).map((desc, idx) => <li key={idx} className="text-xs text-slate-800 leading-snug">{desc}</li>)}

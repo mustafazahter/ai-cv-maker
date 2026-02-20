@@ -21,7 +21,13 @@ export const renderProfessionalTheme = ({ data, addBlock, t }: ThemeRenderProps)
                 <h1 className="text-4xl font-bold text-blue-700 uppercase tracking-tight mb-2">{data.fullName}</h1>
                 <p className="text-xl font-bold text-slate-800 mb-3 uppercase tracking-wide">{data.title}</p>
                 <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium text-slate-600">
-                    {[data.location, data.phone, data.email, data.linkedin, data.website].filter(Boolean).map((item, i, arr) => (
+                    {[
+                        data.location,
+                        data.phone,
+                        data.email && <a key="email" href={`mailto:${data.email}`} className="hover:underline relative z-10">{data.email}</a>,
+                        data.linkedin && <a key="in" href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.linkedin.replace(/^https?:\/\//, '')}</a>,
+                        data.website && <a key="web" href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.website.replace(/^https?:\/\//, '')}</a>
+                    ].filter(Boolean).map((item, i, arr) => (
                         <span key={i} className="flex items-center gap-1">
                             {item}
                             {i < arr.length - 1 && <span className="text-slate-300">|</span>}
@@ -66,8 +72,8 @@ export const renderElegantTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 pt-2 pb-1 border-b-[3px] border-slate-400 border-double">
                 {data.phone && <div className="font-serif text-slate-900 font-bold text-sm">{data.phone}</div>}
                 {data.email && <div className="font-serif text-slate-900 font-bold text-sm">{data.email}</div>}
-                {data.linkedin && <div className="font-serif text-slate-900 font-bold text-sm">{data.linkedin}</div>}
-                {data.website && <div className="font-serif text-slate-900 font-bold text-sm">{data.website}</div>}
+                {data.linkedin && <div className="font-serif text-slate-900 font-bold text-sm"><a href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.linkedin.replace(/^https?:\/\//, '')}</a></div>}
+                {data.website && <div className="font-serif text-slate-900 font-bold text-sm"><a href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.website.replace(/^https?:\/\//, '')}</a></div>}
             </div>
         </header>,
         'elegant-header'
@@ -96,10 +102,10 @@ export const renderCreativeTheme = ({ data, addBlock, t }: ThemeRenderProps) => 
                 <p className="text-xl font-medium text-indigo-600 mb-4">{data.title}</p>
                 <div className="flex flex-col gap-1 text-sm text-slate-500">
                     {data.location && <div className="flex items-center gap-2"><MapPin className="w-3 h-3" /> {data.location}</div>}
-                    {data.email && <div className="flex items-center gap-2"><Mail className="w-3 h-3" /> {data.email}</div>}
+                    {data.email && <div className="flex items-center gap-2"><Mail className="w-3 h-3" /> <a href={`mailto:${data.email}`} className="hover:underline relative z-10">{data.email}</a></div>}
                     {data.phone && <div className="flex items-center gap-2"><Phone className="w-3 h-3" /> {data.phone}</div>}
-                    {data.linkedin && <div className="flex items-center gap-2"><span>in</span> {data.linkedin}</div>}
-                    {data.website && <div className="flex items-center gap-2"><span>🌐</span> {data.website}</div>}
+                    {data.linkedin && <div className="flex items-center gap-2"><span>in</span> <a href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.linkedin.replace(/^https?:\/\//, '')}</a></div>}
+                    {data.website && <div className="flex items-center gap-2"><span>🌐</span> <a href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.website.replace(/^https?:\/\//, '')}</a></div>}
                 </div>
             </div>
         </header>,
@@ -507,7 +513,7 @@ const renderNewSections = (data: ResumeData, addBlock: (node: React.ReactNode, k
                     addBlock(
                         <div className={`mb-3 ${theme === 'elegant' ? 'font-serif' : ''} ${theme === 'creative' ? 'pl-6 border-l-2 border-slate-100' : ''}`}>
                             <div className="font-bold text-sm">{p.name}</div>
-                            {p.url && <a href={p.url.startsWith('http') ? p.url : `https://${p.url}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline mb-1 block">{p.url}</a>}
+                            {p.url && <a href={p.url.startsWith('http') ? p.url : `https://${p.url}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline mb-1 block relative z-10 break-all">{p.url}</a>}
                             <div className="text-xs">{p.description.join('. ')}</div>
                         </div>,
                         `proj-${p.id}`
