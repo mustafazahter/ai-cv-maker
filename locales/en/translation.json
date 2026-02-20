@@ -249,6 +249,7 @@
         "location": "Location",
         "website": "Website",
         "linkedin": "LinkedIn",
+        "github": "GitHub",
         "summaryPlaceholder": "Brief professional summary...",
         "currentWork": "I currently work here",
         "description": "Description (Bullets)",
