@@ -25,9 +25,9 @@ export const renderClassicTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
                         {data.location && <span>{data.location}</span>}
                         {data.phone && <span>• {data.phone}</span>}
                         {data.email && <span>• {data.email}</span>}
-                        {data.linkedin && <span>• <a href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.linkedin.replace(/^https?:\/\//, '')}</a></span>}
-                        {data.github && <span>• <a href={data.github.startsWith('http') ? data.github : `https://${data.github}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.github.replace(/^https?:\/\//, '')}</a></span>}
-                        {data.website && <span>• <a href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.website.replace(/^https?:\/\//, '')}</a></span>}
+                        {data.linkedin && <span>• <a href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.linkedin.replace(/^https?:\/\//, '')}</a></span>}
+                        {data.github && <span>• <a href={data.github.startsWith('http') ? data.github : `https://${data.github}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.github.replace(/^https?:\/\//, '')}</a></span>}
+                        {data.website && <span>• <a href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.website.replace(/^https?:\/\//, '')}</a></span>}
                     </div>
                 </div>
             </div>
@@ -52,9 +52,9 @@ export const renderExecutiveTheme = ({ data, addBlock, t }: ThemeRenderProps) =>
             <div className="flex justify-center gap-6 text-xs text-slate-600">
                 {data.phone && <span>{data.phone}</span>}
                 {data.email && <span>{data.email}</span>}
-                {data.linkedin && <a href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.linkedin.replace(/^https?:\/\//, '')}</a>}
-                {data.github && <a href={data.github.startsWith('http') ? data.github : `https://${data.github}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.github.replace(/^https?:\/\//, '')}</a>}
-                {data.website && <a href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.website.replace(/^https?:\/\//, '')}</a>}
+                {data.linkedin && <a href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.linkedin.replace(/^https?:\/\//, '')}</a>}
+                {data.github && <a href={data.github.startsWith('http') ? data.github : `https://${data.github}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.github.replace(/^https?:\/\//, '')}</a>}
+                {data.website && <a href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.website.replace(/^https?:\/\//, '')}</a>}
             </div>
         </header>,
         'main-header'
@@ -80,10 +80,10 @@ export const renderModernTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
                         {[
                             data.location,
                             data.phone,
-                            data.email && <a key="email" href={`mailto:${data.email}`} className="hover:underline">{data.email}</a>,
-                            data.linkedin && <a key="in" href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.linkedin.replace(/^https?:\/\//, '')}</a>,
-                            data.github && <a key="gh" href={data.github.startsWith('http') ? data.github : `https://${data.github}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.github.replace(/^https?:\/\//, '')}</a>,
-                            data.website && <a key="web" href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.website.replace(/^https?:\/\//, '')}</a>
+                            data.email && <a key="email" href={`mailto:${data.email}`} className="hover:underline relative z-10">{data.email}</a>,
+                            data.linkedin && <a key="in" href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.linkedin.replace(/^https?:\/\//, '')}</a>,
+                            data.github && <a key="gh" href={data.github.startsWith('http') ? data.github : `https://${data.github}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.github.replace(/^https?:\/\//, '')}</a>,
+                            data.website && <a key="web" href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.website.replace(/^https?:\/\//, '')}</a>
                         ].filter(Boolean).map((item, i, arr) => (
                             <span key={i}>{item}{i < arr.length - 1 ? ', ' : ''}</span>
                         ))}
