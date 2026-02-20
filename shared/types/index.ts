@@ -95,6 +95,7 @@ export interface ResumeData {
   location: string;
   website: string;
   linkedin: string;
+  github: string;
   summary: string;
   profileImage?: string; // Base64 encoded image or URL (opsiyonel)
 

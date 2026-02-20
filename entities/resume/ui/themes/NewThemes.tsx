@@ -26,6 +26,7 @@ export const renderProfessionalTheme = ({ data, addBlock, t }: ThemeRenderProps)
                         data.phone,
                         data.email && <a key="email" href={`mailto:${data.email}`} className="hover:underline relative z-10">{data.email}</a>,
                         data.linkedin && <a key="in" href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.linkedin.replace(/^https?:\/\//, '')}</a>,
+                        data.github && <a key="gh" href={data.github.startsWith('http') ? data.github : `https://${data.github}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.github.replace(/^https?:\/\//, '')}</a>,
                         data.website && <a key="web" href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.website.replace(/^https?:\/\//, '')}</a>
                     ].filter(Boolean).map((item, i, arr) => (
                         <span key={i} className="flex items-center gap-1">
@@ -73,6 +74,7 @@ export const renderElegantTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
                 {data.phone && <div className="font-serif text-slate-900 font-bold text-sm">{data.phone}</div>}
                 {data.email && <div className="font-serif text-slate-900 font-bold text-sm">{data.email}</div>}
                 {data.linkedin && <div className="font-serif text-slate-900 font-bold text-sm"><a href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.linkedin.replace(/^https?:\/\//, '')}</a></div>}
+                {data.github && <div className="font-serif text-slate-900 font-bold text-sm"><a href={data.github.startsWith('http') ? data.github : `https://${data.github}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.github.replace(/^https?:\/\//, '')}</a></div>}
                 {data.website && <div className="font-serif text-slate-900 font-bold text-sm"><a href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.website.replace(/^https?:\/\//, '')}</a></div>}
             </div>
         </header>,
@@ -105,6 +107,7 @@ export const renderCreativeTheme = ({ data, addBlock, t }: ThemeRenderProps) => 
                     {data.email && <div className="flex items-center gap-2"><Mail className="w-3 h-3" /> <a href={`mailto:${data.email}`} className="hover:underline relative z-10">{data.email}</a></div>}
                     {data.phone && <div className="flex items-center gap-2"><Phone className="w-3 h-3" /> {data.phone}</div>}
                     {data.linkedin && <div className="flex items-center gap-2"><span>in</span> <a href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.linkedin.replace(/^https?:\/\//, '')}</a></div>}
+                    {data.github && <div className="flex items-center gap-2"><span>gh</span> <a href={data.github.startsWith('http') ? data.github : `https://${data.github}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.github.replace(/^https?:\/\//, '')}</a></div>}
                     {data.website && <div className="flex items-center gap-2"><span>🌐</span> <a href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.website.replace(/^https?:\/\//, '')}</a></div>}
                 </div>
             </div>

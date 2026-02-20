@@ -26,6 +26,7 @@ export const renderClassicTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
                         {data.phone && <span>• {data.phone}</span>}
                         {data.email && <span>• {data.email}</span>}
                         {data.linkedin && <span>• <a href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.linkedin.replace(/^https?:\/\//, '')}</a></span>}
+                        {data.github && <span>• <a href={data.github.startsWith('http') ? data.github : `https://${data.github}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.github.replace(/^https?:\/\//, '')}</a></span>}
                         {data.website && <span>• <a href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.website.replace(/^https?:\/\//, '')}</a></span>}
                     </div>
                 </div>
@@ -52,6 +53,7 @@ export const renderExecutiveTheme = ({ data, addBlock, t }: ThemeRenderProps) =>
                 {data.phone && <span>{data.phone}</span>}
                 {data.email && <span>{data.email}</span>}
                 {data.linkedin && <a href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.linkedin.replace(/^https?:\/\//, '')}</a>}
+                {data.github && <a href={data.github.startsWith('http') ? data.github : `https://${data.github}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.github.replace(/^https?:\/\//, '')}</a>}
                 {data.website && <a href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.website.replace(/^https?:\/\//, '')}</a>}
             </div>
         </header>,
@@ -80,6 +82,7 @@ export const renderModernTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
                             data.phone,
                             data.email && <a key="email" href={`mailto:${data.email}`} className="hover:underline">{data.email}</a>,
                             data.linkedin && <a key="in" href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.linkedin.replace(/^https?:\/\//, '')}</a>,
+                            data.github && <a key="gh" href={data.github.startsWith('http') ? data.github : `https://${data.github}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.github.replace(/^https?:\/\//, '')}</a>,
                             data.website && <a key="web" href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{data.website.replace(/^https?:\/\//, '')}</a>
                         ].filter(Boolean).map((item, i, arr) => (
                             <span key={i}>{item}{i < arr.length - 1 ? ', ' : ''}</span>
@@ -110,6 +113,7 @@ export const renderSidebarTheme = ({ data, addBlock, t }: ThemeRenderProps) => {
                     {data.phone && <p>{data.phone}</p>}
                     {data.email && <p>{data.email}</p>}
                     {data.linkedin && <p><a href={data.linkedin.startsWith('http') ? data.linkedin : `https://${data.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.linkedin.replace(/^https?:\/\//, '')}</a></p>}
+                    {data.github && <p><a href={data.github.startsWith('http') ? data.github : `https://${data.github}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.github.replace(/^https?:\/\//, '')}</a></p>}
                     {data.website && <p><a href={data.website.startsWith('http') ? data.website : `https://${data.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline relative z-10">{data.website.replace(/^https?:\/\//, '')}</a></p>}
                 </div>
             </div>

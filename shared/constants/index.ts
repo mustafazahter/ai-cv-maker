@@ -8,6 +8,7 @@ export const INITIAL_RESUME_DATA_EN: ResumeData = {
   location: "New York, NY",
   website: "johndoe.dev",
   linkedin: "linkedin.com/in/johndoe",
+  github: "github.com/johndoe",
   summary: "Results-oriented Software Engineer with a strong background in developing scalable web applications. Proven ability to leverage full-stack technologies to build interactive and user-centric solutions. Committed to high-quality code and continuous learning.",
   experience: [
     {
@@ -79,6 +80,7 @@ export const INITIAL_RESUME_DATA_TR: ResumeData = {
   location: "İstanbul, Türkiye",
   website: "ahmetyilmaz.dev",
   linkedin: "linkedin.com/in/ahmetyilmaz",
+  github: "github.com/ahmetyilmaz",
   summary: "Ölçeklenebilir web uygulamaları geliştirme konusunda güçlü bir geçmişe sahip, sonuç odaklı Yazılım Mühendisi. Etkileşimli ve kullanıcı odaklı çözümler oluşturmak için full-stack teknolojilerden yararlanma konusunda kanıtlanmış yetenek. Yüksek kaliteli kod ve sürekli öğrenmeye adanmış.",
   experience: [
     {
